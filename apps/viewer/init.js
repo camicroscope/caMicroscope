@@ -670,14 +670,14 @@ async function initUIcomponents() {
     callback: captureSlide,
   });
 
-  // log
+  // visualization panel
   subToolsOpt.push({
-    name: 'log',
-    icon: 'summarize', // material icons' name
-    title: 'LogAnnotaition',
-    value: 'log',
+    name: 'visualization',
+    icon: 'auto_graph', // material icons' name
+    title: 'visualization',
+    value: 'visualization',
     type: 'btn',
-    callback: logAnnotaiton,
+    callback: visualization,
   });
 
   subToolsOpt.push({
