@@ -1634,10 +1634,10 @@ function roundToSecondDecimalPlace(num) {
 }
 
 function countOccurrences(arr) {
-  // カウント用のオブジェクトを作成
+  // Create objects for counting
   let countMap = {};
 
-  // 配列内の各要素をカウント
+  // Count each element in the array
   arr.forEach(function(value) {
     if (countMap[value] === undefined) {
       countMap[value] = 1;
@@ -1646,7 +1646,7 @@ function countOccurrences(arr) {
     }
   });
 
-  // 結果を2次元配列に変換
+  // Convert the result to a 2-dimensional array
   let result = [];
   for (let key in countMap) {
     if (countMap.hasOwnProperty(key)) {
