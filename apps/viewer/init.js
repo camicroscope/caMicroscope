@@ -878,7 +878,7 @@ async function initUIcomponents() {
           rootCallback.bind('minor'),
       );
       // create UI and set data
-      // $UI.logsViewer = createVisualizationViewer(
+      // $UI.VisualizationViewer = createVisualizationViewer(
       //     'overlogs',
       //     null,
       //     callback.bind('main'),
@@ -1389,7 +1389,7 @@ function createLayerViewer(id, viewerData, callback, rootCallback) {
 //   return logsViewer;
 // }
 function createVisualizationViewer(id, viewerData, callback, rootCallback) {
-  const logsViewer = new LogsViewer({
+  const logsViewer = new VisualizationViewer({
     id: id,
     data: viewerData,
     removeCallback: removeCallback,
