@@ -924,8 +924,8 @@ async function initUIcomponents() {
         },
       });
 
-      $UI.logsList = new CollapsibleList({
-        id: 'logslist',
+      $UI.visualizationList = new CollapsibleList({
+        id: 'visualizationlist',
         list: [
           {
             id: 'logsAnnotation',
@@ -999,15 +999,15 @@ async function initUIcomponents() {
       closeMinorControlPanel();
       $UI.layersSideMenu.addContent($UI.layersList.elt);
 
-      // logs
-      $UI.logsList.clearContent('logsAnnotation');
-      $UI.logsList.addContent('logsAnnotation', $UI.logsViewer.elt);
-      // $UI.logsList.clearContent('heatMap');
-      // $UI.logsList.addContent('heatMap', $UI.logsViewerMinor.elt);
+      // visualization
+      $UI.visualizationList.clearContent('logsAnnotation');
+      $UI.visualizationList.addContent('logsAnnotation', $UI.logsViewer.elt);
+      // $UI.visualizationList.clearContent('heatMap');
+      // $UI.visualizationList.addContent('heatMap', $UI.logsViewerMinor.elt);
 
-      $UI.logsList.elt.parentNode.removeChild($UI.logsList.elt);
+      $UI.visualizationList.elt.parentNode.removeChild($UI.visualizationList.elt);
       closeMinorControlPanel();
-      $UI.visualizationSideMenu.addContent($UI.logsList.elt);
+      $UI.visualizationSideMenu.addContent($UI.visualizationList.elt);
     }
   }, 300);
 
