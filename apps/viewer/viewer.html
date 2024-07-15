@@ -11,6 +11,8 @@
     <!-- Check If we're logged in ok, otherwise, log in for us -->
     <!-- REMOVE JQUERY AND AJAX AFTER MODERNIZING DICOM PACKAGE-->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+     <!-- chartjs -->
+     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <!-- Thank you -->
     <script src="../../common/authChecker.js"></script>
     <script>
@@ -449,7 +451,6 @@
     <!-- Popper & tippy -->
     <script src="https://unpkg.com/@popperjs/core@2"></script>
     <script src="https://unpkg.com/tippy.js@6"></script>
-
   </body>
 
   <script type="text/javascript">
@@ -521,6 +522,5 @@
     if ($D.params.states) {
       $D.params.states = StatesHelper.decodeStates($D.params.states);
     }
-
   </script>
 </html>

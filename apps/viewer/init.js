@@ -1008,6 +1008,9 @@ async function initUIcomponents() {
       $UI.logsList.elt.parentNode.removeChild($UI.logsList.elt);
       closeMinorControlPanel();
       $UI.logsSideMenu.addContent($UI.logsList.elt);
+      const ctx = document.getElementById('myChart');
+      console.log('ctx', ctx);
+      $UI.logsViewer.visualization(ctx);
     }
   }, 300);
 
@@ -1516,7 +1519,7 @@ function addHumanLayerItems() {
     return items;
   }, mainViewerItems);
 
-  // $UI.layersViewer.addHumanItems(mainViewerItems);
+  $UI.layersViewer.addHumanItems(mainViewerItems);
   // $UI.logsViewer.addHumanItems(mainViewerItems);
 
   // minor viewer minorViewer
@@ -1557,7 +1560,7 @@ function addHumanLayerItems() {
     return items;
   }, minorViewerItems);
 
-  // $UI.layersViewerMinor.addHumanItems(minorViewerItems);
+  $UI.layersViewerMinor.addHumanItems(minorViewerItems);
   // $UI.logsViewerMinor.addHumanItems(minorViewerItems);
 }
 // function addLogItems(){
