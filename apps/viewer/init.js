@@ -754,7 +754,7 @@ async function initUIcomponents() {
     width: 250,
     contentPadding: 5,
     position: 'right',
-    height: '40vh',
+    height: '45vh',
     // , isOpen:true
     callback: toggleSideMenu,
   });
@@ -929,7 +929,7 @@ async function initUIcomponents() {
         list: [
           {
             id: 'visualizationlist',
-            title: 'Annotation',
+            title: 'Human:Draw Annotation',
             content: 'No Template Loaded', // $UI.annotOptPanel.elt
             // isExpand:true
           },
@@ -950,15 +950,16 @@ async function initUIcomponents() {
       title.textContent = 'Layers Manager';
 
       // add to log side menu
-      const titleLog = document.createElement('div');
-      titleLog.classList.add('item_head');
-      titleLog.textContent = 'Log Panel';
+      const titleVisualization = document.createElement('div');
+      titleVisualization.classList.add('item_head');
+      titleVisualization.textContent = 'Visualization Panel';
       // add CSS
-      titleLog.style.color = '#365f9c';
-      titleLog.style.fontSize = '20px';
-      titleLog.style.backgroundColor = 'rgba(220, 220, 220, 1)';
+      titleVisualization.style.color = '#365f9c';
+      titleVisualization.style.fontSize = '20px';
+      titleVisualization.style.backgroundColor = 'rgba(220, 220, 220, 1)';
+      titleVisualization.style.marginTop = '28px';
 
-      $UI.visualizationSideMenu.addContent(titleLog);
+      $UI.visualizationSideMenu.addContent(titleVisualization);
 
       // loading status
       $UI.loadStatus = document.createElement('div');
