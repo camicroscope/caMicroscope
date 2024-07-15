@@ -750,7 +750,7 @@ async function initUIcomponents() {
   });
 
   $UI.logsSideMenu = new SideMenu({
-    id: 'log_panel',
+    id: 'visualization_panel',
     width: 250,
     contentPadding: 5,
     position: 'right',
