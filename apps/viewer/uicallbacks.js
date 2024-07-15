@@ -2742,7 +2742,7 @@ async function captureSlide() {
 /* Log annotaiton */
 let isSidemenuOpen = true;
 // 他のものを全て閉じる処理を追加
-function logAnnotaiton() {
+function visualization() {
   if (isSidemenuOpen == true) {
     $UI.logsSideMenu.open();
     isSidemenuOpen = false;
@@ -2750,35 +2750,6 @@ function logAnnotaiton() {
     $UI.logsSideMenu.close();
     isSidemenuOpen = true;
   };
-
-  let log = $CAMIC.store.fetchMark($D.params.slideId).then((annotations) => {
-    console.log('テスト', annotations);
-  });
-
-  // console.log('kotae', log);
-  // let aa = [];
-  // fetchAndSortAnnotations();
-  // // 注釈を取得する関数
-  // function fetchAndSortAnnotations(slideId= $D.params.slideId) {
-  // // 注釈を取得するPromiseを返す
-  //   $CAMIC.store.fetchMark(slideId).then((annotations) => {
-  //     // 注釈が存在する場合にのみソートする
-  //     if (annotations && annotations.length > 0) {
-  //       // 新しい順にソート
-  //       annotations.sort((a, b) => {
-  //         return new Date(b.created_date) - new Date(a.created_date);
-  //       });
-  //     }
-  //     console.log('annotations', annotations[0].states.x);
-  //     aa.push(annotations);
-  //     const jsonString = JSON.stringify(annotations[0].states.x, null, 2);
-  //     const loading = `<div class="cover" style="z-index: 500;"><div class="block"><span> ${jsonString} </span><div class="bar"></div></div></div>`;
-  //     $UI.logSideMenu.addContent(loading);
-  //   }).catch((error) => {
-  //     console.error('Error fetching annotations:', error);
-  //     throw error;
-  //   });
-  // }
 }
 
 function downloadSlideCapture(combiningCanvas) {
