@@ -928,7 +928,7 @@ async function initUIcomponents() {
         id: 'visualizationlist',
         list: [
           {
-            id: 'logsAnnotation',
+            id: 'visualizationlist',
             title: 'Annotation',
             content: 'No Template Loaded', // $UI.annotOptPanel.elt
             // isExpand:true
@@ -1000,8 +1000,8 @@ async function initUIcomponents() {
       $UI.layersSideMenu.addContent($UI.layersList.elt);
 
       // visualization
-      $UI.visualizationList.clearContent('logsAnnotation');
-      $UI.visualizationList.addContent('logsAnnotation', $UI.logsViewer.elt);
+      $UI.visualizationList.clearContent('visualizationlist');
+      $UI.visualizationList.addContent('visualizationlist', $UI.logsViewer.elt);
       // $UI.visualizationList.clearContent('heatMap');
       // $UI.visualizationList.addContent('heatMap', $UI.logsViewerMinor.elt);
 
