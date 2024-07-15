@@ -98,11 +98,11 @@ function layersLoader() {
     });
   }
 
-  // logs
-  function loadingLogs() {
+  // visualization
+  function visualization() {
     $CAMIC.store.findMark($D.params.slideId).then(function(layers) {
-      $D.logs = [...layers.map(covertToVisualization)];
-      visualizationLayerItems($D.logs);
+      $D.visualizations = [...layers.map(covertToVisualization)];
+      visualizationLayerItems($D.visualizations);
     }).catch(function(error) {
       // overlayers schema
       $UI.message.addError('Loading Logs is Error');
@@ -117,7 +117,7 @@ function layersLoader() {
       loadingRulerOverlayers();
       loadingHeatmapOverlayers();
       loadingComputerOverlayers();
-      loadingLogs();
+      visualization();
     }
   }, 500);
 }
