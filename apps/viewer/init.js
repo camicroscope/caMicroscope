@@ -754,7 +754,7 @@ async function initUIcomponents() {
     width: 250,
     contentPadding: 5,
     position: 'right',
-    height: '75vh',
+    height: '40vh',
     // , isOpen:true
     callback: toggleSideMenu,
   });
