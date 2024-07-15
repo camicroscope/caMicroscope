@@ -112,7 +112,7 @@ function layersLoader() {
   }
 
   var checkCoreIsReady = setInterval(function() {
-    if ($UI.layersViewer && $UI.layersViewerMinor && $UI.logsViewer) {
+    if ($UI.layersViewer && $UI.layersViewerMinor && $UI.visualizatiomViewer) {
       clearInterval(checkCoreIsReady);
       loadingHumanOverlayers();
       loadingRulerOverlayers();
