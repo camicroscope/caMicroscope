@@ -1617,9 +1617,50 @@ function addHeatmapLayerItems(data) {
 }
 
 function visualizationLayerItems(data) {
-  console.log('hello!!', data);
+  var initialZommingData = [];
+
+  // Get initial data
+  data.map((d) => {
+    if (d.states) {
+      for (let i = 0; i < d.geometries.features.length; i++) {
+        initialZommingData.push(roundToSecondDecimalPlace(d.states.zoom));
+        console.log(initialZommingData);
+      }
+    }
+  });
+  let result = countOccurrences(initialZommingData);
+  // 結果を出力
+  console.log('result', result);
 }
 
+// Function to round to decimal places
+function roundToSecondDecimalPlace(num) {
+  return Math.round(num * 100) / 100;
+}
+
+function countOccurrences(arr) {
+  // カウント用のオブジェクトを作成
+  let countMap = {};
+
+  // 配列内の各要素をカウント
+  arr.forEach(function(value) {
+    if (countMap[value] === undefined) {
+      countMap[value] = 1;
+    } else {
+      countMap[value]++;
+    }
+  });
+
+  // 結果を2次元配列に変換
+  let result = [];
+  for (let key in countMap) {
+    if (countMap.hasOwnProperty(key)) {
+      result.push([parseFloat(key), countMap[key]]);
+    }
+  };
+
+  return result;
+}
 
 // const mainViewerData = $D.overlayers.map((d) => {
 //   const isShow =

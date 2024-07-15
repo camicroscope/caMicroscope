@@ -101,6 +101,7 @@ function layersLoader() {
   // logs
   function loadingLogs() {
     $CAMIC.store.findMark($D.params.slideId).then(function(layers) {
+      console.log('original data', layers);
       // convert part not nesscary
       $D.logs = [...layers.map(covertToVisualization)];
 

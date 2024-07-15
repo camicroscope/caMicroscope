@@ -595,8 +595,8 @@ function covertToVisualization(data) {
   const states = data.states || null;
   const shape = data.geometries.features[0].geometry.type || null;
   const isGrid = data.provenance.analysis.isGrid || false;
+  const geometries = data.geometries;
 
-  if (!shape) shape = ["Polygon"];
   if (data.provenance.analysis.type&&data.provenance.analysis.type=='label') { // preset label
     return {
       id: id,
@@ -604,13 +604,13 @@ function covertToVisualization(data) {
       typeId: typeName,
       typeName: typeName,
       creator: data.creator,
-      shape: shape,
       isGrid: isGrid,
       label: {
         id: data.provenance.analysis.labelled,
         name: data.provenance.analysis.name,
       },
       states: states,
+      geometries: geometries,
       data: null,
     };
   } else {
@@ -620,9 +620,9 @@ function covertToVisualization(data) {
       typeId: typeName,
       typeName: typeName,
       creator: data.creator,
-      shape: shape,
       isGrid: isGrid,
       states: states,
+      geometries: geometries,
       data: null,
     };
   }
