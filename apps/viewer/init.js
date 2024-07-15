@@ -136,8 +136,6 @@ function initialize() {
       layersLoader();
     }
   }, 100);
-  console.log('$UI', $UI);
-  console.log('$D', $D);
 }
 // setting core functionalities
 function initCore() {
@@ -1622,7 +1620,6 @@ function visualizationLayerItems(data) {
     if (d.states) {
       for (let i = 0; i < d.geometries.features.length; i++) {
         initialZommingData.push(roundToSecondDecimalPlace(d.states.zoom));
-        console.log(initialZommingData);
       }
     }
   });
