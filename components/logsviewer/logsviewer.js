@@ -17,7 +17,7 @@
  *        layer's type name
  *
  */
-function LogsViewer(options) {
+function VisualizationViewer(options) {
   this.className = 'LogsViewer';
   this.setting = {
     // id: doc element
@@ -63,7 +63,7 @@ function LogsViewer(options) {
   this.elt.appendChild(usuDiv);
 }
 
-LogsViewer.prototype.addHumanItem = function(
+VisualizationViewer.prototype.addHumanItem = function(
     item,
     type,
     parent,
@@ -148,11 +148,11 @@ LogsViewer.prototype.addHumanItem = function(
   this.setting.categoricalData[type].num.textContent = humanNum;
 };
 
-LogsViewer.prototype.addHumanItems = function(data) {
+VisualizationViewer.prototype.addHumanItems = function(data) {
   console.log(data);
 };
 
-LogsViewer.prototype.visualization = function(id, result) {
+VisualizationViewer.prototype.visualization = function(id, result) {
   const ctx = document.getElementById(id);
   const aa = result;
   // データの定義
