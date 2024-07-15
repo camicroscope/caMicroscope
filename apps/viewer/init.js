@@ -879,20 +879,20 @@ async function initUIcomponents() {
       );
       // create UI and set data
       // $UI.VisualizationViewer = createVisualizationViewer(
-      //     'overlogs',
+      //     'overvisuzalization',
       //     null,
       //     callback.bind('main'),
       //     rootCallback.bind('main'),
       // );
       // // create UI and set data - minor
       // $UI.visualizatiomViewerMinor = createVisualizationViewer(
-      //     'overlogsMinor',
+      //     'overvisuzalizationMinor',
       //     null,
       //     callback.bind('minor'),
       //     rootCallback.bind('minor'),
       // );
       $UI.visualizatiomViewer = createVisualizationViewer(
-          'overlogs',
+          'overvisuzalization',
           null,
           callback.bind('main'),
           rootCallback.bind('main'),
