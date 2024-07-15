@@ -125,7 +125,7 @@ VisualizationViewer.prototype.visualization = function(id, result) {
     },
   };
 
-  // 散布図の作成
+  // Create scatter diagram
   new Chart(ctx, {
     type: 'scatter',
     data: data,
