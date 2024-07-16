@@ -85,7 +85,7 @@ VisualizationViewer.prototype.visualization = function(id, result) {
     plugins: {
       title: {
         display: true,
-        text: 'Draw Annotation Count vs zooming', // 図のタイトル
+        text: 'Draw Annotation Count vs zooming',
       },
       tooltip: {
         callbacks: {
@@ -125,7 +125,7 @@ VisualizationViewer.prototype.visualization = function(id, result) {
     },
   };
 
-  // Create scatter diagram
+  // Create
   new Chart(ctx, {
     type: 'scatter',
     data: data,

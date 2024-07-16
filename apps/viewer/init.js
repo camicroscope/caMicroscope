@@ -178,6 +178,7 @@ function initCore() {
     $D.pages.table = '../../../';
   }
 
+  console.log($D);
   try {
     const slideQuery = {};
     slideQuery.id = $D.params.slideId;
@@ -845,6 +846,26 @@ async function initUIcomponents() {
         data: [],
       });
 
+      // create control
+
+      // TODO move to add layers
+      // create main layer viewer items with states
+      // const mainViewerData = $D.overlayers.map((d) => {
+      //   const isShow =
+      //     $D.params.states &&
+      //     $D.params.states.l &&
+      //     $D.params.states.l.includes(d.id) ?
+      //       true :
+      //       false;
+      //   return {item: d, isShow: isShow};
+      // });
+
+
+      // TODO move to add layers
+      // create monir layer viewer items
+      // const minorViewerData = $D.overlayers.map((d) => {
+      //   return {item: d, isShow: false};
+      // });
       $UI.AssistantViewer = new Assistant({
         id: 'ml_assistant',
         viewer: $CAMIC.viewer,
@@ -965,7 +986,7 @@ async function initUIcomponents() {
       $UI.loadStatus.classList.add('load-status');
       $UI.loadStatus.innerHTML = `<div class="material-icons loading">cached</div><div class="text">Loading</div>`;
       $UI.layersSideMenu.addContent($UI.loadStatus);
-      // TODO logs
+
       // zoom locker control
       $UI.lockerPanel = document.createElement('div');
       $UI.lockerPanel.classList.add('lock_panel');

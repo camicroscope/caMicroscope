@@ -2741,7 +2741,7 @@ async function captureSlide() {
 
 /* Log annotaiton */
 let isSidemenuOpen = true;
-// 他のものを全て閉じる処理を追加
+
 function visualization() {
   if (isSidemenuOpen == true) {
     $UI.visualizationSideMenu.open();
