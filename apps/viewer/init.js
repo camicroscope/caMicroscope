@@ -259,7 +259,8 @@ function initCore() {
 
 
             // add center position and zoom
-            if (data.geometries.features[data.selected].viewerStates != null || data.geometries.features[data.selected].viewerStates != undefined) {
+            if (data.geometries.features[data.selected].viewerStates != null ||
+              data.geometries.features[data.selected].viewerStates != undefined) {
               const decimalPlaces = 3;
               attributes.X = data.geometries.features[data.selected].viewerStates.x,
               attributes.Y = data.geometries.features[data.selected].viewerStates.y,
