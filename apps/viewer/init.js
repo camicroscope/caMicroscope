@@ -260,7 +260,6 @@ function initCore() {
 
 
             // add center position and zoom
-            console.log('data', data);
             if (data.viewerStates != undefined) {
               const decimalPlaces = 3;
               attributes.X = data.viewerStates.x,
