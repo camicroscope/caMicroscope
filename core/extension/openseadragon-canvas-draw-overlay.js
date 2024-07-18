@@ -1024,7 +1024,11 @@
       if (this.drawMode == 'point') {
         this._current_path_ = {
           type: 'Feature',
-          viewerStates: StatesHelper.getCurrentStates(true),
+          viewerStates: {
+            x: StatesHelper.getCurrentStates(true).x,
+            y: StatesHelper.getCurrentStates(true).y,
+            z: StatesHelper.getCurrentStates(true).y
+          },
           properties: {
             style: {},
           },
@@ -1045,7 +1049,11 @@
         properties: {
           style: {},
         },
-        viewerStates: StatesHelper.getCurrentStates(true),
+        viewerStates: {
+            x: StatesHelper.getCurrentStates(true).x,
+            y: StatesHelper.getCurrentStates(true).y,
+            z: StatesHelper.getCurrentStates(true).z,
+        },
         geometry: {
           type:
             this.drawMode === 'line' || this.drawMode === 'grid' ?
