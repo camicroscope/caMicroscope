@@ -1024,7 +1024,7 @@
       if (this.drawMode == 'point') {
         this._current_path_ = {
           type: 'Feature',
-          zoom: StatesHelper.getCurrentStates(true).z,
+          viewerStates: StatesHelper.getCurrentStates(true),
           properties: {
             style: {},
           },
@@ -1045,7 +1045,7 @@
         properties: {
           style: {},
         },
-        zoom: StatesHelper.getCurrentStates(true).z,
+        viewerStates: StatesHelper.getCurrentStates(true),
         geometry: {
           type:
             this.drawMode === 'line' || this.drawMode === 'grid' ?
