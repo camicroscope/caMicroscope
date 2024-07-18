@@ -929,6 +929,7 @@ function annoCallback(data) {
     },
   };
 
+  console.log('annotJson', annotJson);
   // save annotation
   $CAMIC.store
       .addMark(annotJson)
