@@ -1011,6 +1011,7 @@
       //     const featrue = this._draws_data_[i].feature;
       rs.features = this._draws_data_.slice(0, this._path_index);
       // }
+      console.log('rs', rs);
       return rs;
     },
 
