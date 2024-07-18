@@ -370,8 +370,11 @@ function getUrlVars() {
     },
     getOwnPropertyDescriptor(target, prop) {
       return {configurable: true, enumerable: true};
+      return {configurable: true, enumerable: true};
     },
     ownKeys: function(target) {
+      return Reflect.ownKeys(state);
+    },
       return Reflect.ownKeys(state);
     },
   });
@@ -418,8 +421,6 @@ function VieweportFeaturesToImageFeatures(viewer, geometries) {
       feature.bound.coordinates =[
         Math.round(feature.bound.coordinates[0] * imgWidth),
         Math.round(feature.bound.coordinates[1] * imgHeight)];
-
-
       if (feature.geometry.type=='Circle') {
         feature.geometry.radius = Math.round(feature.geometry.radius * imgWidth);
       }
@@ -571,6 +572,7 @@ function covertToRulerLayer(data) {
     typeId: data.type,
     typeName: data.source,
     shape: 'Polygon',
+    shape: 'Polygon',
     creator: data.creator,
     data: null,
   };
@@ -694,6 +696,7 @@ function areaCircumferenceToGrids(points, size) {
     for (let centerY = topLeftCenter[1]; centerY < maxY; centerY += size[1]) {
       if (isPointInsidePolygon([centerX, centerY], points)) {
         grids.push(getTopLeft([centerX, centerY], size));
+        grids.push(getTopLeft([centerX, centerY], size));
       }
     }
   }
@@ -712,11 +715,15 @@ function closestPointOnLineSegment(px, py, x1, y1, x2, y2) {
   const dy = y2 - y1;
   const t = ((px - x1) * dx + (py - y1) * dy) / (dx * dx + dy * dy);
 
+
   if (t < 0) {
+    return {x: x1, y: y1};
     return {x: x1, y: y1};
   } else if (t > 1) {
     return {x: x2, y: y2};
+    return {x: x2, y: y2};
   } else {
+    return {x: x1 + t * dx, y: y1 + t * dy};
     return {x: x1 + t * dx, y: y1 + t * dy};
   }
 }
@@ -733,11 +740,13 @@ function closestPointOnPolygon(polygon, px, py) {
     const closest = closestPointOnLineSegment(px, py, edgeStart[0], edgeStart[1], edgeEnd[0], edgeEnd[1]);
     const d = distance(px, py, closest.x, closest.y);
 
+
     if (d < closestDistance) {
       closestDistance = d;
       closestIndex = i;
     }
   }
+
 
   return closestIndex;
 }
@@ -761,11 +770,22 @@ function isPointInsidePolygon(point, polygon) {
   for (let i = 0; i < n; i++) {
     const [x1, y1] = polygon[i];
     const [x2, y2] = polygon[(i + 1) % n];
+    const [x1, y1] = polygon[i];
+    const [x2, y2] = polygon[(i + 1) % n];
 
     if (y === y1 && y1 === y2 && (x1 <= x && x <= x2 || x2 <= x && x <= x1)) {
       return true;
     }
+    if (y === y1 && y1 === y2 && (x1 <= x && x <= x2 || x2 <= x && x <= x1)) {
+      return true;
+    }
 
+    if ((y1 < y && y < y2 || y2 < y && y < y1) && x < Math.max(x1, x2)) {
+      const intersectionX = (y - y1) * (x2 - x1) / (y2 - y1) + x1;
+      if (x < intersectionX) {
+        inside = !inside;
+      }
+    }
     if ((y1 < y && y < y2 || y2 < y && y < y1) && x < Math.max(x1, x2)) {
       const intersectionX = (y - y1) * (x2 - x1) / (y2 - y1) + x1;
       if (x < intersectionX) {
