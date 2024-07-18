@@ -895,7 +895,7 @@ function annoCallback(data) {
   noteData.notes = resultString;
 
   // get center position and zoom
-  let states = StatesHelper.getCurrentStates(true);
+  let viewerStates = StatesHelper.getCurrentStates(true);
 
   // save
   // provenance
@@ -922,10 +922,10 @@ function annoCallback(data) {
         $CAMIC.viewer,
         $CAMIC.viewer.canvasDrawInstance.getImageFeatureCollection(),
     ),
-    states: {
-      x: states.x,
-      y: states.y,
-      zoom: states.z,
+    viewerStates: {
+      x: viewerStates.x,
+      y: viewerStates.y,
+      zoom: viewerStates.z,
     },
   };
 

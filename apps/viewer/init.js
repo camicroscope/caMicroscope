@@ -260,16 +260,17 @@ function initCore() {
 
 
             // add center position and zoom
-            if (data.states != undefined) {
-              // Rounds a number to the specified number of decimal places.
-              function roundTo(num, decimalPlaces) {
-                const factor = 10 ** decimalPlaces;
-                return Math.round(num * factor) / factor;
-              }
+            console.log('data', data);
+            if (data.viewerStates != undefined) {
               const decimalPlaces = 3;
-              attributes.X = data.states.x,
-              attributes.Y = data.states.y,
-              attributes.zoom = roundTo(data.states.zoom, decimalPlaces);
+              attributes.X = data.viewerStates.x,
+              attributes.Y = data.viewerStates.y,
+              attributes.zoom = roundTo(data.viewerStates.zoom, decimalPlaces);
+            }
+            // Rounds a number to the specified number of decimal places.
+            function roundTo(num, decimalPlaces) {
+              const factor = 10 ** decimalPlaces;
+              return Math.round(num * factor) / factor;
             }
 
 
