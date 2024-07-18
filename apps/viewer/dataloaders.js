@@ -104,7 +104,6 @@ function layersLoader() {
       $D.visualizations = [...layers.map(covertToVisualization)];
       visualizationLayerItems($D.visualizations);
     }).catch(function(error) {
-      // overlayers schema
       $UI.message.addError('Loading Logs is Error');
       console.error(error);
     });

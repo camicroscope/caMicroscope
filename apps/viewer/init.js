@@ -178,7 +178,6 @@ function initCore() {
     $D.pages.table = '../../../';
   }
 
-  console.log($D);
   try {
     const slideQuery = {};
     slideQuery.id = $D.params.slideId;
@@ -1637,11 +1636,11 @@ function visualizationLayerItems(data) {
 
   // Get initial data
   $D.visualizations.map((d) => {
-    if (d.states) {
-      for (let i = 0; i < d.geometries.features.length; i++) {
-        initialZommingData.push(roundToSecondDecimalPlace(d.states.zoom));
+    d.geometries.features.map((sd)=>{
+      if (features.viewerStates) {
+        initialZommingData.push(roundToSecondDecimalPlace(features.viewerStates.z));
       }
-    }
+    });
   });
   let result = countOccurrences(initialZommingData);
 

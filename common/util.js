@@ -598,8 +598,6 @@ function covertToVisualization(data) {
   const typeName = data.provenance.analysis.source;
   const id = data.provenance.analysis.execution_id;
   const name = data.provenance.analysis.name || data.provenance.analysis.execution_id;
-  const states = data.states || null;
-  const shape = data.geometries.features[0].geometry.type || null;
   const isGrid = data.provenance.analysis.isGrid || false;
   const geometries = data.geometries;
 
@@ -615,7 +613,6 @@ function covertToVisualization(data) {
         id: data.provenance.analysis.labelled,
         name: data.provenance.analysis.name,
       },
-      states: states,
       geometries: geometries,
       data: null,
     };
@@ -627,7 +624,6 @@ function covertToVisualization(data) {
       typeName: typeName,
       creator: data.creator,
       isGrid: isGrid,
-      states: states,
       geometries: geometries,
       data: null,
     };
