@@ -922,11 +922,6 @@ function annoCallback(data) {
         $CAMIC.viewer,
         $CAMIC.viewer.canvasDrawInstance.getImageFeatureCollection(),
     ),
-    viewerStates: {
-      x: viewerStates.x,
-      y: viewerStates.y,
-      zoom: viewerStates.z,
-    },
   };
 
   console.log('annotJson', annotJson);
