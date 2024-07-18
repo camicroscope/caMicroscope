@@ -1637,9 +1637,9 @@ function visualizationLayerItems(data) {
 
   // Get initial data
   $D.visualizations.map((d) => {
-    d.geometries.features.map((sd)=>{
-      if (features.viewerStates) {
-        initialZommingData.push(roundToSecondDecimalPlace(features.viewerStates.z));
+    d.geometries.features.map((ditailData)=>{
+      if (ditailData.viewerStates) {
+        initialZommingData.push(roundToSecondDecimalPlace(ditailData.viewerStates.z));
       }
     });
   });
