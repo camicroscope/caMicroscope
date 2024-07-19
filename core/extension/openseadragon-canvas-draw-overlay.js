@@ -1027,7 +1027,7 @@
           viewerStates: {
             x: StatesHelper.getCurrentStates(true).x,
             y: StatesHelper.getCurrentStates(true).y,
-            z: StatesHelper.getCurrentStates(true).y
+            z: StatesHelper.getCurrentStates(true).z
           },
           properties: {
             style: {},
