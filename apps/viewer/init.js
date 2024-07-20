@@ -746,6 +746,10 @@ async function initUIcomponents() {
     callback: toggleSideMenu,
   });
 
+  const loading = `<div class="cover" style="z-index: 500;"><div class="block"><span>loading layers...</span><div class="bar"></div></div></div>`;
+  $UI.layersSideMenu.addContent(loading);
+  // TODO add layer viewer
+
   $UI.visualizationSideMenu = new SideMenu({
     id: 'visualization_panel',
     width: 250,
@@ -894,26 +898,22 @@ async function initUIcomponents() {
           callback.bind('minor'),
           rootCallback.bind('minor'),
       );
-      // create UI and set data
-      // $UI.VisualizationViewer = createVisualizationViewer(
-      //     'overvisuzalization',
-      //     null,
-      //     callback.bind('main'),
-      //     rootCallback.bind('main'),
-      // );
-      // // create UI and set data - minor
-      // $UI.visualizatiomViewerMinor = createVisualizationViewer(
-      //     'overvisuzalizationMinor',
-      //     null,
-      //     callback.bind('minor'),
-      //     rootCallback.bind('minor'),
-      // );
-      $UI.visualizatiomViewer = createVisualizationViewer(
+
+      $UI.visualizationViewer = createVisualizationViewer(
           'overvisuzalization',
           null,
           callback.bind('main'),
           rootCallback.bind('main'),
       );
+
+      // // create UI and set data - minor
+      // $UI.visualizationViewerMinor = createVisualizationViewer(
+      //     'overvisuzalizationMinor',
+      //     null,
+      //     callback.bind('minor'),
+      //     rootCallback.bind('minor'),
+      // );
+
       // TODO move to add layers
       // if ($D.params.states && $D.params.states.l) {
       //   $D.params.states.l.forEach((id) =>
@@ -1019,9 +1019,10 @@ async function initUIcomponents() {
 
       // visualization
       $UI.visualizationList.clearContent('visualizationlist');
-      $UI.visualizationList.addContent('visualizationlist', $UI.visualizatiomViewer.elt);
+      $UI.visualizationList.addContent('visualizationlist', $UI.visualizationViewer.elt);
+      // TODO Heatmap
       // $UI.visualizationList.clearContent('heatMap');
-      // $UI.visualizationList.addContent('heatMap', $UI.visualizatiomViewerMinor.elt);
+      // $UI.visualizationList.addContent('heatMap', $UI.visualizationViewerMinor.elt);
 
       $UI.visualizationList.elt.parentNode.removeChild($UI.visualizationList.elt);
       closeMinorControlPanel();
@@ -1392,21 +1393,8 @@ function createLayerViewer(id, viewerData, callback, rootCallback) {
   return layersViewer;
 }
 
-// function createVisualizationViewer(id, viewerData, callback, rootCallback) {
-//   const visualizatiomViewer = new LayersViewer({
-//     id: id,
-//     data: viewerData,
-//     removeCallback: removeCallback,
-//     locationCallback: locationCallback,
-//     callback: callback,
-//     rootCallback: rootCallback,
-
-//   });
-//   visualizatiomViewer.elt.parentNode.removeChild(visualizatiomViewer.elt);
-//   return visualizatiomViewer;
-// }
 function createVisualizationViewer(id, viewerData, callback, rootCallback) {
-  const visualizatiomViewer = new VisualizationViewer({
+  const visualizationViewer = new VisualizationViewer({
     id: id,
     data: viewerData,
     removeCallback: removeCallback,
@@ -1414,8 +1402,8 @@ function createVisualizationViewer(id, viewerData, callback, rootCallback) {
     callback: callback,
     rootCallback: rootCallback,
   });
-  visualizatiomViewer.elt.parentNode.removeChild(visualizatiomViewer.elt);
-  return visualizatiomViewer;
+  visualizationViewer.elt.parentNode.removeChild(visualizationViewer.elt);
+  return visualizationViewer;
 }
 // create lay panel for side-by-side control
 function createLayPanelControl() {
@@ -1535,7 +1523,6 @@ function addHumanLayerItems() {
   }, mainViewerItems);
 
   $UI.layersViewer.addHumanItems(mainViewerItems);
-  // $UI.visualizatiomViewer.addHumanItems(mainViewerItems);
 
   // minor viewer minorViewer
   const minorViewerItems = {
@@ -1576,11 +1563,8 @@ function addHumanLayerItems() {
   }, minorViewerItems);
 
   $UI.layersViewerMinor.addHumanItems(minorViewerItems);
-  // $UI.visualizatiomViewerMinor.addHumanItems(minorViewerItems);
 }
-// function addLogItems(){
 
-// }
 function openLoadStatus(text) {
   const txt = $UI.loadStatus.querySelector('.text');
   txt.textContent = `Loading ${text}`;
@@ -1599,8 +1583,6 @@ function addRulerLayerItems(data) {
   });
   $UI.layersViewer.addItems(mainViewerData, 'ruler');
   $UI.layersViewerMinor.addItems(minorViewerData, 'ruler');
-  // $UI.visualizatiomViewer.addItems(mainViewerData, 'ruler');
-  // $UI.visualizatiomViewerMinor.addItems(minorViewerData, 'ruler');
 }
 
 function addComputerLayerItems(data) {
@@ -1613,8 +1595,6 @@ function addComputerLayerItems(data) {
   });
   $UI.layersViewer.addItems(mainViewerData, 'segmentation');
   $UI.layersViewerMinor.addItems(minorViewerData, 'segmentation');
-  // $UI.visualizatiomViewer.addItems(mainViewerData, 'segmentation');
-  // $UI.visualizatiomViewerMinor.addItems(minorViewerData, 'segmentation');
 }
 
 function addHeatmapLayerItems(data) {
@@ -1627,8 +1607,6 @@ function addHeatmapLayerItems(data) {
   });
   $UI.layersViewer.addItems(mainViewerData, 'heatmap');
   $UI.layersViewerMinor.addItems(minorViewerData, 'heatmap');
-  // $UI.visualizatiomViewer.addItems(mainViewerData, 'heatmap');
-  // $UI.visualizatiomViewerMinor.addItems(minorViewerData, 'heatmap');
 }
 
 function visualizationLayerItems(data) {
@@ -1644,7 +1622,7 @@ function visualizationLayerItems(data) {
   });
   let result = countOccurrences(initialZommingData);
 
-  $UI.visualizatiomViewer.visualization('myChart', result);
+  $UI.visualizationViewer.visualization('myChart', result);
 }
 
 // Function to round to decimal places
