@@ -84,12 +84,14 @@ function CaToolbar(options) {
         title: 'Applications',
         type: 'check',
         value: 'apps',
+        ariaLabel: 'Applications',
       },
       {
         icon: 'view_list',
         title: 'Layers',
         type: 'check',
         value: 'layers',
+        ariaLabel: 'Layers',
       },
     ],
   };
@@ -211,6 +213,7 @@ CaToolbar.prototype.__createCheck = function(options) {
   icon.classList.add('material-icons');
   icon.classList.add('md-24');
   icon.textContent = options.icon;
+  if (options.ariaLabel) icon.ariaLabel = options.ariaLabel;
   icon.htmlFor = id;
   if (options.title) {
     tippy(icon, {
@@ -273,6 +276,7 @@ CaToolbar.prototype.__createRadio = function(options) {
   if (options.icon) {
     icon.classList.add('material-icons');
     icon.classList.add('md-24');
+    if (options.ariaLabel) icon.ariaLabel = options.ariaLabel;
     icon.textContent = options.icon;
   } else {
     let _fitContent = 'fit-content';
@@ -330,6 +334,7 @@ CaToolbar.prototype.__createMultiStateBtns = function(options) {
   icon.id = randomId(); // create a timestamp id
   icon.classList.add('material-icons');
   icon.classList.add('md-24');
+  if (options.ariaLabel) icon.ariaLabel = options.ariaLabel;
   icon.classList.add(0);
   icon.dataset.state = 0;
   icon.textContent = options.icon;
@@ -383,6 +388,7 @@ CaToolbar.prototype.__createMultiDropDown = function(options) {
   const icon = document.createElement('label');
   icon.classList.add('material-icons');
   icon.classList.add('md-24');
+  if (options.ariaLabel) icon.ariaLabel = options.ariaLabel;
   icon.textContent = options.icon;
   icon.htmlFor = id;
   if (options.title) {
@@ -510,6 +516,7 @@ CaToolbar.prototype.__createDropDown = function(options) {
   const icon = document.createElement('label');
   icon.classList.add('material-icons');
   icon.classList.add('md-24');
+  if (options.ariaLabel) icon.ariaLabel = options.ariaLabel;
   icon.textContent = options.icon;
   icon.htmlFor = id;
   if (options.title) {
