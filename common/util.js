@@ -472,6 +472,11 @@ function covertToViewportFeature(width, height, og) {
   og.geometry.type;
   feature = {
     type: 'Feature',
+    viewerStates: {
+      x: og.viewerStates.x,
+      y: og.viewerStates.y,
+      z: og.viewerStates.z,
+    },
     properties: {
       style: {},
       area: null,

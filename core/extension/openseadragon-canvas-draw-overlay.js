@@ -1023,6 +1023,11 @@
       if (this.drawMode == 'point') {
         this._current_path_ = {
           type: 'Feature',
+          viewerStates: {
+            x: StatesHelper.getCurrentStates(true).x,
+            y: StatesHelper.getCurrentStates(true).y,
+            z: StatesHelper.getCurrentStates(true).z
+          },
           properties: {
             style: {},
           },
@@ -1042,6 +1047,11 @@
         type: 'Feature',
         properties: {
           style: {},
+        },
+        viewerStates: {
+          x: StatesHelper.getCurrentStates(true).x,
+          y: StatesHelper.getCurrentStates(true).y,
+          z: StatesHelper.getCurrentStates(true).z,
         },
         geometry: {
           type:

@@ -260,18 +260,18 @@ function initCore() {
 
 
             // add center position and zoom
-            if (data.states != undefined) {
-              // Rounds a number to the specified number of decimal places.
-              function roundTo(num, decimalPlaces) {
-                const factor = 10 ** decimalPlaces;
-                return Math.round(num * factor) / factor;
-              }
+            if (data.geometries.features[data.selected].viewerStates != null ||
+              data.geometries.features[data.selected].viewerStates != undefined) {
               const decimalPlaces = 3;
-              attributes.X = data.states.x,
-              attributes.Y = data.states.y,
-              attributes.zoom = roundTo(data.states.zoom, decimalPlaces);
+              attributes.X = data.geometries.features[data.selected].viewerStates.x,
+              attributes.Y = data.geometries.features[data.selected].viewerStates.y,
+              attributes.zoom = roundTo(data.geometries.features[data.selected].viewerStates.z, decimalPlaces);
             }
-
+            // Rounds a number to the specified number of decimal places.
+            function roundTo(num, decimalPlaces) {
+              const factor = 10 ** decimalPlaces;
+              return Math.round(num * factor) / factor;
+            }
 
             body = convertHumanAnnotationToPopupBody(attributes);
             if (
