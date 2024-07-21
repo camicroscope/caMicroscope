@@ -103,6 +103,7 @@
 							</div>
 						 </div>
 						</div>
+						
 						<div class="alert alert-info" role="alert">
 
 							<h4 style="text-align:center">Annotations</h4><hr class="mt-0">
@@ -211,6 +212,9 @@ function addbody(JSONdata){
 	}
 	var button = `<td>	<button class=\"btn btn-primary\" data-id='${allSlides.length}' onclick='openDetails(this)'>Details</button></td>`
 	var markup = "<tr><td>"+JSONdata.id+"</td><td>"+JSONdata.name+"</td><td>"+annodisp+"</td><td>"+heatdisp+"</td>"+button+"</tr>"
+	//  TODO 
+	// var visualization_button = `<td> <button class=\"btn btn-primary\" >Visualization</button></td>`
+	// var markup = "<tr><td>"+JSONdata.id+"</td><td>"+JSONdata.name+"</td><td>"+annodisp+"</td><td>"+heatdisp+"</td><td>"+button+"</td><td>"+visualization_button+"</td></tr>"
 	table.append(markup);
 }
 
