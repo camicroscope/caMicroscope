@@ -1,20 +1,12 @@
 /**
- * CaMicroscope Logs Viewer. A component that shows logs of annotation by timeline.
+ * CaMicroscope Visualization Viewer. A component that shows Visualization Graph of annotation .
  * @constructor
  * @param {Object} options
- *        All required and optional settings for instantiating a new instance of a Layer Manager.
- * @param {String} options.id
- *        Id of the element to append the Layer Manager's container element to.
- * @param {Object[]} options.data
- *        the data set of the layers.
- * @param {String} options.data.id
- *        layer's id
- * @param {String} options.data.name
- *        layer's name
- * @param {String} options.data.typeId
- *        layer's type id
- * @param {String} options.data.typeName
- *        layer's type name
+ *        All required and optional settings for instantiating a new instance of a  Visualization Graph.
+*  @param {String} id
+ *        ID for the visualization graph.
+ * @param {String} result
+ *        result is data for visualization graph.
  *
  */
 function VisualizationViewer(options) {
