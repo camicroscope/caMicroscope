@@ -840,6 +840,23 @@ class Store {
       body: JSON.stringify(json),
     }).then(this.errorHandler);
   }
+  /**
+   * get log by id
+   ** @param {object} json - the log data
+   * @return {promise} - promise which resolves with data
+   **/
+  getLog(id) {
+    const suffix = 'Log/find';
+    const url = this.base + suffix;
+    const query = {
+      '_id': '65f564d7dd62a90013124d3e',
+    };
+
+    return fetch(url + '?' + objToParamStr(query), {
+      credentials: 'include',
+      mode: 'cors',
+    }).then(this.errorHandler).then((x) => this.filterBroken(x, 'log'));
+  }
 
   /**
    * get a config setting
