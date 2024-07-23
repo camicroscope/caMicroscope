@@ -137,7 +137,6 @@ function initialize() {
     }
   }, 100);
 }
-
 // setting core functionalities
 function initCore() {
   // start initial
@@ -223,7 +222,6 @@ function initCore() {
         // for support QUIP 2.0
         const data = Array.isArray(e.data) ? e.data[e.data.selected] : e.data;
         const type = data.provenance.analysis.source;
-
         let body;
         let attributes;
         let warning = null;
@@ -260,16 +258,17 @@ function initCore() {
 
 
             // add center position and zoom
-            if (data.states != undefined) {
-              // Rounds a number to the specified number of decimal places.
-              function roundTo(num, decimalPlaces) {
-                const factor = 10 ** decimalPlaces;
-                return Math.round(num * factor) / factor;
-              }
+            if (data.geometries.features[data.selected].viewerStates != null ||
+              data.geometries.features[data.selected].viewerStates != undefined) {
               const decimalPlaces = 3;
-              attributes.X = data.states.x,
-              attributes.Y = data.states.y,
-              attributes.zoom = roundTo(data.states.zoom, decimalPlaces);
+              attributes.X = data.geometries.features[data.selected].viewerStates.x,
+              attributes.Y = data.geometries.features[data.selected].viewerStates.y,
+              attributes.zoom = roundTo(data.geometries.features[data.selected].viewerStates.z, decimalPlaces);
+            }
+            // Rounds a number to the specified number of decimal places.
+            function roundTo(num, decimalPlaces) {
+              const factor = 10 ** decimalPlaces;
+              return Math.round(num * factor) / factor;
             }
 
 
@@ -691,6 +690,17 @@ async function initUIcomponents() {
     ariaLabel: 'Slide capture',
     callback: captureSlide,
   });
+
+  // visualization panel
+  subToolsOpt.push({
+    name: 'visualization',
+    icon: 'auto_graph', // material icons' name
+    title: 'visualization',
+    value: 'visualization',
+    type: 'btn',
+    callback: visualization,
+  });
+
   subToolsOpt.push({
     name: 'tutorial',
     icon: 'help',
@@ -765,6 +775,15 @@ async function initUIcomponents() {
   $UI.layersSideMenu.addContent(loading);
   // TODO add layer viewer
 
+  $UI.visualizationSideMenu = new SideMenu({
+    id: 'visualization_panel',
+    width: 250,
+    contentPadding: 5,
+    position: 'right',
+    height: '45vh',
+    // , isOpen:true
+    callback: toggleSideMenu,
+  });
 
   /* annotation popup */
   $UI.annotPopup = new PopupPanel({
@@ -874,7 +893,6 @@ async function initUIcomponents() {
       // const minorViewerData = $D.overlayers.map((d) => {
       //   return {item: d, isShow: false};
       // });
-
       $UI.AssistantViewer = new Assistant({
         id: 'ml_assistant',
         viewer: $CAMIC.viewer,
@@ -906,6 +924,21 @@ async function initUIcomponents() {
           rootCallback.bind('minor'),
       );
 
+      $UI.visualizationViewer = createVisualizationViewer(
+          'overvisuzalization',
+          null,
+          callback.bind('main'),
+          rootCallback.bind('main'),
+      );
+
+      // // create UI and set data - minor
+      // $UI.visualizationViewerMinor = createVisualizationViewer(
+      //     'overvisuzalizationMinor',
+      //     null,
+      //     callback.bind('minor'),
+      //     rootCallback.bind('minor'),
+      // );
+
       // TODO move to add layers
       // if ($D.params.states && $D.params.states.l) {
       //   $D.params.states.l.forEach((id) =>
@@ -932,13 +965,43 @@ async function initUIcomponents() {
           // console.log(e);
         },
       });
+
+      $UI.visualizationList = new CollapsibleList({
+        id: 'visualizationlist',
+        list: [
+          {
+            id: 'visualizationlist',
+            title: 'Human:Draw Annotation',
+            content: 'No Template Loaded', // $UI.annotOptPanel.elt
+            // isExpand:true
+          },
+          // {
+          //   id: 'heatMap',
+          //   title: 'HeatMap',
+          //   content: 'No Template Loaded', // $UI.algOptPanel.elt,
+          // },
+        ],
+        changeCallBack: function(e) {
+          // console.log(e);
+        },
+      });
       $UI.layersSideMenu.clearContent();
       // add to layers side menu
       const title = document.createElement('div');
       title.classList.add('item_head');
       title.textContent = 'Layers Manager';
 
-      $UI.layersSideMenu.addContent(title);
+      // add to log side menu
+      const titleVisualization = document.createElement('div');
+      titleVisualization.classList.add('item_head');
+      titleVisualization.textContent = 'Visualization Panel';
+      // add CSS
+      titleVisualization.style.color = '#365f9c';
+      titleVisualization.style.fontSize = '20px';
+      titleVisualization.style.backgroundColor = 'rgba(220, 220, 220, 1)';
+      titleVisualization.style.marginTop = '28px';
+
+      $UI.visualizationSideMenu.addContent(titleVisualization);
 
       // loading status
       $UI.loadStatus = document.createElement('div');
@@ -978,6 +1041,17 @@ async function initUIcomponents() {
       $UI.layersList.elt.parentNode.removeChild($UI.layersList.elt);
       closeMinorControlPanel();
       $UI.layersSideMenu.addContent($UI.layersList.elt);
+
+      // visualization
+      $UI.visualizationList.clearContent('visualizationlist');
+      $UI.visualizationList.addContent('visualizationlist', $UI.visualizationViewer.elt);
+      // TODO Heatmap
+      // $UI.visualizationList.clearContent('heatMap');
+      // $UI.visualizationList.addContent('heatMap', $UI.visualizationViewerMinor.elt);
+
+      $UI.visualizationList.elt.parentNode.removeChild($UI.visualizationList.elt);
+      closeMinorControlPanel();
+      $UI.visualizationSideMenu.addContent($UI.visualizationList.elt);
     }
   }, 300);
 
@@ -1344,6 +1418,18 @@ function createLayerViewer(id, viewerData, callback, rootCallback) {
   return layersViewer;
 }
 
+function createVisualizationViewer(id, viewerData, callback, rootCallback) {
+  const visualizationViewer = new VisualizationViewer({
+    id: id,
+    data: viewerData,
+    removeCallback: removeCallback,
+    locationCallback: locationCallback,
+    callback: callback,
+    rootCallback: rootCallback,
+  });
+  visualizationViewer.elt.parentNode.removeChild(visualizationViewer.elt);
+  return visualizationViewer;
+}
 // create lay panel for side-by-side control
 function createLayPanelControl() {
   $UI.layCtrlbar = document.createElement('div');
@@ -1503,6 +1589,7 @@ function addHumanLayerItems() {
 
   $UI.layersViewerMinor.addHumanItems(minorViewerItems);
 }
+
 function openLoadStatus(text) {
   const txt = $UI.loadStatus.querySelector('.text');
   txt.textContent = `Loading ${text}`;
@@ -1545,6 +1632,51 @@ function addHeatmapLayerItems(data) {
   });
   $UI.layersViewer.addItems(mainViewerData, 'heatmap');
   $UI.layersViewerMinor.addItems(minorViewerData, 'heatmap');
+}
+
+function visualizationLayerItems(data) {
+  var initialZommingData = [];
+
+  // Get initial data
+  $D.visualizations.map((d) => {
+    d.geometries.features.map((ditailData)=>{
+      if (ditailData.viewerStates) {
+        initialZommingData.push(roundToSecondDecimalPlace(ditailData.viewerStates.z));
+      }
+    });
+  });
+  let result = countOccurrences(initialZommingData);
+
+  $UI.visualizationViewer.visualization('myChart', result);
+}
+
+// Function to round to decimal places
+function roundToSecondDecimalPlace(num) {
+  return Math.round(num * 100) / 100;
+}
+
+function countOccurrences(arr) {
+  // Create objects for counting
+  let countMap = {};
+
+  // Count each element in the array
+  arr.forEach(function(value) {
+    if (countMap[value] === undefined) {
+      countMap[value] = 1;
+    } else {
+      countMap[value]++;
+    }
+  });
+
+  // Convert the result to a 2-dimensional array
+  let result = [];
+  for (let key in countMap) {
+    if (countMap.hasOwnProperty(key)) {
+      result.push([parseFloat(key), countMap[key]]);
+    }
+  };
+
+  return result;
 }
 
 // const mainViewerData = $D.overlayers.map((d) => {

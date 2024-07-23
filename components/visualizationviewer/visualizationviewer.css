@@ -1,0 +1,13 @@
+#canvasContainer {
+    background-color: rgb(255, 253, 253);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#myChart {
+    background-color: rgb(255, 253, 253);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
