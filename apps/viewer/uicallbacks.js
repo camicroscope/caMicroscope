@@ -323,6 +323,9 @@ function toolsOff() {
     case 'download_selection':
       downloadSelectionOff();
       break;
+    case 'log':
+      $UI.visualizationSideMenu.close();
+      break;
   }
 }
 
@@ -891,6 +894,9 @@ function annoCallback(data) {
   }
   noteData.notes = resultString;
 
+  // get center position and zoom
+  let viewerStates = StatesHelper.getCurrentStates(true);
+
   // save
   // provenance
   Loading.open($UI.annotOptPanel.elt, 'Saving Annotation...');
@@ -922,7 +928,7 @@ function annoCallback(data) {
   $CAMIC.store
       .addMark(annotJson)
       .then((data) => {
-      // server error
+        // server error
         if (data.error) {
           $UI.message.addError(`${data.text}:${data.url}`);
           Loading.close();
@@ -1474,6 +1480,7 @@ function loadAnnotationById(camic, layerData, parentType, callback) {
         }
 
         if (callback) callback.call(layerData);
+        return data;
       })
       .catch((e) => {
         console.error(e);
@@ -2725,6 +2732,19 @@ async function captureSlide() {
   downloadSlideCapture(canvas);
   toolsOff();
   $UI.layersSideMenu.close();
+}
+
+/* Log annotaiton */
+let isSidemenuOpen = true;
+
+function visualization() {
+  if (isSidemenuOpen == true) {
+    $UI.visualizationSideMenu.open();
+    isSidemenuOpen = false;
+  } else {
+    $UI.visualizationSideMenu.close();
+    isSidemenuOpen = true;
+  };
 }
 
 function downloadSlideCapture(combiningCanvas) {

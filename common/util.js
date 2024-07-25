@@ -369,11 +369,11 @@ function getUrlVars() {
       return true;
     },
     getOwnPropertyDescriptor(target, prop) {
-      return { configurable: true, enumerable: true };
+      return {configurable: true, enumerable: true};
     },
     ownKeys: function(target) {
-      return Reflect.ownKeys(state)
-    }
+      return Reflect.ownKeys(state);
+    },
   });
 }
 /**
@@ -418,11 +418,8 @@ function VieweportFeaturesToImageFeatures(viewer, geometries) {
       feature.bound.coordinates =[
         Math.round(feature.bound.coordinates[0] * imgWidth),
         Math.round(feature.bound.coordinates[1] * imgHeight)];
-      
-      
-      
       if (feature.geometry.type=='Circle') {
-        feature.geometry.radius = Math.round(feature.geometry.radius * imgWidth)
+        feature.geometry.radius = Math.round(feature.geometry.radius * imgWidth);
       }
       if (feature.geometry.type=='Ellipse') {
         feature.geometry.radius = [Math.round(feature.geometry.radius[0] * imgWidth), Math.round(feature.geometry.radius[1] * imgHeight)];
@@ -472,6 +469,11 @@ function covertToViewportFeature(width, height, og) {
   og.geometry.type;
   feature = {
     type: 'Feature',
+    viewerStates: {
+      x: og.viewerStates.x,
+      y: og.viewerStates.y,
+      z: og.viewerStates.z,
+    },
     properties: {
       style: {},
       area: null,
@@ -530,7 +532,7 @@ function covertToHumanLayer(data) {
   const id = item.analysis.execution_id;
   const name = item.analysis.name || item.analysis.execution_id;
 
-  if (!item.shape) item.shape = ["Polygon"];
+  if (!item.shape) item.shape = ['Polygon'];
   if (item.analysis.type&&item.analysis.type=='label') { // preset label
     return {
       id: id,
@@ -566,7 +568,7 @@ function covertToRulerLayer(data) {
     name: data.name,
     typeId: data.type,
     typeName: data.source,
-    shape: "Polygon",
+    shape: 'Polygon',
     creator: data.creator,
     data: null,
   };
@@ -587,6 +589,42 @@ function covertToCumputerLayer(data) {
   };
 }
 
+
+function covertToVisualization(data) {
+  const typeName = data.provenance.analysis.source;
+  const id = data.provenance.analysis.execution_id;
+  const name = data.provenance.analysis.name || data.provenance.analysis.execution_id;
+  const isGrid = data.provenance.analysis.isGrid || false;
+  const geometries = data.geometries;
+
+  if (data.provenance.analysis.type&&data.provenance.analysis.type=='label') { // preset label
+    return {
+      id: id,
+      name: name,
+      typeId: typeName,
+      typeName: typeName,
+      creator: data.creator,
+      isGrid: isGrid,
+      label: {
+        id: data.provenance.analysis.labelled,
+        name: data.provenance.analysis.name,
+      },
+      geometries: geometries,
+      data: null,
+    };
+  } else {
+    return {
+      id: id,
+      name: name,
+      typeId: typeName,
+      typeName: typeName,
+      creator: data.creator,
+      isGrid: isGrid,
+      geometries: geometries,
+      data: null,
+    };
+  }
+}
 function eventFire(el, etype) {
   if (el.fireEvent) {
     el.fireEvent('on' + etype);
@@ -649,7 +687,7 @@ function areaCircumferenceToGrids(points, size) {
   for (let centerX = topLeftCenter[0]; centerX < maxX; centerX += size[0]) {
     for (let centerY = topLeftCenter[1]; centerY < maxY; centerY += size[1]) {
       if (isPointInsidePolygon([centerX, centerY], points)) {
-        grids.push(getTopLeft([centerX, centerY], size))
+        grids.push(getTopLeft([centerX, centerY], size));
       }
     }
   }
@@ -667,20 +705,20 @@ function closestPointOnLineSegment(px, py, x1, y1, x2, y2) {
   const dx = x2 - x1;
   const dy = y2 - y1;
   const t = ((px - x1) * dx + (py - y1) * dy) / (dx * dx + dy * dy);
-  
+
   if (t < 0) {
-    return { x: x1, y: y1 };
+    return {x: x1, y: y1};
   } else if (t > 1) {
-    return { x: x2, y: y2 };
+    return {x: x2, y: y2};
   } else {
-    return { x: x1 + t * dx, y: y1 + t * dy };
+    return {x: x1 + t * dx, y: y1 + t * dy};
   }
 }
 
 function closestPointOnPolygon(polygon, px, py) {
   let closestDistance = Infinity;
   let closestIndex = null;
-  
+
   // Find the closest point on each edge
   for (let i = 0; i < polygon.length; i++) {
     const nextIndex = (i + 1) % polygon.length;
@@ -688,13 +726,13 @@ function closestPointOnPolygon(polygon, px, py) {
     const edgeEnd = polygon[nextIndex];
     const closest = closestPointOnLineSegment(px, py, edgeStart[0], edgeStart[1], edgeEnd[0], edgeEnd[1]);
     const d = distance(px, py, closest.x, closest.y);
-    
+
     if (d < closestDistance) {
       closestDistance = d;
       closestIndex = i;
     }
   }
-  
+
   return closestIndex;
 }
 
@@ -715,19 +753,19 @@ function isPointInsidePolygon(point, polygon) {
   let inside = false;
 
   for (let i = 0; i < n; i++) {
-      const [x1, y1] = polygon[i];
-      const [x2, y2] = polygon[(i + 1) % n];
+    const [x1, y1] = polygon[i];
+    const [x2, y2] = polygon[(i + 1) % n];
 
-      if (y === y1 && y1 === y2 && (x1 <= x && x <= x2 || x2 <= x && x <= x1)) {
-          return true;
-      }
+    if (y === y1 && y1 === y2 && (x1 <= x && x <= x2 || x2 <= x && x <= x1)) {
+      return true;
+    }
 
-      if ((y1 < y && y < y2 || y2 < y && y < y1) && x < Math.max(x1, x2)) {
-          const intersectionX = (y - y1) * (x2 - x1) / (y2 - y1) + x1;
-          if (x < intersectionX) {
-              inside = !inside;
-          }
+    if ((y1 < y && y < y2 || y2 < y && y < y1) && x < Math.max(x1, x2)) {
+      const intersectionX = (y - y1) * (x2 - x1) / (y2 - y1) + x1;
+      if (x < intersectionX) {
+        inside = !inside;
       }
+    }
   }
 
   return inside;
@@ -1092,7 +1130,13 @@ class Tracker {
       z: image_zoom,
       time: new Date(),
     });
-  }
+
+    return {
+      x: Math.round(x),
+      y: Math.round(y),
+      z: image_zoom,
+    };
+  };
 }
 
 
