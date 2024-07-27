@@ -210,14 +210,40 @@ function addbody(JSONdata){
 	else{
 		heatdisp="<i class='fas fa-check'  style='color:green;'></i>"
 	}
-	var button = `<td>	<button class=\"btn btn-primary\" data-id='${allSlides.length}' onclick='openDetails(this)'>Details</button></td>`
-	var markup = "<tr><td>"+JSONdata.id+"</td><td>"+JSONdata.name+"</td><td>"+annodisp+"</td><td>"+heatdisp+"</td>"+button+"</tr>"
+	var button = `<td>	<button class=\"btn btn-primary btn-sm\" data-id='${allSlides.length}' onclick='openDetails(this)'>Details</button></td>`
+	// var markup = "<tr><td>"+JSONdata.id+"</td><td>"+JSONdata.name+"</td><td>"+annodisp+"</td><td>"+heatdisp+"</td>"+button+"</tr>"
 	//  TODO 
 	// var visualization_button = `<td> <button class=\"btn btn-primary\" >Visualization</button></td>`
-	// var markup = "<tr><td>"+JSONdata.id+"</td><td>"+JSONdata.name+"</td><td>"+annodisp+"</td><td>"+heatdisp+"</td><td>"+button+"</td><td>"+visualization_button+"</td></tr>"
+	const visualization_button  = `<td>
+                <button class="btn btn-primary btn-sm" data-id='${JSONdata.id}' onclick='openView(this)'>Open</button>
+                </button></td>`
+	var markup = "<tr><td>"+JSONdata.id+"</td><td>"+JSONdata.name+"</td><td>"+annodisp+"</td><td>"+heatdisp+"</td><td>"+button+"</td><td>"+visualization_button+"</td></tr>"
 	table.append(markup);
 }
 
+function openView(e) {
+const oid = e.dataset;
+console.log(oid);
+  if (oid) {
+    // window.location.href = `./viewer/viewer.html?slideId=${sanitize(e)}`;
+  } else {
+    alert('No Data Id');
+  }
+}
+
+function sanitize(string) {
+  string = string || '';
+  const map = {
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    '\'': '&#x27;',
+    '/': '&#x2F;',
+  };
+  const reg = /[&<>"'/]/ig;
+  return string.replace(reg, (match) => (map[match]));
+}
 function openDetails(tag){
 	document.getElementById('detail-dialog').style.display = 'block';
 	document.getElementById('detail-dialog').style.opacity = '1';
