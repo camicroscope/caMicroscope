@@ -25,7 +25,7 @@
 	<script src="./loader/loader.js"></script>
 	<script src="./loader/chunked_upload.js"></script>
 	<script src="https://apis.google.com/js/api.js"></script>
-	<title>CaMicroscope Data Table</title>
+	<title>caMicroscope - Slides Data Table</title>
 
 	<script src="https://code.jquery.com/jquery-3.4.1.min.js"
 		></script>
@@ -81,7 +81,7 @@
 			<div style="align-content: center;">
 				<div class="btn-group" role="group">
 				<button type="button" style="border-color: white;" class="btn btn-secondary bg-white text-dark  margin-right: 10px; " title="Slides Table"><i class="fas fa-list-alt"></i>  Slides</button>
-				<a href="./Info.html">	<button style="border-color: white; border-radius: 0 5px 5px 0; margin-left: 10px;" type="button" class="btn btn-secondary bg-info text-light" title="Information Dashboard"><i class="fas fa-info-circle"></i>  Info</button> </a></div>
+				<a href="./Info.html">	<button style="border-color: white; border-radius: 0 5px 5px 0; margin-left: 10px;" type="button" class="btn btn-secondary bg-dark text-light" title="Information Dashboard"><i class="fas fa-info-circle"></i>  Info</button> </a></div>
 			</div>
 		</div>
 	</div>
@@ -109,7 +109,7 @@
                     </div>
                     <div class="search-box float-left form-group d-md-inline-flex mb-4 mx-md-1">
                         <div class="w-sm-50 pl-md-2 pt-2">
-                        <select id='entries' class="select form-control">
+                        <select id='entries' class="select form-control" aria-labelledby="slides-per-page">
                             <option value="10" selected>10 slides/page</option>
                             <option value="20">20 slides/page</option>
                             <option value="40">40 slides/page</option>
@@ -132,7 +132,7 @@
             <div class="d-md-inline-flex" style="width:20%; margin-right: 30px;">
                 <div class="pl-md-2 pt-2">
                     <button type="button" data-bs-toggle="modal" data-bs-target="#dicom"
-                        class="btn btn2 btn-success float-right w-md-100" style="background-color: cadetblue; padding: 7px; margin-right: 5px;" onclick="setDicomParams();"> <i
+                        class="btn btn2 btn-success float-right w-md-100" style="background-color: #1C5B5D; padding: 7px; margin-right: 5px;" onclick="setDicomParams();"> <i
                             class="fas fa-server"></i>
                         <span class="ml-2">&nbsp;DICOM</span> </button>
                 </div>
@@ -210,12 +210,12 @@
                             <div class="alert alert-info" role="alert">
 
                                 <h3>Steps for uploading.</h3>
-                                <ul>
+                                <ol>
                                     <li>Select the file you wish to upload. The <b>Token</b> field should be automatically populated .</li>
                                     <li>Enter the desired filename, including its extension, for the destination file.</li> 
-                                    <li>Click on the <b><i class="fas fa-arrow-right"></i></b> button to preview the slide.</li> 
+                                    <li>Click on the <b><i class="fas fa-arrow-right"></i>Preview Slide</b> button to preview the slide.</li> 
                                     <li>Click on <b>Finish Upload</b> to complete the process and post the slide to caMicroscope.</li> 
-                                </ul>
+                                </ol>
                             </div>
                             <div>
                                 <form id="upload-form">
@@ -262,7 +262,7 @@
                                     </div>
                                     <div class="text-center" id="controlButtons">
                                         <button class="btn btn-primary" type="button" id="finish_btn" style="display: none;"
-                                            value="Finish Upload" onclick="validateForm(finishUpload)"><i class="fas fa-arrow-right"></i></button>
+                                            value="Finish Upload" onclick="validateForm(finishUpload)"><i class="fas fa-arrow-right"></i>Preview Slide</button>
                                         <button class="btn btn-success" type="button" id="post_btn" value="Post"
                                             onclick="validateForm(PostBtn)">Finish Upload</button>
                                     </div>

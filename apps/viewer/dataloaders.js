@@ -97,15 +97,26 @@ function layersLoader() {
       console.error(error);
     });
   }
+
+  // visualization
+  function visualization() {
+    $CAMIC.store.findMark($D.params.slideId).then(function(layers) {
+      $D.visualizations = [...layers.map(covertToVisualization)];
+      visualizationLayerItems($D.visualizations);
+    }).catch(function(error) {
+      $UI.message.addError('Loading visualizations is Error');
+      console.error(error);
+    });
+  }
+
   var checkCoreIsReady = setInterval(function() {
-    if ($UI.layersViewer && $UI.layersViewerMinor) {
+    if ($UI.layersViewer && $UI.layersViewerMinor && $UI.visualizationViewer) {
       clearInterval(checkCoreIsReady);
       loadingHumanOverlayers();
       loadingRulerOverlayers();
       loadingHeatmapOverlayers();
       loadingComputerOverlayers();
+      visualization();
     }
   }, 500);
 }
-
-
