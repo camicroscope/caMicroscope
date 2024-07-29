@@ -67,7 +67,7 @@
       class="navbar navbar-expand-lg navbar-dark flex-row px-2"
       style="background: rgb(33, 37, 41);"
     >
-      <div style="cursor: pointer;" id="goBack">
+      <div style="cursor: pointer;" id="goBack" tabindex="0">
         <i data-feather="arrow-left" class="text-white"></i>
       </div>
 
@@ -88,11 +88,12 @@
           class="nav-item dropdown"
         >
           <button
-            class="nav-link dropdown-toggle"
+            class="nav-link dropdown-toggle options-button"
             id="navbarDropdownMenuLink"
             data-toggle="dropdown"
             aria-haspopup="true"
             aria-expanded="false"
+            aria-label="Options dropdown"
             >Options</button
           >
           <div
@@ -105,20 +106,24 @@
               class="dropdown-item"
               href="#"
               style="display: none;"
-              ><i class="fas fa-file-export"></i>&nbsp;&nbsp;Export</a
+              tabindex="0"
+              role="menuitem"
+              ><i class="fas fa-file-export" aria-hidden="true"></i>&nbsp;&nbsp;Export</a
             >
             <a class="dropdown-item" href="#" onclick="importWork()"
-              ><i class="fas fa-file-import"></i>&nbsp;&nbsp;Import</a
+              tabindex="0" role="menuitem"><i class="fas fa-file-import"></i>&nbsp;&nbsp;Import</a
             >
-            <input type="file" id="importFile" />
+            <input type="file" id="importFile" tabindex="-1" />
             <a
               class="dropdown-item helpButton"
               href="#"
               data-toggle="modal"
               data-target="#helpModal"
               onClick="displayUserGuide()"
+              tabindex="0"
+              role="menuitem"
             >
-              <i class="fas fa-question-circle"></i>
+              <i class="fas fa-question-circle" aria-hidden="true"></i>
               &nbsp;&nbsp;Help/User Guide</a
             >
             </div>
@@ -165,7 +170,7 @@
                       margin-bottom: -1em;
                     "
                     type="button"
-                    class="btn btn-primary"
+                    class="btn btn-primary focus-visible"
                     aria-label="Select or create your dataset"
                   >
                     <i data-feather="chevron-right" class="text-white"></i>
