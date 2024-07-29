@@ -1447,7 +1447,7 @@ const currentYear = new Date().getFullYear();
 
 const footerContent = `
   <p>U24 CA18092401A1, <b>Tools to Analyze Morphology and Spatially Mapped Molecular Data</b></p>
-  <p id='contact'>Spot a Bug? <a href='https://github.com/camicroscope/caMicroscope/issues' target='_blank'>Report it!</a></p>
+  <p id='contact'>Spot a Bug? <span class='report-link'><a href='https://github.com/camicroscope/caMicroscope/issues' target='_blank'>Report it!</a></p>
   <hr />
   <p class='copyright'>Copyright &copy; ${currentYear} <span class='company-name'><a href="https://camicroscope.org/" target='_blank'>caMicroscope</a></span></p>
 `;
