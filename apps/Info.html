@@ -222,11 +222,12 @@ function addbody(JSONdata){
 }
 
 function openView(e) {
-const oid = e.dataset;
+const oid = e.dataset.id;
 console.log(oid);
+// console.log(JSON.stringify(oid.id));
   if (oid) {
 	alert('Hello');
-	window.location.href = `./viewer/visualization-dashboard.html`;
+	window.location.href = `./viewer/visualization-dashboard.html?slideId=${sanitize(oid)}`;
     // window.location.href = `./viewer/viewer.html?slideId=${sanitize(e)}`;
   } else {
     alert('No Data Id');

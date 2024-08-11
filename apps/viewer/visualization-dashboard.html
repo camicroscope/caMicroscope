@@ -12,6 +12,32 @@
     <body>
         <h2>Hello!!!
         </h2>
+        <div id="content"></div>
+
+        <script>
+            // クエリパラメータからIDを取得する関数
+            function getQueryParam(param) {
+                const urlParams = new URLSearchParams(window.location.search);
+                return urlParams.get(param);
+            }
+    
+            // 取得したIDを使ってコンテンツを表示する
+            function displayContent() {
+                const slideId = getQueryParam('slideId');
+                const contentDiv = document.getElementById('content');
+    
+                if (slideId) {
+                    contentDiv.textContent = `IDが ${slideId} のコンテンツを表示中...`;
+                    // IDに基づいたコンテンツを取得して表示する処理をここに追加
+                } else {
+                    contentDiv.textContent = 'IDが指定されていません。';
+                }
+            }
+    
+            // ページ読み込み時に実行
+            window.onload = displayContent;
+        </script>
+    </body>
     </body>
 
 </html>
