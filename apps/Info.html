@@ -225,7 +225,7 @@ function openView(e) {
 const oid = e.dataset.id;
 console.log(oid);
   if (oid) {
-	window.location.href = `./viewer/visualization-dashboard.html?slideId=${sanitize(oid)}`;
+	window.location.href = `./visualization-dashboard.html?slideId=${sanitize(oid)}`;
   } else {
     alert('No Data Id');
   }
@@ -261,9 +261,9 @@ function openDetails(tag){
 	table.append(content);
 	addAnnotations(allSlides[count].annotations);
 	addHeatmaps(allSlides[count].heatmap);
-	console.log(allSlides[count]);
+	console.log(allSlides[count],count);
 }
-
+ 
 function addAnnotations(content){
 	if(content.length===0){
 		return;
@@ -473,7 +473,7 @@ function initialize() {
 						addbody(JSONdata);
 					});
 				});
-						// console.log(JSONdata);
+					 console.log('a',JSONdata);
 			}
 	});
 }

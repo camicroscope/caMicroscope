@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta name="keywords" content="camicroscope, quip" />
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1, user-scalable=no"
+        />
+    </head>
+    <body>
+        <script src='../core/Store.js'></script>
+<script src='../common/util.js'></script>
+        <script type="text/javascript" src="./visualization-init.js"></script>
+        <h2>Hello!!!
+        </h2>
+        <div id="content"></div>
+        <script>
+            // クエリパラメータからIDを取得する関数
+            function getQueryParam(param) {
+                const urlParams = new URLSearchParams(window.location.search);
+                return urlParams.get(param);
+            }
+    
+            // 取得したIDを使ってコンテンツを表示する
+            function displayContent() {
+                const slideId = getQueryParam('slideId');
+                const contentDiv = document.getElementById('content');
+    
+                if (slideId) {
+                    contentDiv.textContent = `IDが ${slideId} のコンテンツを表示中...`;
+                    // IDに基づいたコンテンツを取得して表示する処理をここに追加
+                } else {
+                    contentDiv.textContent = 'IDが指定されていません。';
+                }
+            }
+    
+            // ページ読み込み時に実行
+            window.onload = displayContent;
+
+
+            var allSlides
+            function initialize() {
+	allSlides=[];
+	let filters = getUserFilter();
+	let isWildcard = false;
+	if (filters.length > 1 || (filters.length === 1 && filters[0] !== "Public")) {
+		selectedFilters = [];
+		$("#filters-heading").html('<div class="col-sm-6 col-md-2"> <h5>Filters</h5> </div >')
+		$("#filters-check").html('');
+		let val = "Public";
+		createCheckbox(val);
+		selectedFilters.push(val);
+		for (let i = 0; i < filters.length; i++) {
+			let val;
+			if (filters[i] == '**') {
+				isWildcard = true;
+				continue;
+			}
+			else
+				val = filters[i];
+			selectedFilters.push(val);
+			createCheckbox(val);
+		}
+		if(isWildcard)
+		{
+						val = 'Others';
+						createCheckbox(val);
+						selectedFilters.push(val);
+		}
+	}
+	const params = getUrlVars();
+	const store = new Store('../data/');
+	store.findSlide()
+		.then(function (data) {
+			if (data.length == 0) {
+				var div = document.querySelector('.container');
+				div.textContent = `No Data Found ... x _ x`;
+				div.classList = `text-center p-4`;
+				return;
+			}
+			for (var i = 0; i < data.length; i++) {
+				const JSONdata={};
+				JSONdata.id=data[i]._id.$oid;
+				JSONdata.name=data[i].name;
+				JSONdata.displayed=true;
+				if (data[i].filter) {
+					JSONdata.filterList = JSON.parse(data[i].filter.replace(/'/g, '"'));
+					if (!JSONdata.filterList.some((filter) => (filters.indexOf(filter) > - 1)))
+						JSONdata.filterList = ['Others'];
+				}
+				else
+					JSONdata.filterList = ["Public"];
+				store.fetchMark(JSONdata.id).then(function(dataq){
+					JSONdata.annotations=dataq;
+					store.fetchHeatMap(JSONdata.id).then(function(dataqt){
+						JSONdata.heatmap=dataqt;
+						allSlides.push(JSONdata);
+						// addbody(JSONdata);
+					});
+				});
+					 console.log('a b',JSONdata);
+			}
+	});
+}
+document.addEventListener('DOMContentLoaded', initialize);
+
+        </script>
+    </body>
+    </body>
+
+</html>
