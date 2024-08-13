@@ -25,7 +25,7 @@
     top: 10px;
     right: 10px;
     background-color: #f8f9fa;
-    color: #6e747a;
+    color: #515555;
     border: none;
     padding: 5px 10px;
     cursor: pointer;
@@ -41,4 +41,8 @@
 .card h3 {
     text-align: left;
     margin-top: 0;
+}
+
+.card-expand-icon {
+    color: #515555;  
 }
