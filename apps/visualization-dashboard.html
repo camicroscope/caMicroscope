@@ -26,7 +26,7 @@
 function displayContent() {
                 slideId = getQueryParam('slideId');
                 contentDiv = document.getElementById('content');
-                // console.log("slide1",allSlides);
+                // console.log("slide1",getVisualizationDatas);
                 if (slideId) {
                     contentDiv.textContent = `IDが ${slideId} のコンテンツを表示中...`;
                     // IDに基づいたコンテンツを取得して表示する処理をここに追加
@@ -38,54 +38,9 @@ function displayContent() {
             // ページ読み込み時に実行
             window.onload = displayContent;
 
-     var allSlides = [];
-     var getVisualizationData
-    function initialize() {
-	// allSlides=[];
-	let filters = getUserFilter();
-	let isWildcard = false;
-
-	const store = new Store('../data/');
-	store.findSlide()
-		.then(function (data) {
-			if (data.length == 0) {
-				var div = document.querySelector('.container');
-				div.textContent = `No Data Found ... x _ x`;
-				div.classList = `text-center p-4`;
-				return;
-			}
-			for (var i = 0; i < data.length; i++) {
-				const JSONdata={};
-				JSONdata.id=data[i]._id.$oid;
-				JSONdata.name=data[i].name;
-				JSONdata.displayed=true;
-				if (data[i].filter) {
-					JSONdata.filterList = JSON.parse(data[i].filter.replace(/'/g, '"'));
-					if (!JSONdata.filterList.some((filter) => (filters.indexOf(filter) > - 1)))
-						JSONdata.filterList = ['Others'];
-				}
-				else
-					JSONdata.filterList = ["Public"];
-				store.fetchMark(JSONdata.id).then(function(dataq){
-					JSONdata.annotations=dataq;
-					store.fetchHeatMap(JSONdata.id).then(function(dataqt){
-						JSONdata.heatmap=dataqt;
-                        // console.log("JSONdata", JSONdata.id);
-                        if(slideId == JSONdata.id){
-                            allSlides.push(JSONdata);
-                        console.log('aaa');
-                        }
-						// addbody(JSONdata);
-					});
-				});
-					//  console.log('a b',allSlides);
-			}
-	});
-}
-test();
-console.log('a b',typeof allSlides);
+var getVisualizationData= [];
 document.addEventListener('DOMContentLoaded', initialize);
-console.log('a bc',allSlides);
+console.log('getVisualizationData', getVisualizationData);
 
         </script>
          <h2>Hello!!! </h2>
