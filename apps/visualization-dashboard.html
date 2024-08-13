@@ -21,15 +21,8 @@
         <script src='../common/util.js'></script>
         <script type="text/javascript" src="../components/visualization-dashboard/visualization-init.js"></script>
         <script>
-            var slideId;
-            var contentDiv;
-            // クエリパラメータからIDを取得する関数
-            function getQueryParam(param) {
-                const urlParams = new URLSearchParams(window.location.search);
-                return urlParams.get(param);
-            }
             var getVisualizationData= [];
-            document.addEventListener('DOMContentLoaded', initialize);
+            document.addEventListener('DOMContentLoaded', initialize());
             console.log('getVisualizationData', getVisualizationData);
 
         </script>

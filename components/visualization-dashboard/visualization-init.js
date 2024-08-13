@@ -3,6 +3,15 @@ function test() {
 };
 
 function initialize() {
+  // クエリパラメータからIDを取得する関数
+  function getQueryParam(param) {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get(param);
+  }
+
+  // 取得したIDを使ってコンテンツを表示する
+  const slideId = getQueryParam('slideId');
+
   const store = new Store('../data/');
   store.findSlide()
       .then(function(data) {
@@ -29,7 +38,8 @@ function initialize() {
             JSONdata.annotations=dataq;
             store.fetchHeatMap(JSONdata.id).then(function(dataqt) {
               JSONdata.heatmap=dataqt;
-              // console.log("JSONdata", JSONdata.id);
+              console.log('JSONdata', JSONdata.id);
+              console.log('slideId', slideId);
               if (slideId == JSONdata.id) {
                 getVisualizationData.push(JSONdata);
                 console.log('aaa');
@@ -37,7 +47,7 @@ function initialize() {
               // addbody(JSONdata);
             });
           });
-          //  console.log('a b',getVisualizationData);
+          console.log('a b', getVisualizationData);
         }
       });
 }

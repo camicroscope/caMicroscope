@@ -29,6 +29,13 @@ document.addEventListener('DOMContentLoaded', function() {
         </div>
     `;
   document.body.insertAdjacentHTML('beforeend', cardContainer);
+  // Synopsis
+//   var json = {
+//     id: getVisualizationData.id,
+//     name: getVisualizationData.name,
+//     annotations: getVisualizationData.annotations.length,
+//     heatmaps: getVisualizationData.heatmap.length,
+//   };
   const synopsisDiv = document.getElementById('synopsis');
   synopsisDiv.innerHTML += `<p>追加された段落</p>`;
   // 各カードにグラフを描画
