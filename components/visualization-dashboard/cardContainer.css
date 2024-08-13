@@ -1,0 +1,44 @@
+/* カードのコンテナ */
+.card-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    margin: 20px;
+}
+
+/* 各カード */
+.card {
+    background-color: #f8f9fa;
+    /* border: 1px solid #ddd; */
+    border-radius: 10px;
+    padding: 20px;
+    margin: 10px;
+    flex: 1 1 calc(33.333% - 40px);
+    box-sizing: border-box;
+    text-align: center;
+    position: relative;
+}
+
+/* 拡大ボタン */
+.expand-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: #f8f9fa;
+    color: #6e747a;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+.expand-btn:hover {
+    background-color: #a0a0a0;
+}
+
+/* カード内のタイトルを左揃えにする */
+.card h3 {
+    text-align: left;
+    margin-top: 0;
+}

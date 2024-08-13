@@ -8,6 +8,14 @@
           name="viewport"
           content="width=device-width, initial-scale=1, user-scalable=no"
         />
+        <title>Responsive Cards with Modal Expansion</title>
+        <!-- <link rel="stylesheet" href="styles.css"> -->
+            <!-- <link rel="stylesheet" href="visualization-dashboard.css">
+            <link rel="stylesheet" href="navbar.css"> -->
+            <link rel="stylesheet" href="../components/visualization-dashboard/cardContainer.css">
+            <!-- <link rel="stylesheet" href="modal.css">  -->
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <!-- Chart.jsの読み込み -->
     </head>
     <body>
         <script src='../core/Store.js'></script>
@@ -17,32 +25,16 @@
         var slideId;
         var contentDiv;
             // クエリパラメータからIDを取得する関数
- function getQueryParam(param) {
-                const urlParams = new URLSearchParams(window.location.search);
-                return urlParams.get(param);
-            }
-    
-// 取得したIDを使ってコンテンツを表示する
-function displayContent() {
-                slideId = getQueryParam('slideId');
-                contentDiv = document.getElementById('content');
-                // console.log("slide1",getVisualizationDatas);
-                if (slideId) {
-                    contentDiv.textContent = `IDが ${slideId} のコンテンツを表示中...`;
-                    // IDに基づいたコンテンツを取得して表示する処理をここに追加
-                } else {
-                    contentDiv.textContent = 'IDが指定されていません。';
-                }
-            }
-    
-            // ページ読み込み時に実行
-            window.onload = displayContent;
-
+        function getQueryParam(param) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(param);
+        }
 var getVisualizationData= [];
 document.addEventListener('DOMContentLoaded', initialize);
 console.log('getVisualizationData', getVisualizationData);
 
         </script>
+        <script src="../components/visualization-dashboard/cardContainer.js"></script>
          <h2>Hello!!! </h2>
          <div id="content"></div>
     </body>
