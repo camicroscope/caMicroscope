@@ -9,9 +9,8 @@
           content="width=device-width, initial-scale=1, user-scalable=no"
         />
         <title>Responsive Cards with Modal Expansion</title>
-        <!-- <link rel="stylesheet" href="styles.css"> -->
             <link rel="stylesheet" href="visualization-dashboard.css">
-            <!-- <link rel="stylesheet" href="navbar.css"> -->
+            <link rel="stylesheet" href="../components/visualization-dashboard/navbar.css">
             <link rel="stylesheet" href="../components/visualization-dashboard/cardContainer.css">
             <!-- <link rel="stylesheet" href="modal.css">  -->
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
@@ -22,21 +21,21 @@
         <script src='../common/util.js'></script>
         <script type="text/javascript" src="../components/visualization-dashboard/visualization-init.js"></script>
         <script>
-        var slideId;
-        var contentDiv;
+            var slideId;
+            var contentDiv;
             // クエリパラメータからIDを取得する関数
-        function getQueryParam(param) {
-            const urlParams = new URLSearchParams(window.location.search);
-            return urlParams.get(param);
-        }
-var getVisualizationData= [];
-document.addEventListener('DOMContentLoaded', initialize);
-console.log('getVisualizationData', getVisualizationData);
+            function getQueryParam(param) {
+                const urlParams = new URLSearchParams(window.location.search);
+                return urlParams.get(param);
+            }
+            var getVisualizationData= [];
+            document.addEventListener('DOMContentLoaded', initialize);
+            console.log('getVisualizationData', getVisualizationData);
 
         </script>
+        <script src="../components//visualization-dashboard/navbar.js"></script>
         <script src="../components/visualization-dashboard/cardContainer.js"></script>
-         <h2>Hello!!! </h2>
-         <div id="content"></div>
+        <div id="content"></div>
     </body>
     </body>
 
