@@ -1,6 +1,10 @@
 document.addEventListener('DOMContentLoaded', function() {
   const cardContainer = `
         <div class="card-container">
+             <div class="card" id="card-original">
+                <h3>Synopsis</h3>
+                <div id="synopsis"></div>
+            </div>
             <div class="card" id="card1">
                 <button class="expand-btn" onclick="openModal('card1', [12, 19, 3, 5, 2])">
                 <span class="material-icons card-expand-icon">open_in_full</span>
@@ -25,7 +29,8 @@ document.addEventListener('DOMContentLoaded', function() {
         </div>
     `;
   document.body.insertAdjacentHTML('beforeend', cardContainer);
-
+  const synopsisDiv = document.getElementById('synopsis');
+  synopsisDiv.innerHTML += `<p>追加された段落</p>`;
   // 各カードにグラフを描画
   renderChart('chart1', [12, 19, 3, 5, 2]);
   renderChart('chart2', [5, 10, 15, 20, 25]);
