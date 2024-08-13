@@ -13,9 +13,6 @@
         <script src='../core/Store.js'></script>
         <script src='../common/util.js'></script>
         <script type="text/javascript" src="./visualization-init.js"></script>
-        <h2>Hello!!!
-        </h2>
-        <div id="content"></div>
         <script>
         var slideId;
         var contentDiv;
@@ -47,32 +44,7 @@ function displayContent() {
 	// allSlides=[];
 	let filters = getUserFilter();
 	let isWildcard = false;
-	if (filters.length > 1 || (filters.length === 1 && filters[0] !== "Public")) {
-		selectedFilters = [];
-		$("#filters-heading").html('<div class="col-sm-6 col-md-2"> <h5>Filters</h5> </div >')
-		$("#filters-check").html('');
-		let val = "Public";
-		createCheckbox(val);
-		selectedFilters.push(val);
-		for (let i = 0; i < filters.length; i++) {
-			let val;
-			if (filters[i] == '**') {
-				isWildcard = true;
-				continue;
-			}
-			else
-				val = filters[i];
-			selectedFilters.push(val);
-			createCheckbox(val);
-		}
-		if(isWildcard)
-		{
-						val = 'Others';
-						createCheckbox(val);
-						selectedFilters.push(val);
-		}
-	}
-	const params = getUrlVars();
+
 	const store = new Store('../data/');
 	store.findSlide()
 		.then(function (data) {
@@ -110,11 +82,14 @@ function displayContent() {
 			}
 	});
 }
+test();
 console.log('a b',typeof allSlides);
 document.addEventListener('DOMContentLoaded', initialize);
 console.log('a bc',allSlides);
 
         </script>
+         <h2>Hello!!! </h2>
+         <div id="content"></div>
     </body>
     </body>
 
