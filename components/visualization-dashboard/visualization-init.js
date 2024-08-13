@@ -2,7 +2,7 @@ function test() {
   console.log('result', getVisualizationData);
 };
 
-function initialize() {
+async function initialize() {
   // クエリパラメータからIDを取得する関数
   function getQueryParam(param) {
     const urlParams = new URLSearchParams(window.location.search);
@@ -13,41 +13,46 @@ function initialize() {
   const slideId = getQueryParam('slideId');
 
   const store = new Store('../data/');
-  store.findSlide()
-      .then(function(data) {
-        if (data.length == 0) {
-          var div = document.querySelector('.container');
-          div.textContent = `No Data Found ... x _ x`;
-          div.classList = `text-center p-4`;
-          return;
+  try {
+    const data = await store.findSlide();
+    if (data.length == 0) {
+      var div = document.querySelector('.container');
+      div.textContent = `No Data Found ... x _ x`;
+      div.classList = `text-center p-4`;
+      return;
+    }
+    for (var i = 0; i < data.length; i++) {
+      const JSONdata={};
+      JSONdata.id=data[i]._id.$oid;
+      JSONdata.name=data[i].name;
+      JSONdata.displayed=true;
+      if (data[i].filter) {
+        JSONdata.filterList = JSON.parse(data[i].filter.replace(/'/g, '"'));
+        if (!JSONdata.filterList.some((filter) => (filters.indexOf(filter) > - 1))) {
+          JSONdata.filterList = ['Others'];
         }
-        for (var i = 0; i < data.length; i++) {
-          const JSONdata={};
-          JSONdata.id=data[i]._id.$oid;
-          JSONdata.name=data[i].name;
-          JSONdata.displayed=true;
-          if (data[i].filter) {
-            JSONdata.filterList = JSON.parse(data[i].filter.replace(/'/g, '"'));
-            if (!JSONdata.filterList.some((filter) => (filters.indexOf(filter) > - 1))) {
-              JSONdata.filterList = ['Others'];
-            }
-          } else {
-            JSONdata.filterList = ['Public'];
-          }
-          store.fetchMark(JSONdata.id).then(function(dataq) {
-            JSONdata.annotations=dataq;
-            store.fetchHeatMap(JSONdata.id).then(function(dataqt) {
-              JSONdata.heatmap=dataqt;
-              console.log('JSONdata', JSONdata.id);
-              console.log('slideId', slideId);
-              if (slideId == JSONdata.id) {
-                getVisualizationData.push(JSONdata);
-                console.log('aaa');
-              }
-              // addbody(JSONdata);
-            });
-          });
-          console.log('a b', getVisualizationData);
+      } else {
+        JSONdata.filterList = ['Public'];
+      }
+      try {
+        const dataq = await store.fetchMark(JSONdata.id);
+        JSONdata.annotations=dataq;
+        const dataqt = await store.fetchHeatMap(JSONdata.id);
+        JSONdata.heatmap=dataqt;
+
+        if (slideId == JSONdata.id) {
+          getVisualizationData = {...JSONdata};
+          // getVisualizationData = {...JSONdata};
+          console.log('aaa');
         }
-      });
+      } catch (error) {
+        console.error('Error finding slides:', error);
+      }
+      console.log('a b', getVisualizationData);
+    }
+  } catch (error) {
+    console.error('Error finding slides:', error);
+  };
 }
+// Initialize the process
+initialize();
