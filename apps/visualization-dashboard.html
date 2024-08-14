@@ -19,19 +19,30 @@
     <body>
         <script src='../core/Store.js'></script>
         <script src='../common/util.js'></script>
-        <script type="text/javascript" src="../components/visualization-dashboard/visualization-init.js"></script>
-        <script>
-            var getVisualizationData = {};
-            document.addEventListener('DOMContentLoaded', initialize());
-            console.log('getVisualizationData', getVisualizationData);
+        <script type="text/javascript" src="../components/visualization-dashboard/visualization-init.js" ></script>
+        <script defer>
+            var getVisualizationData = [];
+            // document.addEventListener('DOMContentLoaded', initialize);
+            console.log('initialize:', typeof initialize); // 追加のデバッグ
+
+            async function init () {
+                try {
+                    console.log('Before initialization getVisualizationData:', getVisualizationData);
+                    await initialize(); // 非同期処理の完了を待つ
+                    console.log('After initialization getVisualizationData:', getVisualizationData);
+                } catch (error) {
+                    console.error('Error:', error);
+                }
+            }
+            init();
+            console.log('3getVisualizationData', getVisualizationData);
 
         </script>
-        <script type="text/javascript" src="../components/visualization-dashboard/chartSetup.js"></script>      
-        <script type="text/javascript" src="../components//visualization-dashboard/navbar.js"></script>
-        <script type="text/javascript" src="../components/visualization-dashboard/cardContainer.js"></script>
-        <script type="text/javascript" src="../components/visualization-dashboard/modal.js"></script>
+        <script type="text/javascript" src="../components/visualization-dashboard/chartSetup.js" defer></script>      
+        <script type="text/javascript" src="../components//visualization-dashboard/navbar.js" defer></script>
+        <script type="text/javascript" src="../components/visualization-dashboard/cardContainer.js" defer></script>
+        <script type="text/javascript" src="../components/visualization-dashboard/modal.js" defer></script>
         <div id="content"></div>
-    </body>
     </body>
 
 </html>
