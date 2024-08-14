@@ -37,7 +37,6 @@
         function loadScripts() {
             const scripts = [
                 '../components/visualization-dashboard/chartSetup.js',
-                '../components/visualization-dashboard/navbar.js',
                 '../components/visualization-dashboard/cardContainer.js',
                 '../components/visualization-dashboard/modal.js'
             ];
@@ -49,11 +48,11 @@
                     script.type = "text/javascript"
                     script.src = src;
                     script.onload = () => {
-                        console.log(`${src} loaded successfully.`);
+                        // console.log(`${src} loaded successfully.`);
                         resolve();
                     };
                     script.onerror = () => {
-                        console.error(`Failed to load ${src}`);
+                        // console.error(`Failed to load ${src}`);
                         reject(new Error(`Failed to load script ${src}`));
                     };
                     document.body.appendChild(script);
@@ -63,7 +62,7 @@
             // 全てのスクリプトがロードされた後にinit関数を実行
             Promise.all(loadScriptPromises)
                 .then(() => {
-                    console.log('All scripts loaded successfully');
+                    // console.log('All scripts loaded successfully');
                     // ここで init 関数を再度呼び出すか、必要な関数を実行
                 })
                 .catch(error => {

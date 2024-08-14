@@ -34,11 +34,36 @@
   // Synopsis
   var json = {
     id: getVisualizationData.id,
+    name: getVisualizationData.name,
+    annotations: getVisualizationData.annotations.length,
+    heatmaps: getVisualizationData.heatmap.length,
   };
-  console.log('getVisualizationData2', getVisualizationData.id);
+  console.log('getVisualizationData2', json);
 
   const synopsisDiv = document.getElementById('synopsis');
-  synopsisDiv.innerHTML += `<p>追加された段落</p>`;
+  // <p>追加された段落${getVisualizationData.name}</p>`
+  synopsisDiv.innerHTML += `
+  <table>
+  <tbody>
+    <tr>
+      <th scope="row">Slide ID</th>
+      <td>${json.id}</td>
+    </tr>
+    <tr>
+      <th scope="row">Slide Name</th>
+      <td>${json.name}</td>
+    </tr>
+    <tr>
+      <th scope="row">Number of Annotations</th>
+      <td>${json.annotations} annotations</td>
+    </tr>
+    <tr>
+      <th scope="row">Number of Heatmaps</th>
+      <td>${json.heatmaps} heatmaps</td>
+    </tr>
+  </tbody>
+</table>
+`;
 
   // 各カードにグラフを描画
   renderChart('chart1', [12, 19, 3, 5, 2]);
