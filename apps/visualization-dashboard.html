@@ -1,48 +1,83 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta name="keywords" content="camicroscope, quip" />
-        <meta charset="utf-8" />
-        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-        <meta
-          name="viewport"
-          content="width=device-width, initial-scale=1, user-scalable=no"
-        />
-        <title>Responsive Cards with Modal Expansion</title>
-            <link rel="stylesheet" href="visualization-dashboard.css">
-            <link rel="stylesheet" href="../components/visualization-dashboard/navbar.css">
-            <link rel="stylesheet" href="../components/visualization-dashboard/cardContainer.css">
-            <link rel="stylesheet" href="../components/visualization-dashboard/modal.css"> 
-        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <!-- Chart.jsの読み込み -->
-    </head>
-    <body>
-        <script src='../core/Store.js'></script>
-        <script src='../common/util.js'></script>
-        <script type="text/javascript" src="../components/visualization-dashboard/visualization-init.js" ></script>
-        <script defer>
-            var getVisualizationData = [];
-            // document.addEventListener('DOMContentLoaded', initialize);
-            console.log('initialize:', typeof initialize); // 追加のデバッグ
+<head>
+    <meta name="keywords" content="camicroscope, quip" />
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <title>Responsive Cards with Modal Expansion</title>
+    <link rel="stylesheet" href="visualization-dashboard.css">
+    <link rel="stylesheet" href="../components/visualization-dashboard/navbar.css">
+    <link rel="stylesheet" href="../components/visualization-dashboard/cardContainer.css">
+    <link rel="stylesheet" href="../components/visualization-dashboard/modal.css"> 
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <!-- Chart.jsの読み込み -->
+</head>
+<body>
+    <script src="../core/Store.js"></script>
+    <script src="../common/util.js"></script>
+    <script type="text/javascript" src="../components/visualization-dashboard/navbar.js"></script>
+    <script type="text/javascript" src="../components/visualization-dashboard/visualization-init.js"></script>
+    <script>
+        var getVisualizationData = {};
 
-            async function init () {
-                try {
-                    console.log('Before initialization getVisualizationData:', getVisualizationData);
-                    await initialize(); // 非同期処理の完了を待つ
-                    console.log('After initialization getVisualizationData:', getVisualizationData);
-                } catch (error) {
-                    console.error('Error:', error);
-                }
+        async function init() {
+            try {
+                console.log('Before initialization getVisualizationData:', getVisualizationData);
+                await initialize(); // 非同期処理の完了を待つ
+                console.log('After initialization getVisualizationData:', getVisualizationData);
+                
+                // 非同期処理が完了したら、他のスクリプトを動的に追加
+                loadScripts();
+            } catch (error) {
+                console.error('Error:', error);
             }
-            init();
-            console.log('3getVisualizationData', getVisualizationData);
+        }
 
-        </script>
-        <script type="text/javascript" src="../components/visualization-dashboard/chartSetup.js" defer></script>      
-        <script type="text/javascript" src="../components//visualization-dashboard/navbar.js" defer></script>
-        <script type="text/javascript" src="../components/visualization-dashboard/cardContainer.js" defer></script>
-        <script type="text/javascript" src="../components/visualization-dashboard/modal.js" defer></script>
-        <div id="content"></div>
-    </body>
+        function loadScripts() {
+            const scripts = [
+                '../components/visualization-dashboard/chartSetup.js',
+                '../components/visualization-dashboard/navbar.js',
+                '../components/visualization-dashboard/cardContainer.js',
+                '../components/visualization-dashboard/modal.js'
+            ];
 
+            // Promiseを使ってスクリプトのロードを管理
+            const loadScriptPromises = scripts.map(src => {
+                return new Promise((resolve, reject) => {
+                    const script = document.createElement('script');
+                    script.type = "text/javascript"
+                    script.src = src;
+                    script.onload = () => {
+                        console.log(`${src} loaded successfully.`);
+                        resolve();
+                    };
+                    script.onerror = () => {
+                        console.error(`Failed to load ${src}`);
+                        reject(new Error(`Failed to load script ${src}`));
+                    };
+                    document.body.appendChild(script);
+                });
+            });
+
+            // 全てのスクリプトがロードされた後にinit関数を実行
+            Promise.all(loadScriptPromises)
+                .then(() => {
+                    console.log('All scripts loaded successfully');
+                    // ここで init 関数を再度呼び出すか、必要な関数を実行
+                })
+                .catch(error => {
+                    console.error('Error loading scripts:', error);
+                });
+        }
+
+        // ページが読み込まれた後にinit関数を実行
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+    <div id="content"></div>
+    <script>
+        // test() 関数が必要な場合は、initialize の後に呼び出すようにします。
+        // ここで test() を実行する必要がある場合は、loadScripts() 内に追加してください。
+    </script>
+</body>
 </html>

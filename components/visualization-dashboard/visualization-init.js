@@ -41,9 +41,9 @@ async function initialize() {
         JSONdata.heatmap=dataqt;
 
         if (slideId == JSONdata.id) {
-          // getVisualizationData = {...JSONdata};
+          getVisualizationData = {...JSONdata};
           console.log('aaa');
-          getVisualizationData.push(JSONdata);
+          // getVisualizationData.push(JSONdata);
         }
       } catch (error) {
         console.error('Error finding slides:', error);
