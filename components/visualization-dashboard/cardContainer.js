@@ -10,7 +10,7 @@
               <button class="expand-btn" onclick="openModal('card1', [12, 19, 3, 5, 2])">
                   <span class="material-icons card-expand-icon">open_in_full</span>
               </button>
-              <h3>Card 1</h3>
+              <h3>Draw Annotation Count</h3>
               <canvas id="chart1"></canvas>
           </div>
           <div class="card" id="card2">
@@ -73,7 +73,8 @@
   let initialZoomingData = visualizationLayerItems(getVisualizationData);
   console.log('initialZoomingData', initialZoomingData);
   // 各カードにグラフを描画
-  renderChart('chart1', [12, 19, 3, 5, 2]);
+  VisualizationViewer('chart1', initialZoomingData);
+  // renderChart('chart1', [12, 19, 3, 5, 2]);
   renderChart('chart2', [5, 10, 15, 20, 25]);
   renderChart('chart3', [3, 7, 11, 15, 19]);
 })();
