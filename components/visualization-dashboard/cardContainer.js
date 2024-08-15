@@ -66,12 +66,15 @@
 `;
   // console.log(getVisualizationData.annotations[133].properties.annotations.name);
   // 位置情報 annotations[5].geometries.features[0].viewerStates
-  // human であるかannotations[5].provenance.analysis
+  // human であるかannotations[5].provenance.analysis human
   // humanの中でも分けたい　round annotations[5].geometries.features[0].properties.style
   // 今のデータを出したい　今は過去のを読んでる
-  console.log(getVisualizationData.annotations[5].geometries.features[0].viewerStates);
+  // console.log(getVisualizationData.annotations[5].geometries.features[0].viewerStates);
+  console.log('annotations-name', getVisualizationData.annotations[1].properties.annotations.name);
   let initialZoomingData = visualizationLayerItems(getVisualizationData);
   console.log('initialZoomingData', initialZoomingData);
+
+  let presetLabelData = presetLabelsData(getVisualizationData);
 
   // 各カードにグラフを描画
   VisualizationViewer('chart1', initialZoomingData);
@@ -80,6 +83,7 @@
   renderChart('chart3', [3, 7, 11, 15, 19]);
 })();
 
+// Graph
 function VisualizationViewer(id, result) {
   const ctx = document.getElementById(id);
   const aa = result;
@@ -150,9 +154,10 @@ function VisualizationViewer(id, result) {
   });
 };
 
+// Define function
 function visualizationLayerItems(getVisualizationData) {
   let initialZoomingData = [];
-  console.log('visualizationLayerItems--getVisualizationData', getVisualizationData);
+  // console.log('visualizationLayerItems--getVisualizationData', getVisualizationData);
 
   // Get initial data
   getVisualizationData.annotations.map((d) => {
@@ -166,7 +171,7 @@ function visualizationLayerItems(getVisualizationData) {
       }
     });
   });
-  console.log('initialZoomingData', initialZoomingData);
+  // console.log('initialZoomingData', initialZoomingData);
   let result = countOccurrences(initialZoomingData);
 
   return result;
@@ -198,4 +203,41 @@ function countOccurrences(arr) {
   };
 
   return result;
+}
+
+// Preset Labels annotations
+function presetLabelsData(getVisualizationData) {
+  // console.log('presetLabelsData', getVisualizationData.annotations[1].properties.annotations.name);
+  let initialData = [];
+  // Get initial data
+  getVisualizationData.annotations.map((d) => {
+    // console.log('getVisualizationData.annotations', d.properties.annotations.notes);
+    if (d.properties.annotations.name == d.properties.annotations.notes) {
+      initialData.push(d.properties.annotations.name);
+    };
+  });
+  let result = countOccurrencesFromString(initialData);
+  return result;
+}
+
+function countOccurrencesFromString(arr) {
+  // 文字列用のカウントマップを作成
+  let countMap = {};
+
+  // 配列の各要素をカウント
+  arr.forEach(function(value) {
+    // 文字列以外の場合は処理をスキップ
+    if (typeof value !== 'string') {
+      return;
+    }
+
+    // カウントマップに追加またはインクリメント
+    if (countMap[value] === undefined) {
+      countMap[value] = 1;
+    } else {
+      countMap[value]++;
+    }
+  });
+
+  return countMap;
 }
