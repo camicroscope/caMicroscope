@@ -84,21 +84,46 @@ function visualizationLayerItems(getVisualizationData) {
 
   // Get initial data
   getVisualizationData.annotations.map((d) => {
-    console.log('visualizationLayerItems--getVisualizationData--getVisualizationData.annotations', d);
+    // console.log('visualizationLayerItems--getVisualizationData--getVisualizationData.annotations', d);
     d.geometries.features.map((detailData)=>{
-      console.log('visualizationLayerItems--getVisualizationData--getVisualizationData.annotations-geometry', detailData);
+      // console.log('visualizationLayerItems--getVisualizationData--getVisualizationData.annotations-geometry', detailData);
       if (detailData.viewerStates) {
-        console.log('visualizationLayerItems--getVisualizationData--getVisualizationData.annotations-geometry--viewerStates', detailData.viewerStates);
+        // eslint-disable-next-line max-len
+        // console.log('visualizationLayerItems--getVisualizationData--getVisualizationData.annotations-geometry--viewerStates', detailData.viewerStates);
         initialZoomingData.push(roundToSecondDecimalPlace(detailData.viewerStates.z));
       }
     });
   });
   console.log('initialZoomingData', initialZoomingData);
- 
-  return initialZoomingData;
-}
+  let result = countOccurrences(initialZoomingData);
 
+  return result;
+}
 // Function to round to decimal places
 function roundToSecondDecimalPlace(num) {
   return Math.round(num * 100) / 100;
-};
+}
+
+function countOccurrences(arr) {
+  // Create objects for counting
+  let countMap = {};
+
+  // Count each element in the array
+  arr.forEach(function(value) {
+    if (countMap[value] === undefined) {
+      countMap[value] = 1;
+    } else {
+      countMap[value]++;
+    }
+  });
+
+  // Convert the result to a 2-dimensional array
+  let result = [];
+  for (let key in countMap) {
+    if (countMap.hasOwnProperty(key)) {
+      result.push([parseFloat(key), countMap[key]]);
+    }
+  };
+
+  return result;
+}
