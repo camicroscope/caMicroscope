@@ -64,9 +64,41 @@
   </tbody>
 </table>
 `;
-
+  // console.log(getVisualizationData.annotations[133].properties.annotations.name);
+  // 位置情報 annotations[5].geometries.features[0].viewerStates
+  // human であるかannotations[5].provenance.analysis
+  // humanの中でも分けたい　round annotations[5].geometries.features[0].properties.style
+  // 今のデータを出したい　今は過去のを読んでる
+  console.log(getVisualizationData.annotations[5].geometries.features[0].viewerStates);
+  let initialZoomingData = visualizationLayerItems(getVisualizationData);
+  console.log('initialZoomingData', initialZoomingData);
   // 各カードにグラフを描画
   renderChart('chart1', [12, 19, 3, 5, 2]);
   renderChart('chart2', [5, 10, 15, 20, 25]);
   renderChart('chart3', [3, 7, 11, 15, 19]);
 })();
+
+function visualizationLayerItems(getVisualizationData) {
+  let initialZoomingData = [];
+  console.log('visualizationLayerItems--getVisualizationData', getVisualizationData);
+
+  // Get initial data
+  getVisualizationData.annotations.map((d) => {
+    console.log('visualizationLayerItems--getVisualizationData--getVisualizationData.annotations', d);
+    d.geometries.features.map((detailData)=>{
+      console.log('visualizationLayerItems--getVisualizationData--getVisualizationData.annotations-geometry', detailData);
+      if (detailData.viewerStates) {
+        console.log('visualizationLayerItems--getVisualizationData--getVisualizationData.annotations-geometry--viewerStates', detailData.viewerStates);
+        initialZoomingData.push(roundToSecondDecimalPlace(detailData.viewerStates.z));
+      }
+    });
+  });
+  console.log('initialZoomingData', initialZoomingData);
+ 
+  return initialZoomingData;
+}
+
+// Function to round to decimal places
+function roundToSecondDecimalPlace(num) {
+  return Math.round(num * 100) / 100;
+};
