@@ -35,7 +35,7 @@ function renderChart(chartId, data) {
 function VisualizationViewer(id, result) {
   const ctx = document.getElementById(id);
   const aa = result;
-  console.log('id, result', id, result)
+  console.log('id, result', id, result);
   // define data
   var data = {
     datasets: [{
