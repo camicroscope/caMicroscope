@@ -70,16 +70,16 @@
   // humanの中でも分けたい　round annotations[5].geometries.features[0].properties.style
   // 今のデータを出したい　今は過去のを読んでる
   // console.log(getVisualizationData.annotations[5].geometries.features[0].viewerStates);
-  console.log('annotations-name', getVisualizationData.annotations[1].properties.annotations.name);
+  // console.log('annotations-name', getVisualizationData.annotations[1].properties.annotations.name);
   let initialZoomingData = visualizationLayerItems(getVisualizationData);
-  console.log('initialZoomingData', initialZoomingData);
+  // console.log('initialZoomingData', initialZoomingData);
 
   let presetLabelData = presetLabelsData(getVisualizationData);
 
   // 各カードにグラフを描画
   VisualizationViewer('chart1', initialZoomingData);
   // renderChart('chart1', [12, 19, 3, 5, 2]);
-  renderChart('chart2', [5, 10, 15, 20, 25]);
+  PresetLabelsGraph('chart2', presetLabelData );
   renderChart('chart3', [3, 7, 11, 15, 19]);
 })();
 
@@ -239,5 +239,93 @@ function countOccurrencesFromString(arr) {
     }
   });
 
-  return countMap;
+  // カウントマップを2次元配列に変換
+  let countArray = Object.entries(countMap).map(([key, value]) => [key, value]);
+
+  console.log(countArray);
+  return countArray;
+}
+
+
+function PresetLabelsGraph(id, result) {
+  const ctx = document.getElementById(id);
+  const aa = result;
+  console.log('id, result', id, result);
+  // データ定義
+  var data = {
+    labels: aa.map((item) => item[0]),
+    datasets: [{
+      label: 'フルーツの個数',
+      data: aa.map((item) => item[1]),
+      backgroundColor: [
+        'rgba(255, 99, 132, 0.2)',
+        'rgba(54, 162, 235, 0.2)',
+        'rgba(255, 206, 86, 0.2)',
+      ],
+      borderColor: [
+        'rgba(255, 99, 132, 1)',
+        'rgba(54, 162, 235, 1)',
+        'rgba(255, 206, 86, 1)',
+      ],
+      borderWidth: 1,
+    }],
+  };
+
+  // データセットの最大値に1を加えたものを取得
+  var maxYValue = Math.max(...data.datasets[0].data) + 1;
+
+  // オプション設定
+  var options = {
+    plugins: {
+      title: {
+        display: false,
+        text: 'Preset Labels vs Preset Labels count',
+      },
+      tooltip: {
+        callbacks: {
+          label: function(context) {
+            var label = context.dataset.label || '';
+            if (label) {
+              label += ': ';
+            }
+            if (context.parsed.y !== null) {
+              label += context.parsed.y;
+            }
+            return label;
+          },
+        },
+      },
+    },
+    scales: {
+      x: {
+        title: {
+          display: false,
+          text: 'Preset labels',
+        },
+      },
+      y: {
+        beginAtZero: true,
+        title: {
+          display: true,
+          text: 'Preset labels count',
+        },
+        ticks: {
+          stepSize: 1,
+          callback: function(value) {
+            if (value % 1 === 0) {
+              return value;
+            }
+          },
+        },
+        max: maxYValue,
+      },
+    },
+  };
+
+  // グラフの作成
+  new Chart(ctx, {
+    type: 'bar',
+    data: data,
+    options: options,
+  });
 }
