@@ -17,7 +17,7 @@
               <button class="expand-btn" onclick="openModal('card2', [5, 10, 15, 20, 25])">
                   <span class="material-icons card-expand-icon">open_in_full</span>
               </button>
-              <h3>Card 2</h3>
+              <h3>Preset Labels vs Preset Labels count</h3>
               <canvas id="chart2"></canvas>
           </div>
           <div class="card" id="card3">
