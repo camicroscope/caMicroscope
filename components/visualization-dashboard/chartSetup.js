@@ -32,72 +32,236 @@ function renderChart(chartId, data) {
   });
 }
 
-// function VisualizationViewer(id, result) {
-//   const ctx = document.getElementById(id);
-//   const aa = result;
-//   console.log('id, result', id, result);
-//   // define data
-//   var data = {
-//     datasets: [{
-//       label: 'Human:Draw Annotation ',
-//       data: aa.map((item) => ({x: item[0], y: item[1]})),
-//       backgroundColor: 'rgba(75, 192, 192, 1)',
-//       pointRadius: 5,
-//     }],
-//   };
+// Graph
+function VisualizationViewer(id, result) {
+  const ctx = document.getElementById(id);
+  const aa = result;
+  // console.log('id, result', id, result);
+  // define data
+  var data = {
+    datasets: [{
+      label: 'Human:Draw Annotation ',
+      data: aa.map((item) => ({x: item[0], y: item[1]})),
+      backgroundColor: 'rgba(75, 192, 192, 1)',
+      pointRadius: 5,
+    }],
+  };
 
-//   // Get the maximum value of the data set and add 1 to the maximum value
-//   var maxYValue = Math.max(...data.datasets[0].data.map((d)=> d.y)) + 1;
+  // Get the maximum value of the data set and add 1 to the maximum value
+  var maxYValue = Math.max(...data.datasets[0].data.map((d)=> d.y)) + 1;
 
-//   // setting option
-//   var options = {
-//     plugins: {
-//       title: {
-//         display: false,
-//         text: 'Draw Annotation Count vs zooming',
-//       },
-//       tooltip: {
-//         callbacks: {
-//           label: function(context) {
-//             var xValue = context.raw.x;
-//             var yValue = context.raw.y;
-//             return '(count, zooming) = (' + yValue + ', ' + xValue + ')';
-//           },
-//         },
-//       },
-//     },
-//     scales: {
-//       x: {
-//         type: 'linear',
-//         position: 'bottom',
-//         title: {
-//           display: true,
-//           text: 'Zooming',
-//         },
-//       },
-//       y: {
-//         beginAtZero: true, //  Set vertical axis to start from 0
-//         title: {
-//           display: true,
-//           text: 'Draw Annotation Count',
-//         },
-//         ticks: {
-//           stepSize: 1, // Set the step size displayed on the vertical axis to 1
-//           callback: function(value) {
-//             if (value % 1 === 0) {
-//               return value;
-//             }
-//           },
-//         },
-//         max: maxYValue,
-//       },
-//     },
-//   };
+  // setting option
+  var options = {
+    plugins: {
+      title: {
+        display: false,
+        text: 'Draw Annotation Count vs zooming',
+      },
+      tooltip: {
+        callbacks: {
+          label: function(context) {
+            var xValue = context.raw.x;
+            var yValue = context.raw.y;
+            return '(count, zooming) = (' + yValue + ', ' + xValue + ')';
+          },
+        },
+      },
+    },
+    scales: {
+      x: {
+        type: 'linear',
+        position: 'bottom',
+        title: {
+          display: true,
+          text: 'Zooming',
+        },
+      },
+      y: {
+        beginAtZero: true, //  Set vertical axis to start from 0
+        title: {
+          display: true,
+          text: 'Draw Annotation Count',
+        },
+        ticks: {
+          stepSize: 1, // Set the step size displayed on the vertical axis to 1
+          callback: function(value) {
+            if (value % 1 === 0) {
+              return value;
+            }
+          },
+        },
+        max: maxYValue,
+      },
+    },
+  };
 
-//   // Create
-//   new Chart(ctx, {
-//     type: 'scatter',
-//     data: data,
-//     options: options,
-//   });
-// };
+  // Create
+  new Chart(ctx, {
+    type: 'scatter',
+    data: data,
+    options: options,
+  });
+};
+
+function PresetLabelsGraph(id, result) {
+  const ctx = document.getElementById(id);
+  const aa = result;
+  // console.log('id, result', id, result);
+  // データ定義
+  var data = {
+    labels: aa.map((item) => item[0]),
+    datasets: [{
+      label: 'Preset Labels Counts',
+      data: aa.map((item) => item[1]),
+      backgroundColor: [
+        'rgba(255, 99, 132, 0.2)',
+        'rgba(54, 162, 235, 0.2)',
+        'rgba(255, 206, 86, 0.2)',
+      ],
+      borderColor: [
+        'rgba(255, 99, 132, 1)',
+        'rgba(54, 162, 235, 1)',
+        'rgba(255, 206, 86, 1)',
+      ],
+      borderWidth: 1,
+    }],
+  };
+
+  // データセットの最大値に1を加えたものを取得
+  var maxYValue = Math.max(...data.datasets[0].data) + 1;
+
+  // オプション設定
+  var options = {
+    plugins: {
+      title: {
+        display: false,
+        text: 'Preset Labels vs Preset Labels count',
+      },
+      tooltip: {
+        callbacks: {
+          label: function(context) {
+            var label = context.dataset.label || '';
+            if (label) {
+              label += ': ';
+            }
+            if (context.parsed.y !== null) {
+              label += context.parsed.y;
+            }
+            return label;
+          },
+        },
+      },
+    },
+    scales: {
+      x: {
+        title: {
+          display: false,
+          text: 'Preset labels',
+        },
+      },
+      y: {
+        beginAtZero: true,
+        title: {
+          display: true,
+          text: 'Preset labels count',
+        },
+        ticks: {
+          stepSize: 1,
+          callback: function(value) {
+            if (value % 1 === 0) {
+              return value;
+            }
+          },
+        },
+        max: maxYValue,
+      },
+    },
+  };
+
+  // グラフの作成
+  new Chart(ctx, {
+    type: 'bar',
+    data: data,
+    options: options,
+  });
+}
+
+// Preset Labels annotations
+function creatorData(getVisualizationData) {
+  // console.log('creator', getVisualizationData.annotations[1].creator);
+  let initialData = [];
+  // Get initial data
+  getVisualizationData.annotations.map((d) => {
+    // console.log('getVisualizationData.annotations', d.properties.annotations.notes);
+    if (d.creator.length !== 0) {
+      initialData.push(d.creator);
+      // console.log('name', d.creator);
+    };
+  });
+  // console.log('initialData ', initialData );
+  let result = countOccurrencesFromString(initialData);
+  // console.log('result ', result);
+  return result;
+}
+
+function drawPieChart(id, data) {
+  // 円グラフを描画するキャンバスを取得
+  const ctx = document.getElementById(id);
+
+  // データのラベルと値を分ける
+  const labels = data.map((item) => item[0]);
+  const values = data.map((item) => item[1]);
+
+  // 円グラフの色を定義
+  const backgroundColors = [
+    'rgba(255, 99, 132, 0.2)', // 赤
+    'rgba(54, 162, 235, 0.2)', // 青
+    'rgba(255, 206, 86, 0.2)', // 黄
+    'rgba(75, 192, 192, 0.2)', // 緑
+    'rgba(153, 102, 255, 0.2)', // 紫
+    'rgba(255, 159, 64, 0.2)', // オレンジ
+  ];
+  const borderColors = [
+    'rgba(255, 99, 132, 1)',
+    'rgba(54, 162, 235, 1)',
+    'rgba(255, 206, 86, 1)',
+    'rgba(75, 192, 192, 1)',
+    'rgba(153, 102, 255, 1)',
+    'rgba(255, 159, 64, 1)',
+  ];
+
+  // 円グラフのデータセット
+  const chartData = {
+    labels: labels,
+    datasets: [{
+      data: values,
+      backgroundColor: backgroundColors.slice(0, values.length),
+      borderColor: borderColors.slice(0, values.length),
+      borderWidth: 1,
+    }],
+  };
+
+  // 円グラフのオプション
+  const options = {
+    plugins: {
+      tooltip: {
+        callbacks: {
+          label: function(context) {
+            const label = context.label || '';
+            const value = context.parsed || 0;
+            const total = context.chart._metasets[context.datasetIndex].total;
+            const percentage = ((value / total) * 100).toFixed(2) + '%';
+            return label + ': ' + value + ' Annotations (' + percentage + ')';
+          },
+        },
+      },
+    },
+  };
+
+  // 円グラフを描画
+  new Chart(ctx, {
+    type: 'pie',
+    data: chartData,
+    options: options,
+  });
+}

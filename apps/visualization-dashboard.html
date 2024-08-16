@@ -17,6 +17,9 @@
     <script src="../core/Store.js"></script>
     <script src="../common/util.js"></script>
     <script type="text/javascript" src="../components/visualization-dashboard/navbar.js"></script>
+    <script type="text/javascript" src="../components/visualization-dashboard/chartDate.js"></script>
+    <script type="text/javascript" src="../components/visualization-dashboard/chartSetup.js"></script>
+    <script type="text/javascript" src="../components/visualization-dashboard/modal.js"></script>
     <script type="text/javascript" src="../components/visualization-dashboard/visualization-init.js"></script>
     <script>
         var getVisualizationData = {};
@@ -36,9 +39,7 @@
 
         function loadScripts() {
             const scripts = [
-                '../components/visualization-dashboard/chartSetup.js',
-                '../components/visualization-dashboard/cardContainer.js',
-                '../components/visualization-dashboard/modal.js'
+                '../components/visualization-dashboard/cardContainer.js'
             ];
 
             // Promiseを使ってスクリプトのロードを管理
@@ -73,10 +74,7 @@
         // ページが読み込まれた後にinit関数を実行
         document.addEventListener('DOMContentLoaded', init);
     </script>
-    <div id="content"></div>
     <script>
-        // test() 関数が必要な場合は、initialize の後に呼び出すようにします。
-        // ここで test() を実行する必要がある場合は、loadScripts() 内に追加してください。
     </script>
 </body>
 </html>
