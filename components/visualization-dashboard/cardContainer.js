@@ -65,12 +65,12 @@
 </table>
 `;
   //  Create initiate graph
-  let DrawAnnotationData = prepareDrawAnnotationData(getVisualizationData);
+  let drawAnnotationData = prepareDrawAnnotationData(getVisualizationData);
   let presetLabelsData = preparePresetLabelsData(getVisualizationData);
   let creatorsData = creatorData(getVisualizationData);
 
   // Create Graph
-  createAnnotationZoomChart('chart1', DrawAnnotationData);
+  createAnnotationZoomChart('chart1', drawAnnotationData);
   createPresetLabelsGraph('chart2', presetLabelsData );
   drawPieChart('chart3', creatorsData);
 })();
