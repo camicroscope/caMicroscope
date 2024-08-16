@@ -1,12 +1,10 @@
-/* 画面全体の背景色 */
 body {
     background-color: #cff4fc;
     margin: 0;
     font-family: Arial, sans-serif;
 }
 
-/* Google Fontアイコン */
 .material-icons {
-    font-size: 24px; /* アイコンのサイズ */
-    vertical-align: middle; /* ボタン内でアイコンを中央揃え */
+    font-size: 24px;
+    vertical-align: middle; 
 }

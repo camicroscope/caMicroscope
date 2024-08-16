@@ -212,9 +212,6 @@ function addbody(JSONdata){
 		heatdisp="<i class='fas fa-check'  style='color:green;'></i>"
 	}
 	var button = `<td>	<button class=\"btn btn-primary btn-sm\" data-id='${allSlides.length}' onclick='openDetails(this)'>Details</button></td>`
-	// var markup = "<tr><td>"+JSONdata.id+"</td><td>"+JSONdata.name+"</td><td>"+annodisp+"</td><td>"+heatdisp+"</td>"+button+"</tr>"
-	//  TODO 
-	// var visualization_button = `<td> <button class=\"btn btn-primary\" >Visualization</button></td>`
 	const visualization_button  = `<td>
                 <button class="btn btn-success btn-sm" data-id='${JSONdata.id}' onclick='openView(this)'>VisualGraph</span></button>
                 </button></td>`
