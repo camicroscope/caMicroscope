@@ -7,8 +7,8 @@ function renderChart(chartId, data) {
       datasets: [{
         label: 'Sample Data',
         data: data,
-        backgroundColor: 'rgba(75, 192, 192, 0.2)',
-        borderColor: 'rgba(75, 192, 192, 1)',
+        backgroundColor: backgroundColors.slice(0, values.length),
+        borderColor: borderColors.slice(0, values.length),
         borderWidth: 1,
       }],
     },
@@ -114,14 +114,22 @@ function createPresetLabelsChart(id, result) {
       label: 'Preset Labels Counts',
       data: aa.map((item) => item[1]),
       backgroundColor: [
-        'rgba(255, 99, 132, 0.2)',
-        'rgba(54, 162, 235, 0.2)',
-        'rgba(255, 206, 86, 0.2)',
+        'rgba(23, 162, 184, 0.95)',
+        'rgba(23, 142, 184, 0.95)',
+        'rgba(23, 123, 184, 0.95)',
+        'rgba(23, 104, 184, 0.95)',
+        'rgba(23, 181, 184, 0.95)',
+        'rgba(23, 184, 167, 0.95)',
+        'rgba(23, 184, 148, 0.95)',
       ],
       borderColor: [
-        'rgba(255, 99, 132, 1)',
-        'rgba(54, 162, 235, 1)',
-        'rgba(255, 206, 86, 1)',
+        'rgba(23, 162, 184, 1)', // rgba(23, 162, 184)
+        'rgba(23, 142, 184, 1)', // rgba(23, 142, 184)
+        'rgba(23, 123, 184, 1)', // rgba(23, 123, 184)
+        'rgba(23, 104, 184, 1)', // rgba(23, 104, 184)
+        'rgba(23, 181, 184, 1)', // rgba(23, 181, 184)
+        'rgba(23, 184, 167, 1)', // rgba(23, 184, 167)
+        'rgba(23, 184, 148, 1)', // rgba(23, 184, 148)
       ],
       borderWidth: 1,
     }],
