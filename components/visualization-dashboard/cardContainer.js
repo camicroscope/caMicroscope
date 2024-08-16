@@ -6,6 +6,13 @@
               <h3>Synopsis</h3>
               <div id="synopsis"></div>
           </div>
+          <div class="card" id="usersOfAnnotationsCard">
+              <button class="expand-btn" onclick="openModal('usersOfAnnotationsChart')">
+                  <span class="material-icons card-expand-icon">open_in_full</span>
+              </button>
+              <h3>Users of Annotations</h3>
+              <canvas id="usersOfAnnotationsChart"></canvas>
+          </div>
           <div class="card" id="drawAnnotationCard">
               <button class="expand-btn" onclick="openModal('drawAnnotationChart')">
                   <span class="material-icons card-expand-icon">open_in_full</span>
@@ -19,13 +26,6 @@
               </button>
               <h3>Preset Labels vs Preset Labels count</h3>
               <canvas id="presetLabelsDataChart"></canvas>
-          </div>
-          <div class="card" id="usersOfAnnotationsCard">
-              <button class="expand-btn" onclick="openModal('usersOfAnnotationsChart')">
-                  <span class="material-icons card-expand-icon">open_in_full</span>
-              </button>
-              <h3>Users of Annotations</h3>
-              <canvas id="usersOfAnnotationsChart"></canvas>
           </div>
       </div>
   `;
