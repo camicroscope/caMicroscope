@@ -38,6 +38,7 @@
 	<link rel="stylesheet" href="./table.css" />
   <link rel="stylesheet" href="./info.css" />
 	<link rel="shortcut icon" type="image/x-icon" href="/apps/landing/favicon.png">
+	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 </head>
 
 <body>
@@ -215,9 +216,9 @@ function addbody(JSONdata){
 	//  TODO 
 	// var visualization_button = `<td> <button class=\"btn btn-primary\" >Visualization</button></td>`
 	const visualization_button  = `<td>
-                <button class="btn btn-primary btn-sm" data-id='${JSONdata.id}' onclick='openView(this)'>Open</button>
+                <button class="btn btn-success btn-sm" data-id='${JSONdata.id}' onclick='openView(this)'>VisualGraph</span></button>
                 </button></td>`
-	var markup = "<tr><td>"+JSONdata.id+"</td><td>"+JSONdata.name+"</td><td>"+annodisp+"</td><td>"+heatdisp+"</td><td>"+button+"</td><td>"+visualization_button+"</td></tr>"
+	var markup = "<tr><td>"+JSONdata.id+"</td><td>"+JSONdata.name+"</td><td>"+annodisp+"</td><td>"+heatdisp+"</td><td>"+button+visualization_button+"</td></tr>"
 	table.append(markup);
 }
 
