@@ -33,7 +33,7 @@ function renderChart(chartId, data) {
 }
 
 // Graph
-function VisualizationViewer(id, result) {
+function createAnnotationZoomChart(id, result) {
   const ctx = document.getElementById(id);
   const aa = result;
   // console.log('id, result', id, result);

@@ -10,7 +10,7 @@
               <button class="expand-btn" onclick="openModal('chart1')">
                   <span class="material-icons card-expand-icon">open_in_full</span>
               </button>
-              <h3>Draw Annotation Count</h3>
+              <h3>Draw Annotation Count vs Zooming</h3>
               <canvas id="chart1"></canvas>
           </div>
           <div class="card" id="card2">
@@ -65,12 +65,12 @@
 </table>
 `;
   //  Create initiate graph
-  let initialZoomingData = visualizationLayerItems(getVisualizationData);
+  let DrawAnnotationData = prepareDrawAnnotationData(getVisualizationData);
   let presetLabelData = presetLabelsData(getVisualizationData);
   let creatorsData = creatorData(getVisualizationData);
 
   // Create Graph
-  VisualizationViewer('chart1', initialZoomingData);
+  createAnnotationZoomChart('chart1', DrawAnnotationData);
   PresetLabelsGraph('chart2', presetLabelData );
   drawPieChart('chart3', creatorsData);
 })();

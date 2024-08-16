@@ -1,22 +1,22 @@
 // Define function
-function visualizationLayerItems(getVisualizationData) {
-  let initialZoomingData = [];
-  // console.log('visualizationLayerItems--getVisualizationData', getVisualizationData);
+function prepareDrawAnnotationData(getVisualizationData) {
+  let DrawAnnotationData = [];
+  // console.log('prepareDrawAnnotationData--getVisualizationData', getVisualizationData);
 
   // Get initial data
   getVisualizationData.annotations.map((d) => {
-    // console.log('visualizationLayerItems--getVisualizationData--getVisualizationData.annotations', d);
+    // console.log('prepareDrawAnnotationData--getVisualizationData--getVisualizationData.annotations', d);
     d.geometries.features.map((detailData)=>{
-      // console.log('visualizationLayerItems--getVisualizationData--getVisualizationData.annotations-geometry', detailData);
+      // console.log('prepareDrawAnnotationData--getVisualizationData--getVisualizationData.annotations-geometry', detailData);
       if (detailData.viewerStates) {
         // eslint-disable-next-line max-len
-        // console.log('visualizationLayerItems--getVisualizationData--getVisualizationData.annotations-geometry--viewerStates', detailData.viewerStates);
-        initialZoomingData.push(roundToSecondDecimalPlace(detailData.viewerStates.z));
+        // console.log('prepareDrawAnnotationData--getVisualizationData--getVisualizationData.annotations-geometry--viewerStates', detailData.viewerStates);
+        DrawAnnotationData.push(roundToSecondDecimalPlace(detailData.viewerStates.z));
       }
     });
   });
-  // console.log('initialZoomingData', initialZoomingData);
-  let result = countOccurrences(initialZoomingData);
+  // console.log('DrawAnnotationData', DrawAnnotationData);
+  let result = countOccurrences(DrawAnnotationData);
 
   return result;
 }
