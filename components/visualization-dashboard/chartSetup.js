@@ -42,7 +42,7 @@ function createAnnotationZoomChart(id, result) {
     datasets: [{
       label: 'Human:Draw Annotation ',
       data: aa.map((item) => ({x: item[0], y: item[1]})),
-      backgroundColor: 'rgba(75, 192, 192, 1)',
+      backgroundColor: 'rgba(23, 162, 184, 1)',
       pointRadius: 5,
     }],
   };
