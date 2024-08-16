@@ -12,15 +12,35 @@ document.addEventListener('DOMContentLoaded', function() {
   document.body.insertAdjacentHTML('beforeend', modal);
 });
 
-function openModal(cardId, chartData) {
+function openModal(cardId) {
   const modal = document.getElementById('modal');
+  console.log('cardId', cardId);
 
   // 既存のグラフを削除して新しい canvas を作成
   const modalBody = document.getElementById('modal-body');
   modalBody.innerHTML = '<canvas id="modal-chart"></canvas>';
 
+
   // モーダルの中のグラフを描画
-  renderChart('modal-chart', chartData);
+  // renderChart('modal-chart', chartData);
+  switch (cardId) {
+    case 'chart1':
+      VisualizationViewer('modal-chart', visualizationLayerItems(getVisualizationData));
+      console.log('cardId', cardId);
+      break;
+    case 'chart2':
+      PresetLabelsGraph('modal-chart', presetLabelsData(getVisualizationData));
+      console.log('cardId', cardId);
+      break;
+    case 'chart3':
+      drawPieChart('modal-chart', creatorData(getVisualizationData));
+      console.log('cardId', cardId);
+      break;
+    default:
+      console.log('No valid chart selected');
+      break;
+  }
+
 
   // モーダルを表示
   modal.style.display = 'block';

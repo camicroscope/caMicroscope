@@ -7,21 +7,21 @@
               <div id="synopsis"></div>
           </div>
           <div class="card" id="card1">
-              <button class="expand-btn" onclick="openModal('card1', [12, 19, 3, 5, 2])">
+              <button class="expand-btn" onclick="openModal('chart1')">
                   <span class="material-icons card-expand-icon">open_in_full</span>
               </button>
               <h3>Draw Annotation Count</h3>
               <canvas id="chart1"></canvas>
           </div>
           <div class="card" id="card2">
-              <button class="expand-btn" onclick="openModal('card2', [5, 10, 15, 20, 25])">
+              <button class="expand-btn" onclick="openModal('chart2')">
                   <span class="material-icons card-expand-icon">open_in_full</span>
               </button>
               <h3>Preset Labels vs Preset Labels count</h3>
               <canvas id="chart2"></canvas>
           </div>
           <div class="card" id="card3">
-              <button class="expand-btn" onclick="openModal('card3', [3, 7, 11, 15, 19])">
+              <button class="expand-btn" onclick="openModal('chart3')">
                   <span class="material-icons card-expand-icon">open_in_full</span>
               </button>
               <h3>Users of Annotations</h3>
@@ -68,6 +68,7 @@
   let initialZoomingData = visualizationLayerItems(getVisualizationData);
   let presetLabelData = presetLabelsData(getVisualizationData);
   let creatorsData = creatorData(getVisualizationData);
+
   // Create Graph
   VisualizationViewer('chart1', initialZoomingData);
   PresetLabelsGraph('chart2', presetLabelData );
