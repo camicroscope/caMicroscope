@@ -24,15 +24,15 @@ function openModal(cardId) {
   // モーダルの中のグラフを描画
   // renderChart('modal-chart', chartData);
   switch (cardId) {
-    case 'chart1':
+    case 'drawAnnotationChart':
       createAnnotationZoomChart('modal-chart', prepareDrawAnnotationData(getVisualizationData));
       console.log('cardId', cardId);
       break;
-    case 'chart2':
+    case 'presetLabelsDataChart':
       createPresetLabelsChart('modal-chart', preparePresetLabelsData(getVisualizationData));
       console.log('cardId', cardId);
       break;
-    case 'chart3':
+    case 'usersOfAnnotationsChart':
       usersOfAnnotationsChart('modal-chart', prepareUsersOfAnnotationsData(getVisualizationData));
       console.log('cardId', cardId);
       break;

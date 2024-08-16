@@ -6,26 +6,26 @@
               <h3>Synopsis</h3>
               <div id="synopsis"></div>
           </div>
-          <div class="card" id="card1">
-              <button class="expand-btn" onclick="openModal('chart1')">
+          <div class="card" id="drawAnnotationCard">
+              <button class="expand-btn" onclick="openModal('drawAnnotationChart')">
                   <span class="material-icons card-expand-icon">open_in_full</span>
               </button>
               <h3>Draw Annotation Count vs Zooming</h3>
-              <canvas id="chart1"></canvas>
+              <canvas id="drawAnnotationChart"></canvas>
           </div>
-          <div class="card" id="card2">
-              <button class="expand-btn" onclick="openModal('chart2')">
+          <div class="card" id="presetLabelsDataCard">
+              <button class="expand-btn" onclick="openModal('presetLabelsDataChart')">
                   <span class="material-icons card-expand-icon">open_in_full</span>
               </button>
               <h3>Preset Labels vs Preset Labels count</h3>
-              <canvas id="chart2"></canvas>
+              <canvas id="presetLabelsDataChart"></canvas>
           </div>
-          <div class="card" id="card3">
-              <button class="expand-btn" onclick="openModal('chart3')">
+          <div class="card" id="usersOfAnnotationsCard">
+              <button class="expand-btn" onclick="openModal('usersOfAnnotationsChart')">
                   <span class="material-icons card-expand-icon">open_in_full</span>
               </button>
               <h3>Users of Annotations</h3>
-              <canvas id="chart3"></canvas>
+              <canvas id="usersOfAnnotationsChart"></canvas>
           </div>
       </div>
   `;
@@ -70,7 +70,7 @@
   let usersOfAnnotationsData = prepareUsersOfAnnotationsData(getVisualizationData);
 
   // Create Graph
-  createAnnotationZoomChart('chart1', drawAnnotationData);
-  createPresetLabelsChart('chart2', presetLabelsData );
-  usersOfAnnotationsChart('chart3', usersOfAnnotationsData);
+  createAnnotationZoomChart('drawAnnotationChart', drawAnnotationData);
+  createPresetLabelsChart('presetLabelsDataChart', presetLabelsData );
+  usersOfAnnotationsChart('usersOfAnnotationsChart', usersOfAnnotationsData);
 })();
