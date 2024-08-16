@@ -1,7 +1,7 @@
 // cardContainer.js
 (function() {
   const cardContainer = `
-      <div class="card-container">
+          <div class="card-container">
           <div class="card" id="card-original">
               <h3>Synopsis</h3>
               <div id="synopsis"></div>
@@ -71,6 +71,6 @@
 
   // Create Graph
   createAnnotationZoomChart('chart1', drawAnnotationData);
-  createPresetLabelsGraph('chart2', presetLabelsData );
+  createPresetLabelsChart('chart2', presetLabelsData );
   usersOfAnnotationsChart('chart3', usersOfAnnotationsData);
 })();

@@ -29,7 +29,7 @@ function openModal(cardId) {
       console.log('cardId', cardId);
       break;
     case 'chart2':
-      createPresetLabelsGraph('modal-chart', preparePresetLabelsData(getVisualizationData));
+      createPresetLabelsChart('modal-chart', preparePresetLabelsData(getVisualizationData));
       console.log('cardId', cardId);
       break;
     case 'chart3':
