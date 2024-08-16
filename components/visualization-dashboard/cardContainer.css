@@ -19,7 +19,7 @@
 
 /* 画面全体の背景色 */
 body {
-  background-color: rgba(255, 255, 255, .5);
+  background-color: #ddd;
   margin: 0;
   font-family: Arial, sans-serif;
 }
@@ -39,7 +39,7 @@ body {
 
 /* 各カードの共通スタイル */
 .card {
-  background-color: #f8f9fa;
+  background-color: #fcfcfc;
   border: 1px solid #ddd;
   border-radius: 2px;
   padding: 20px;
