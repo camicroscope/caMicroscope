@@ -16,13 +16,12 @@ function openModal(cardId) {
   const modal = document.getElementById('modal');
   console.log('cardId', cardId);
 
-  // 既存のグラフを削除して新しい canvas を作成
+  // Remove the existing chart and create a new canvas
   const modalBody = document.getElementById('modal-body');
   modalBody.innerHTML = '<canvas id="modal-chart"></canvas>';
 
 
-  // モーダルの中のグラフを描画
-  // renderChart('modal-chart', chartData);
+  // Render the chart inside the modal
   switch (cardId) {
     case 'drawAnnotationChart':
       createAnnotationZoomingChart('modal-chart', prepareDrawAnnotationData(getVisualizationData));
@@ -33,7 +32,7 @@ function openModal(cardId) {
       console.log('cardId', cardId);
       break;
     case 'usersOfAnnotationsChart':
-      usersOfAnnotationsChart('modal-chart', prepareUsersOfAnnotationsData(getVisualizationData));
+      createUsersOfAnnotationsChart('modal-chart', prepareUsersOfAnnotationsData(getVisualizationData));
       console.log('cardId', cardId);
       break;
     default:
@@ -42,7 +41,7 @@ function openModal(cardId) {
   }
 
 
-  // モーダルを表示
+  // Display the modal
   modal.style.display = 'block';
 }
 
@@ -51,7 +50,7 @@ function closeModal() {
   modal.style.display = 'none';
 }
 
-// モーダルの外側をクリックすると閉じる
+// Close the modal when clicking outside of it
 window.onclick = function(event) {
   const modal = document.getElementById('modal');
   if (event.target == modal) {

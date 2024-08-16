@@ -69,5 +69,5 @@
   // Create Chart
   createAnnotationZoomingChart('drawAnnotationChart', drawAnnotationData);
   createPresetLabelsChart('presetLabelsDataChart', presetLabelsData);
-  usersOfAnnotationsChart('usersOfAnnotationsChart', usersOfAnnotationsData);
+  createUsersOfAnnotationsChart('usersOfAnnotationsChart', usersOfAnnotationsData);
 })();

@@ -1,4 +1,4 @@
-function usersOfAnnotationsChart(id, data) {
+function createUsersOfAnnotationsChart(id, data) {
   // 円グラフを描画するキャンバスを取得
   const ctx = document.getElementById(id);
 
@@ -224,21 +224,4 @@ function createPresetLabelsChart(id, result) {
   });
 }
 
-// Preset Labels annotations
-function prepareUsersOfAnnotationsData(getVisualizationData) {
-  // console.log('creator', getVisualizationData.annotations[1].creator);
-  let initialData = [];
-  // Get initial data
-  getVisualizationData.annotations.map((d) => {
-    // console.log('getVisualizationData.annotations', d.properties.annotations.notes);
-    if (d.creator.length !== 0) {
-      initialData.push(d.creator);
-      // console.log('name', d.creator);
-    };
-  });
-  // console.log('initialData ', initialData );
-  let result = countOccurrencesFromString(initialData);
-  // console.log('result ', result);
-  return result;
-}
 
