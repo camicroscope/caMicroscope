@@ -1,34 +1,64 @@
-function renderChart(chartId, data) {
-  const ctx = document.getElementById(chartId).getContext('2d');
-  new Chart(ctx, {
-    type: 'bar', // グラフの種類を指定 (例: bar, line, etc.)
-    data: {
-      labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May'], // 横軸のラベル
-      datasets: [{
-        label: 'Sample Data',
-        data: data,
-        backgroundColor: backgroundColors.slice(0, values.length),
-        borderColor: borderColors.slice(0, values.length),
-        borderWidth: 1,
-      }],
-    },
-    options: {
-      scales: {
-        x: {
-          title: {
-            display: true,
-            text: 'Month', // 横軸のタイトル
+function usersOfAnnotationsChart(id, data) {
+  // 円グラフを描画するキャンバスを取得
+  const ctx = document.getElementById(id);
+
+  // データのラベルと値を分ける
+  const labels = data.map((item) => item[0]);
+  const values = data.map((item) => item[1]);
+
+  // 円グラフの色を定義
+  const backgroundColors = [
+    'rgba(23, 162, 184, 0.95)',
+    'rgba(23, 142, 184, 0.95)',
+    'rgba(23, 123, 184, 0.95)',
+    'rgba(23, 104, 184, 0.95)',
+    'rgba(23, 181, 184, 0.95)',
+    'rgba(23, 184, 167, 0.95)',
+    'rgba(23, 184, 148, 0.95)',
+  ];
+  const borderColors = [
+    'rgba(23, 162, 184, 1)', // rgba(23, 162, 184)
+    'rgba(23, 142, 184, 1)', // rgba(23, 142, 184)
+    'rgba(23, 123, 184, 1)', // rgba(23, 123, 184)
+    'rgba(23, 104, 184, 1)', // rgba(23, 104, 184)
+    'rgba(23, 181, 184, 1)', // rgba(23, 181, 184)
+    'rgba(23, 184, 167, 1)', // rgba(23, 184, 167)
+    'rgba(23, 184, 148, 1)', // rgba(23, 184, 148)
+  ];
+
+  // 円グラフのデータセット
+  const chartData = {
+    labels: labels,
+    datasets: [{
+      data: values,
+      backgroundColor: backgroundColors.slice(0, values.length),
+      borderColor: borderColors.slice(0, values.length),
+      borderWidth: 1,
+    }],
+  };
+
+  // 円グラフのオプション
+  const options = {
+    plugins: {
+      tooltip: {
+        callbacks: {
+          label: function(context) {
+            const label = context.label || '';
+            const value = context.parsed || 0;
+            const total = context.chart._metasets[context.datasetIndex].total;
+            const percentage = ((value / total) * 100).toFixed(2) + '%';
+            return 'user:' + label + ': ' + value + '(' + percentage + ')';
           },
-        },
-        y: {
-          title: {
-            display: true,
-            text: 'Value', // 縦軸のタイトル
-          },
-          beginAtZero: true, // Y軸の最小値を0に設定
         },
       },
     },
+  };
+
+  // 円グラフを描画
+  new Chart(ctx, {
+    type: 'pie',
+    data: chartData,
+    options: options,
   });
 }
 
@@ -212,66 +242,3 @@ function prepareUsersOfAnnotationsData(getVisualizationData) {
   return result;
 }
 
-function usersOfAnnotationsChart(id, data) {
-  // 円グラフを描画するキャンバスを取得
-  const ctx = document.getElementById(id);
-
-  // データのラベルと値を分ける
-  const labels = data.map((item) => item[0]);
-  const values = data.map((item) => item[1]);
-
-  // 円グラフの色を定義
-  const backgroundColors = [
-    'rgba(23, 162, 184, 0.95)',
-    'rgba(23, 142, 184, 0.95)',
-    'rgba(23, 123, 184, 0.95)',
-    'rgba(23, 104, 184, 0.95)',
-    'rgba(23, 181, 184, 0.95)',
-    'rgba(23, 184, 167, 0.95)',
-    'rgba(23, 184, 148, 0.95)',
-  ];
-  const borderColors = [
-    'rgba(23, 162, 184, 1)', // rgba(23, 162, 184)
-    'rgba(23, 142, 184, 1)', // rgba(23, 142, 184)
-    'rgba(23, 123, 184, 1)', // rgba(23, 123, 184)
-    'rgba(23, 104, 184, 1)', // rgba(23, 104, 184)
-    'rgba(23, 181, 184, 1)', // rgba(23, 181, 184)
-    'rgba(23, 184, 167, 1)', // rgba(23, 184, 167)
-    'rgba(23, 184, 148, 1)', // rgba(23, 184, 148)
-  ];
-
-  // 円グラフのデータセット
-  const chartData = {
-    labels: labels,
-    datasets: [{
-      data: values,
-      backgroundColor: backgroundColors.slice(0, values.length),
-      borderColor: borderColors.slice(0, values.length),
-      borderWidth: 1,
-    }],
-  };
-
-  // 円グラフのオプション
-  const options = {
-    plugins: {
-      tooltip: {
-        callbacks: {
-          label: function(context) {
-            const label = context.label || '';
-            const value = context.parsed || 0;
-            const total = context.chart._metasets[context.datasetIndex].total;
-            const percentage = ((value / total) * 100).toFixed(2) + '%';
-            return 'user:' + label + ': ' + value + '(' + percentage + ')';
-          },
-        },
-      },
-    },
-  };
-
-  // 円グラフを描画
-  new Chart(ctx, {
-    type: 'pie',
-    data: chartData,
-    options: options,
-  });
-}
