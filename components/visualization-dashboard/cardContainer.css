@@ -1,125 +1,4 @@
-
-/* 拡大ボタン */
-.expand-btn {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background-color: #f8f9fa;
-    color: #515555;
-    border: none;
-    padding: 5px 10px;
-    cursor: pointer;
-    border-radius: 5px;
-    font-size: 14px;
-}
-
-.expand-btn:hover {
-    background-color: #a0a0a0;
-}
-
-/* 画面全体の背景色 */
-body {
-  background-color: #ddd;
-  margin: 0;
-  font-family: Arial, sans-serif;
-}
-
-/* カードのコンテナ */
-.card-container {
-  padding: 20px;
-  box-sizing: border-box;
-  margin: 0 auto; /* 水平中央揃え */
-}
-
-/* 行ごとのスタイル */
-.row {
-  display: flex;
-  justify-content: space-between;
-}
-
-/* 各カードの共通スタイル */
-.card {
-  background-color: #fcfcfc;
-  border: 1px solid #ddd;
-  border-radius: 2px;
-  padding: 20px;
-  box-sizing: border-box;
-  text-align: left;
-  margin: 4px;
-  overflow: hidden;
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  align-items: flex-start;
-}
-
-/* 上の段のカード */
-.card-1 {
-  width: 40%;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-}
-
-.card-2, .card-3, .card-4 {
-  width: 20%;
-}
-
-.card-2, .card-3 {
-  align-items: center; /* Center alignment for cards with .number */
-  justify-content: center;
-}
-
-/* 下の段のカード */
-.card-5, .card-6 {
-  width: 50%;
-  height: 80%;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-}
-
-/* テキスト位置調整 */
-.card-1 {
-  margin-bottom: 5px; /* スペースを半分にする */
-}
-.card h3 {
-  margin-bottom: 18px;
-  text-align: left;
-}
-
-.card h4 {
-  margin: 0;
-  text-align: left;
-}
-
-
-/* テキストのオーバーフロー処理 */
-.card h4, .card h1, .card h2, .card h3 {
-  display: block;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.card:hover h4, .card:hover h1, .card:hover h2 {
-  white-space: normal;
-}
-
-/* 数字の表示スタイル */
-.number {
-  font-size: 80px;
-  font-weight: bold;
-  text-align: center;
-  display: flex;
-  justify-content: center; /* Center horizontally */
-  align-items: center; /* Center vertically */
-  width: 100%;
-  height: 100%; /* Ensure the div takes full space */
-}
-
-/* 拡大ボタン */
+/* Expand button */
 .expand-btn {
   position: absolute;
   top: 10px;
@@ -137,49 +16,168 @@ body {
   background-color: #a0a0a0;
 }
 
-.card-expand-icon {
-  color: #515555;
+/* Background color of the entire screen */
+body {
+background-color: #ddd;
+margin: 0;
+font-family: Arial, sans-serif;
 }
 
-/* カード内の中央揃えの赤い背景色のコンテンツ */
+/* Container for cards */
+.card-container {
+padding: 20px;
+box-sizing: border-box;
+margin: 0 auto;
+}
+
+/* Style for rows */
+.row {
+display: flex;
+justify-content: space-between;
+}
+
+/* Common style for each card */
+.card {
+background-color: #fcfcfc;
+border: 1px solid #ddd;
+border-radius: 2px;
+padding: 20px;
+box-sizing: border-box;
+text-align: left;
+margin: 4px;
+overflow: hidden;
+position: relative;
+display: flex;
+flex-direction: column;
+justify-content: flex-start;
+align-items: flex-start;
+}
+
+/* Style for cards in the upper row */
+.card-1 {
+width: 40%;
+display: flex;
+flex-direction: column;
+justify-content: space-between;
+}
+
+.card-2, .card-3, .card-4 {
+width: 20%;
+}
+
+.card-2, .card-3 {
+align-items: center;
+justify-content: center;
+}
+
+/* Style for cards in the lower row */
+.card-5, .card-6 {
+width: 50%;
+height: 80%;
+display: flex;
+flex-direction: column;
+justify-content: flex-start;
+}
+
+/* Text positioning adjustments */
+.card-1 {
+margin-bottom: 5px;
+}
+.card h3 {
+margin-bottom: 18px;
+text-align: left;
+}
+
+.card h4 {
+margin: 0;
+text-align: left;
+}
+
+/* Text overflow handling */
+.card h4, .card h1, .card h2, .card h3 {
+display: block;
+overflow: hidden;
+text-overflow: ellipsis;
+white-space: nowrap;
+}
+
+.card:hover h4, .card:hover h1, .card:hover h2 {
+white-space: normal;
+}
+
+/* Number display style */
+.number {
+font-size: 80px;
+font-weight: bold;
+text-align: center;
+display: flex;
+justify-content: center;
+align-items: center;
+width: 100%;
+height: 100%;
+}
+
+/* Expand button */
+.expand-btn {
+position: absolute;
+top: 10px;
+right: 10px;
+background-color: #f8f9fa;
+color: #515555;
+border: none;
+padding: 5px 10px;
+cursor: pointer;
+border-radius: 5px;
+font-size: 14px;
+}
+
+.expand-btn:hover {
+background-color: #a0a0a0;
+}
+
+.card-expand-icon {
+color: #515555;
+}
+
+/* Centered content with red background in card */
 .card-content {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  margin-top: 10px;
+width: 100%;
+display: flex;
+justify-content: center;
+margin-top: 10px;
 }
 
 .centered-content-small {
-  background-color: rgb(255, 255, 255);
-  color: white;
-  padding: 10px;
-  border-radius: 4px;
-  width: 80%;
-  text-align: center;
-  margin: 10px 0;
+background-color: rgb(255, 255, 255);
+color: white;
+padding: 10px;
+border-radius: 4px;
+width: 80%;
+text-align: center;
+margin: 10px 0;
 }
 
 .centered-content {
-  background-color: rgb(255, 255, 255);
-  color: white;
-  padding: 10px;
-  border-radius: 4px;
-  width: 80%;
-  height: 35vh;
-  text-align: center;
-  margin: 10px auto; /* 横方向中央揃え */
-  align-self: center; /* 親要素内で中央に配置 */
+background-color: rgb(255, 255, 255);
+color: white;
+padding: 10px;
+border-radius: 4px;
+width: 80%;
+height: 35vh;
+text-align: center;
+margin: 10px auto;
+align-self: center;
 }
 
-/* スマートフォンとiPadで縦一列にするためのメディアクエリ */
+/* Media query for displaying in a single column on smartphones and iPads */
 @media (max-width: 768px) {
-  .row {
-      flex-direction: column;
-      align-items: center;
-  }
+.row {
+    flex-direction: column;
+    align-items: center;
+}
 
-  .card {
-      width: 100%;
-      margin: 10px 0;
-  }
+.card {
+    width: 100%;
+    margin: 10px 0;
+}
 }

@@ -7,7 +7,6 @@
     heatmaps: getVisualizationData.heatmap.length,
   };
 
-  // HTMLテンプレートの定義
   const cardContainer = `
       <div class="card-container">
           <div class="row">
@@ -62,13 +61,13 @@
 
   document.body.insertAdjacentHTML('beforeend', cardContainer);
 
-  // Create initiate graph
+  // Prepare Data
   let drawAnnotationData = prepareDrawAnnotationData(getVisualizationData);
   let presetLabelsData = preparePresetLabelsData(getVisualizationData);
   let usersOfAnnotationsData = prepareUsersOfAnnotationsData(getVisualizationData);
 
-  // Create Graph
-  createAnnotationZoomChart('drawAnnotationChart', drawAnnotationData);
+  // Create Chart
+  createAnnotationZoomingChart('drawAnnotationChart', drawAnnotationData);
   createPresetLabelsChart('presetLabelsDataChart', presetLabelsData);
   usersOfAnnotationsChart('usersOfAnnotationsChart', usersOfAnnotationsData);
 })();

@@ -63,7 +63,7 @@ function usersOfAnnotationsChart(id, data) {
 }
 
 // Graph
-function createAnnotationZoomChart(id, result) {
+function createAnnotationZoomingChart(id, result) {
   const ctx = document.getElementById(id);
   const aa = result;
   // console.log('id, result', id, result);

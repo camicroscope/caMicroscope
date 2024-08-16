@@ -25,7 +25,7 @@ function openModal(cardId) {
   // renderChart('modal-chart', chartData);
   switch (cardId) {
     case 'drawAnnotationChart':
-      createAnnotationZoomChart('modal-chart', prepareDrawAnnotationData(getVisualizationData));
+      createAnnotationZoomingChart('modal-chart', prepareDrawAnnotationData(getVisualizationData));
       console.log('cardId', cardId);
       break;
     case 'presetLabelsDataChart':
