@@ -33,7 +33,7 @@ function openModal(cardId) {
       console.log('cardId', cardId);
       break;
     case 'chart3':
-      drawPieChart('modal-chart', creatorData(getVisualizationData));
+      usersOfAnnotationsChart('modal-chart', prepareUsersOfAnnotationsData(getVisualizationData));
       console.log('cardId', cardId);
       break;
     default:

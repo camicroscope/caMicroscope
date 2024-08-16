@@ -67,10 +67,10 @@
   //  Create initiate graph
   let drawAnnotationData = prepareDrawAnnotationData(getVisualizationData);
   let presetLabelsData = preparePresetLabelsData(getVisualizationData);
-  let creatorsData = creatorData(getVisualizationData);
+  let usersOfAnnotationsData = prepareUsersOfAnnotationsData(getVisualizationData);
 
   // Create Graph
   createAnnotationZoomChart('chart1', drawAnnotationData);
   createPresetLabelsGraph('chart2', presetLabelsData );
-  drawPieChart('chart3', creatorsData);
+  usersOfAnnotationsChart('chart3', usersOfAnnotationsData);
 })();

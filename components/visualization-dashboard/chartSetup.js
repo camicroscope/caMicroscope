@@ -187,7 +187,7 @@ function createPresetLabelsGraph(id, result) {
 }
 
 // Preset Labels annotations
-function creatorData(getVisualizationData) {
+function prepareUsersOfAnnotationsData(getVisualizationData) {
   // console.log('creator', getVisualizationData.annotations[1].creator);
   let initialData = [];
   // Get initial data
@@ -204,7 +204,7 @@ function creatorData(getVisualizationData) {
   return result;
 }
 
-function drawPieChart(id, data) {
+function usersOfAnnotationsChart(id, data) {
   // 円グラフを描画するキャンバスを取得
   const ctx = document.getElementById(id);
 
