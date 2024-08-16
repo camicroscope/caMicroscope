@@ -103,7 +103,7 @@ function createAnnotationZoomChart(id, result) {
   });
 };
 
-function PresetLabelsGraph(id, result) {
+function createPresetLabelsGraph(id, result) {
   const ctx = document.getElementById(id);
   const aa = result;
   // console.log('id, result', id, result);

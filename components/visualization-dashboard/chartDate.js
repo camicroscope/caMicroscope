@@ -50,8 +50,8 @@ function countOccurrences(arr) {
 }
 
 // Preset Labels annotations
-function presetLabelsData(getVisualizationData) {
-  // console.log('presetLabelsData', getVisualizationData.annotations[1].properties.annotations.name);
+function preparePresetLabelsData(getVisualizationData) {
+  // console.log('preparePresetLabelsData', getVisualizationData.annotations[1].properties.annotations.name);
   let initialData = [];
   // Get initial data
   getVisualizationData.annotations.map((d) => {

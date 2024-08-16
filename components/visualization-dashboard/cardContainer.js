@@ -66,11 +66,11 @@
 `;
   //  Create initiate graph
   let DrawAnnotationData = prepareDrawAnnotationData(getVisualizationData);
-  let presetLabelData = presetLabelsData(getVisualizationData);
+  let presetLabelsData = preparePresetLabelsData(getVisualizationData);
   let creatorsData = creatorData(getVisualizationData);
 
   // Create Graph
   createAnnotationZoomChart('chart1', DrawAnnotationData);
-  PresetLabelsGraph('chart2', presetLabelData );
+  createPresetLabelsGraph('chart2', presetLabelsData );
   drawPieChart('chart3', creatorsData);
 })();
