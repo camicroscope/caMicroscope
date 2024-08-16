@@ -7,7 +7,6 @@ function prepareDrawAnnotationData(getVisualizationData) {
   getVisualizationData.annotations.map((d) => {
     // console.log('prepareDrawAnnotationData--getVisualizationData--getVisualizationData.annotations', d);
     d.geometries.features.map((detailData)=>{
-      // console.log('prepareDrawAnnotationData--getVisualizationData--getVisualizationData.annotations-geometry', detailData);
       if (detailData.viewerStates) {
         // eslint-disable-next-line max-len
         // console.log('prepareDrawAnnotationData--getVisualizationData--getVisualizationData.annotations-geometry--viewerStates', detailData.viewerStates);
