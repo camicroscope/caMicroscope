@@ -1,23 +1,3 @@
-/* カードのコンテナ */
-.card-container {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-around;
-    margin: 20px;
-}
-
-/* 各カード */
-.card {
-    background-color: #f8f9fa;
-    /* border: 1px solid #ddd; */
-    border-radius: 10px;
-    padding: 20px;
-    margin: 10px;
-    flex: 1 1 calc(33.333% - 40px);
-    box-sizing: border-box;
-    text-align: center;
-    position: relative;
-}
 
 /* 拡大ボタン */
 .expand-btn {
@@ -37,54 +17,169 @@
     background-color: #a0a0a0;
 }
 
-/* カード内のタイトルを左揃えにする */
+/* 画面全体の背景色 */
+body {
+  background-color: rgba(255, 255, 255, .5);
+  margin: 0;
+  font-family: Arial, sans-serif;
+}
+
+/* カードのコンテナ */
+.card-container {
+  padding: 20px;
+  box-sizing: border-box;
+  margin: 0 auto; /* 水平中央揃え */
+}
+
+/* 行ごとのスタイル */
+.row {
+  display: flex;
+  justify-content: space-between;
+}
+
+/* 各カードの共通スタイル */
+.card {
+  background-color: #f8f9fa;
+  border: 1px solid #ddd;
+  border-radius: 2px;
+  padding: 20px;
+  box-sizing: border-box;
+  text-align: left;
+  margin: 4px;
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+
+/* 上の段のカード */
+.card-1 {
+  width: 40%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.card-2, .card-3, .card-4 {
+  width: 20%;
+}
+
+.card-2, .card-3 {
+  align-items: center; /* Center alignment for cards with .number */
+  justify-content: center;
+}
+
+/* 下の段のカード */
+.card-5, .card-6 {
+  width: 50%;
+  height: 80%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+/* テキスト位置調整 */
+.card-1 {
+  margin-bottom: 5px; /* スペースを半分にする */
+}
 .card h3 {
-    text-align: left;
-    margin-top: 0;
+  margin-bottom: 18px;
+  text-align: left;
+}
+
+.card h4 {
+  margin: 0;
+  text-align: left;
+}
+
+
+/* テキストのオーバーフロー処理 */
+.card h4, .card h1, .card h2, .card h3 {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.card:hover h4, .card:hover h1, .card:hover h2 {
+  white-space: normal;
+}
+
+/* 数字の表示スタイル */
+.number {
+  font-size: 80px;
+  font-weight: bold;
+  text-align: center;
+  display: flex;
+  justify-content: center; /* Center horizontally */
+  align-items: center; /* Center vertically */
+  width: 100%;
+  height: 100%; /* Ensure the div takes full space */
+}
+
+/* 拡大ボタン */
+.expand-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: #f8f9fa;
+  color: #515555;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+  border-radius: 5px;
+  font-size: 14px;
+}
+
+.expand-btn:hover {
+  background-color: #a0a0a0;
 }
 
 .card-expand-icon {
-    color: #515555;  
+  color: #515555;
 }
 
-table {
-    border-collapse: collapse;
-    border: 2px solid rgb(140 140 140);
-    font-family: sans-serif;
-    font-size: 0.8rem;
-    letter-spacing: 1px;
+/* カード内の中央揃えの赤い背景色のコンテンツ */
+.card-content {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+.centered-content-small {
+  background-color: rgb(255, 255, 255);
+  color: white;
+  padding: 10px;
+  border-radius: 4px;
+  width: 80%;
+  text-align: center;
+  margin: 10px 0;
+}
+
+.centered-content {
+  background-color: rgb(255, 255, 255);
+  color: white;
+  padding: 10px;
+  border-radius: 4px;
+  width: 80%;
+  height: 35vh;
+  text-align: center;
+  margin: 10px auto; /* 横方向中央揃え */
+  align-self: center; /* 親要素内で中央に配置 */
+}
+
+/* スマートフォンとiPadで縦一列にするためのメディアクエリ */
+@media (max-width: 768px) {
+  .row {
+      flex-direction: column;
+      align-items: center;
   }
-  
-  caption {
-    caption-side: bottom;
-    padding: 10px;
-    font-weight: bold;
+
+  .card {
+      width: 100%;
+      margin: 10px 0;
   }
-  
-  thead,
-  tfoot {
-    background-color: rgb(228 240 245);
-  }
-  
-  th,
-  td {
-    border: 1px solid rgb(160 160 160);
-    padding: 8px 10px;
-  }
-  
-  td:last-of-type {
-    text-align: center;
-  }
-  
-  tbody > tr:nth-of-type(even) {
-    background-color: rgb(237 238 242);
-  }
-  
-  tfoot th {
-    text-align: right;
-  }
-  
-  tfoot td {
-    font-weight: bold;
-  }
-  
+}
