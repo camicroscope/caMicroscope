@@ -148,8 +148,8 @@ margin-top: 10px;
 }
 
 .centered-content-small {
-background-color: rgb(255, 255, 255);
-color: white;
+background-color: #fcfcfc;
+color: #fcfcfc;
 padding: 10px;
 border-radius: 4px;
 width: 80%;
@@ -158,8 +158,8 @@ margin: 10px 0;
 }
 
 .centered-content {
-background-color: rgb(255, 255, 255);
-color: white;
+background-color: #fcfcfc;
+color: #fcfcfc;
 padding: 10px;
 border-radius: 4px;
 width: 80%;
@@ -177,7 +177,6 @@ align-self: center;
 }
 
 .card {
-    width: 100%;
     margin: 10px 0;
 }
 }
