@@ -8,6 +8,13 @@ $('#goBack').click(function() {
   window.history.back();
 });
 
+// Keydown event for the back button
+$('#goBack').keydown(function(e) {
+    if (e.keyCode === 13) {
+      window.history.back();
+  }
+});
+
 // initialize Step 1
 function dataSelect() {
   $('.navbar-brand').text(' Workbench - Step 1');

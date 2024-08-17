@@ -67,3 +67,21 @@
     margin-left: 0 !important;
   }
 }
+.navbar .nav-item .dropdown .options-button {
+  background-color: #000;
+  color: #fff;
+  border: none;
+}
+
+.focus-visible:focus-visible {
+  outline: 3px solid #000;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 5px rgb(23, 162, 184);
+}
+
+/* For browsers that don't support :focus-visible */
+.focus-visible:focus {
+  outline: 3px solid #000;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 5px rgb(23, 162, 184);
+}

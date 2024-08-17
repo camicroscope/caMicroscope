@@ -705,8 +705,6 @@ function closestPointOnLineSegment(px, py, x1, y1, x2, y2) {
   const dx = x2 - x1;
   const dy = y2 - y1;
   const t = ((px - x1) * dx + (py - y1) * dy) / (dx * dx + dy * dy);
-
-
   if (t < 0) {
     return {x: x1, y: y1};
   } else if (t > 1) {
@@ -728,13 +726,11 @@ function closestPointOnPolygon(polygon, px, py) {
     const closest = closestPointOnLineSegment(px, py, edgeStart[0], edgeStart[1], edgeEnd[0], edgeEnd[1]);
     const d = distance(px, py, closest.x, closest.y);
 
-
     if (d < closestDistance) {
       closestDistance = d;
       closestIndex = i;
     }
   }
-
 
   return closestIndex;
 }
@@ -762,6 +758,7 @@ function isPointInsidePolygon(point, polygon) {
     if (y === y1 && y1 === y2 && (x1 <= x && x <= x2 || x2 <= x && x <= x1)) {
       return true;
     }
+
     if ((y1 < y && y < y2 || y2 < y && y < y1) && x < Math.max(x1, x2)) {
       const intersectionX = (y - y1) * (x2 - x1) / (y2 - y1) + x1;
       if (x < intersectionX) {
@@ -1449,7 +1446,7 @@ const currentYear = new Date().getFullYear();
 
 const footerContent = `
   <p>U24 CA18092401A1, <b>Tools to Analyze Morphology and Spatially Mapped Molecular Data</b></p>
-  <p id='contact'>Spot a Bug? <a href='https://github.com/camicroscope/caMicroscope/issues' target='_blank'>Report it!</a></p>
+  <p id='contact'>Spot a Bug? <span class='report-link'><a href='https://github.com/camicroscope/caMicroscope/issues' target='_blank'>Report it!</a></p>
   <hr />
   <p class='copyright'>Copyright &copy; ${currentYear} <span class='company-name'><a href="https://camicroscope.org/" target='_blank'>caMicroscope</a></span></p>
 `;
