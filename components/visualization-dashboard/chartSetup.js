@@ -1,12 +1,12 @@
 function createUsersOfAnnotationsChart(id, data) {
-  // 円グラフを描画するキャンバスを取得
+  // Get the canvas to draw the pie chart
   const ctx = document.getElementById(id);
 
-  // データのラベルと値を分ける
+  // Separate the labels and values from the data
   const labels = data.map((item) => item[0]);
   const values = data.map((item) => item[1]);
 
-  // 円グラフの色を定義
+  // Define the colors for the pie chart
   const backgroundColors = [
     'rgba(23, 162, 184, 0.95)',
     'rgba(23, 142, 184, 0.95)',
@@ -26,7 +26,7 @@ function createUsersOfAnnotationsChart(id, data) {
     'rgba(23, 184, 148, 1)', // rgba(23, 184, 148)
   ];
 
-  // 円グラフのデータセット
+  // Data set for the pie chart
   const chartData = {
     labels: labels,
     datasets: [{
@@ -37,7 +37,7 @@ function createUsersOfAnnotationsChart(id, data) {
     }],
   };
 
-  // 円グラフのオプション
+  // Options for the pie chart
   const options = {
     plugins: {
       tooltip: {
@@ -54,7 +54,7 @@ function createUsersOfAnnotationsChart(id, data) {
     },
   };
 
-  // 円グラフを描画
+  // Draw the pie chart
   new Chart(ctx, {
     type: 'pie',
     data: chartData,
@@ -67,7 +67,7 @@ function createAnnotationZoomingChart(id, result) {
   const ctx = document.getElementById(id);
   const aa = result;
   // console.log('id, result', id, result);
-  // define data
+  // Define data
   var data = {
     datasets: [{
       label: 'Human:Draw Annotation ',
@@ -80,7 +80,7 @@ function createAnnotationZoomingChart(id, result) {
   // Get the maximum value of the data set and add 1 to the maximum value
   var maxYValue = Math.max(...data.datasets[0].data.map((d)=> d.y)) + 1;
 
-  // setting option
+  // Setting options
   var options = {
     plugins: {
       title: {
@@ -107,7 +107,7 @@ function createAnnotationZoomingChart(id, result) {
         },
       },
       y: {
-        beginAtZero: true, //  Set vertical axis to start from 0
+        beginAtZero: true, // Set vertical axis to start from 0
         title: {
           display: true,
           text: 'Draw Annotation Count',
@@ -125,7 +125,7 @@ function createAnnotationZoomingChart(id, result) {
     },
   };
 
-  // Create
+  // Create the graph
   new Chart(ctx, {
     type: 'scatter',
     data: data,
@@ -137,7 +137,7 @@ function createPresetLabelsChart(id, result) {
   const ctx = document.getElementById(id);
   const aa = result;
   // console.log('id, result', id, result);
-  // データ定義
+  // Define data
   var data = {
     labels: aa.map((item) => item[0]),
     datasets: [{
@@ -165,10 +165,10 @@ function createPresetLabelsChart(id, result) {
     }],
   };
 
-  // データセットの最大値に1を加えたものを取得
+  // Get the maximum value of the dataset and add 1 to it
   var maxYValue = Math.max(...data.datasets[0].data) + 1;
 
-  // オプション設定
+  // Set options
   var options = {
     plugins: {
       title: {
@@ -216,12 +216,10 @@ function createPresetLabelsChart(id, result) {
     },
   };
 
-  // グラフの作成
+  // Create the chart
   new Chart(ctx, {
     type: 'bar',
     data: data,
     options: options,
   });
 }
-
-
