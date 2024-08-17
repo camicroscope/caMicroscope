@@ -1,20 +1,15 @@
 // DrawAnnotationData
 function prepareDrawAnnotationData(getVisualizationData) {
   let DrawAnnotationData = [];
-  // console.log('prepareDrawAnnotationData--getVisualizationData', getVisualizationData);
 
   // Get initial data
   getVisualizationData.annotations.map((d) => {
-    // console.log('prepareDrawAnnotationData--getVisualizationData--getVisualizationData.annotations', d);
     d.geometries.features.map((detailData)=>{
       if (detailData.viewerStates) {
-        // eslint-disable-next-line max-len
-        // console.log('prepareDrawAnnotationData--getVisualizationData--getVisualizationData.annotations-geometry--viewerStates', detailData.viewerStates);
         DrawAnnotationData.push(roundToSecondDecimalPlace(detailData.viewerStates.z));
       }
     });
   });
-  // console.log('DrawAnnotationData', DrawAnnotationData);
   let result = countOccurrences(DrawAnnotationData);
 
   return result;
@@ -50,11 +45,9 @@ function countOccurrences(arr) {
 
 // Preset Labels annotations
 function preparePresetLabelsData(getVisualizationData) {
-  // console.log('preparePresetLabelsData', getVisualizationData.annotations[1].properties.annotations.name);
   let initialData = [];
   // Get initial data
   getVisualizationData.annotations.map((d) => {
-    // console.log('getVisualizationData.annotations', d.properties.annotations.notes);
     if (d.properties.annotations.name == d.properties.annotations.notes) {
       initialData.push(d.properties.annotations.name);
     };
@@ -64,46 +57,33 @@ function preparePresetLabelsData(getVisualizationData) {
 }
 
 function countOccurrencesFromString(arr) {
-  // console.log('arr', arr);
-  // 文字列用のカウントマップを作成
   let countMap = {};
 
-  // 配列の各要素をカウント
   arr.forEach(function(value) {
-    // 文字列以外の場合は処理をスキップ
     if (typeof value !== 'string') {
       return;
     }
 
-    // カウントマップに追加またはインクリメント
     if (countMap[value] === undefined) {
       countMap[value] = 1;
     } else {
       countMap[value]++;
     }
   });
-  // console.log(countMap);
-  // カウントマップを2次元配列に変換
   let countArray = Object.entries(countMap).map(([key, value]) => [key, value]);
 
-  // console.log(countArray);
   return countArray;
 }
 
 // Users of Annotations
 function prepareUsersOfAnnotationsData(getVisualizationData) {
-  // console.log('creator', getVisualizationData.annotations[1].creator);
   let initialData = [];
   // Get initial data
   getVisualizationData.annotations.map((d) => {
-    // console.log('getVisualizationData.annotations', d.properties.annotations.notes);
     if (d.creator.length !== 0) {
       initialData.push(d.creator);
-      // console.log('name', d.creator);
     };
   });
-  // console.log('initialData ', initialData );
   let result = countOccurrencesFromString(initialData);
-  // console.log('result ', result);
   return result;
 }

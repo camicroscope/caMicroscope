@@ -40,7 +40,7 @@
 
 #modal-chart {
     max-width: 100%;
-    max-height: 600px; /* 必要に応じて高さを調整 */
+    max-height: 600px;
     width: auto;
     height: auto;
 }

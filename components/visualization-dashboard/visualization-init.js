@@ -3,13 +3,11 @@ function test() {
 };
 
 async function initialize() {
-  // クエリパラメータからIDを取得する関数
   function getQueryParam(param) {
     const urlParams = new URLSearchParams(window.location.search);
     return urlParams.get(param);
   }
 
-  // 取得したIDを使ってコンテンツを表示する
   const slideId = getQueryParam('slideId');
 
   const store = new Store('../data/');
@@ -42,17 +40,12 @@ async function initialize() {
 
         if (slideId == JSONdata.id) {
           getVisualizationData = {...JSONdata};
-          console.log('aaa');
-          // getVisualizationData.push(JSONdata);
         }
       } catch (error) {
         console.error('Error finding slides:', error);
       }
-      // console.log('a b', getVisualizationData);
     }
   } catch (error) {
     console.error('Error finding slides:', error);
   };
 }
-// Initialize the process
-//  initialize();
