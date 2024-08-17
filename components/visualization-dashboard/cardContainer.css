@@ -177,6 +177,9 @@ align-self: center;
 }
 
 .card {
-    margin: 10px 0;
+  margin: 10px 0;
+  width: 90%;
+  max-width: 400px;
+  min-width: 300px;
 }
 }
