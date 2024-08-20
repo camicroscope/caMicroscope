@@ -67,9 +67,8 @@
     margin-left: 0 !important;
   }
 }
-.navbar .nav-item .dropdown .options-button {
-  background-color: #000;
-  color: #fff;
+.navbar .nav-item .options-button {
+  color: #000;
   border: none;
 }
 
