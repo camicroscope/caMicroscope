@@ -271,6 +271,7 @@ function initCore() {
               return Math.round(num * factor) / factor;
             }
 
+
             body = convertHumanAnnotationToPopupBody(attributes);
             if (
               data.geometries &&
