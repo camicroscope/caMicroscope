@@ -73,12 +73,12 @@ async function initUIcomponents() {
       <form class="form-style" action="#">
         <ul>
           <li>
-            <label align="left"> Name:  </label>
+            <label for="name" align="left"> Name:  </label>
             <input name="name" id="name" type="text" required />
             <span> Name of the model </span>
           </li>
           <li>
-            <label align="left"> Input patch size: </label>
+            <label for="imageSize" align="left"> Input patch size: </label>
             <input name="imageSize" id="imageSize" type="number" required />
             <span> The image size on which the model is trained (y x y)</span>
           </li>
@@ -100,8 +100,8 @@ async function initUIcomponents() {
 
           <label class="switch"><input type="checkbox" id="togBtn"><div class="slider"></div></label> <br> <br>
           <div class="checkfalse"><div>Select model.json first followed by the weight binaries.</div> <br>
-          <input name="filesupload" id="modelupload" type="file" required/><br><br>
-          <input name="filesupload" id="weightsupload" type="file" multiple="" required/> <br> <br> </div>
+          <input name="filesupload" id="modelupload" type="file" aria-label="Upload model" required/><br><br>
+          <input name="filesupload" id="weightsupload" type="file" multiple="" aria-label="Upload weights" required/> <br> <br> </div>
           <div class="checktrue" > URL to the ModelAndWeightsConfig JSON describing the model. <br> <br>
           <label align-"left"> Enter the URL: </label> <input type="url" name="url" id="url" required> <br><br></div>
           <button id="submit">Upload</button> <span id="status"></span>

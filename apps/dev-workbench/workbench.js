@@ -4,16 +4,25 @@ $(document).ready(function() {
   $('#stepper').show(400);
 });
 
-$('#goBack').click(function() {
-  window.history.back();
-});
-
-// Keydown event for the back button
-$('#goBack').keydown(function(e) {
-    if (e.keyCode === 13) {
-      window.history.back();
+// Unified function for going back
+  function goBack(e) {
+    // Prevent default action for keyboard events
+    if (e && e.preventDefault) {
+      e.preventDefault();
+    }
+    window.history.back();
   }
-});
+
+// Click event for the back button
+  $('#goBack').on('click', goBack);
+
+  // Keydown event for the back button
+  $('#goBack').on('keydown', function(e) {
+    // Check for both Enter (13) and Space (32) key codes
+    if (e.keyCode === 13 || e.keyCode === 32) {
+      goBack(e);
+    }
+  });
 
 // initialize Step 1
 function dataSelect() {
