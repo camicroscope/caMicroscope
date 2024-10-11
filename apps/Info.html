@@ -38,10 +38,28 @@
 	<link rel="stylesheet" href="./table.css" />
   <link rel="stylesheet" href="./info.css" />
 	<link rel="shortcut icon" type="image/x-icon" href="/apps/landing/favicon.png">
-	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+<style>
+    .skip-to-content {
+        position: absolute;
+        top: -40px;
+        left: 0;
+        background: #212529;
+        color: white;
+        padding: 8px;
+        z-index: 100;
+        transition: top 0.3s;
+    }
+    .skip-to-content:focus {
+        top: 0;
+    }
+</style>
+
 </head>
 
 <body>
+	<a href="#main-content" class="skip-to-content">Skip to main content</a>
 	<div class="page-container">
 	<div>
 		<nav class="navbar navbar-expand-lg navbar-dark fixed-top bg-dark" style="position: sticky; margin-top: -4em;">
@@ -71,6 +89,7 @@
 			</div>
 		</nav>
 
+	<main id="main-content">	
 	<div class="header text-center text-white bg-dark p-4">
 		<h1 class="h1">caMicroscope</h1>
 		<p style="font-weight: bold; font-size: 14pt;">Digital pathology image viewer with support for human/machine generated annotations and markups.</p>
@@ -153,7 +172,7 @@
 	</div>
 </div>
 </div>
-
+</main>
 
 <!-- footer -->
 <footer id="footer-layout"></footer>

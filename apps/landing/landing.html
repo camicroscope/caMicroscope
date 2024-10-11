@@ -12,10 +12,29 @@
     <!-- common styling -->
 	<link rel='stylesheet' type='text/css' media='all' href='../common.css'/>
     <link rel="shortcut icon" type="image/x-icon" href="favicon.png">
+    <style>
+        .skip-link {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #212529;
+            color: white;
+            padding: 8px;
+            z-index: 9999;
+            text-decoration: none;
+            opacity: 0;
+            pointer-events: none;
+        }
+        .skip-link:focus {
+            opacity: 1;
+            pointer-events: auto;
+        }
+    </style>
 
 </head>
 <body>
-  
+<a class="skip-link" href="#main-content">Skip to main content</a>  
 <!-- loading animation -->
 <div class="main-site">
     <!-- adding css -->
@@ -57,8 +76,8 @@
 
 
 <!-- Main -->
-
-<section id="main" class="wrapper">
+<main id="main-content">
+  <section id="main" class="wrapper">
 
     <div class="inner">
 
@@ -93,8 +112,8 @@
                 </div>
             </section>
         </div>
-</section>
-
+  </section>
+</main>
 
 
 <!-- Footer -->

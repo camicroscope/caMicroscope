@@ -60,8 +60,25 @@
     <script src="../../common/jszip.min.js"></script>
     <script src="../../common/FileSaver.min.js"></script>
     <script src="../../common/localforage.min.js"></script>
+
+    <style>
+    .skip-to-content {
+        position: absolute;
+        top: -40px;
+        left: 0;
+        background: #212529;
+        color: white;
+        padding: 8px;
+        z-index: 100;
+        transition: top 0.3s;
+    }
+    .skip-to-content:focus {
+        top: 0;
+    }
+    </style>
   </head>
   <body>
+    <a href="#main-content" class="skip-to-content">Skip to main content</a>
     <!--Navbar-->
     <nav
       class="navbar navbar-expand-lg navbar-dark flex-row px-2"
@@ -134,6 +151,7 @@
     </nav>
     <!--/.Navbar-->
 
+    <main id="main-content">
     <div id="headbar">
       <br />
       <div id="headContent" style="font-size: xx-large;">
@@ -515,5 +533,7 @@
     <script>
       feather.replace(); // for feather Icons
     </script>
+
+    </main>
   </body>
 </html>
