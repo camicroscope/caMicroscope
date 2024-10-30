@@ -150,6 +150,10 @@
       .pitfalls{
         background-color: #FCD299 !important;
       }
+
+      .download{
+        background-color: #00cc99 !important;
+      }
     </style>
   </head>
   <body>
@@ -238,7 +242,11 @@
           workflow_url = `../labeling/roiSelectTable.html?collectionId=${d._id.$oid}`
           card.classList.add("pitfalls");
         }
-        card.classList.add("card");
+        if (d.task == "download"){
+          workflow_title = "Download";
+          workflow_url = `../labeling/downloadTable.html?collectionId=${d._id.$oid}`
+          card.classList.add("download");
+        }
         if (d.task == "proficiency"){
           workflow_title = "Proficency";
           workflow_url = `../labeling/profTable.html?collectionId=${d._id.$oid}`
