@@ -98,7 +98,7 @@ SideMenu.prototype.__refresh = function() {
   if (this.setting.top) {
     this.elt.style.top = this.setting.top;
   } else {
-    this.elt.style.top = '0';
+    this.elt.style.top = '42px';
   }
 
   if (this.setting.position === 'right') {

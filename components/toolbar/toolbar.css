@@ -1,3 +1,5 @@
+
+
 ul.tools > li.handler {
   width: 1.2rem;
   height: 100%;
@@ -14,7 +16,7 @@ ul.tools {
   left: 0;
   padding: 0;
   margin: 0;
-  height: 2.4rem;
+  height: 36px;
   border-radius: 0 0.5rem 0.5rem 0;
   border: solid #365f9c 0.2rem;
   background-color: #365f9c;
@@ -23,7 +25,6 @@ ul.tools {
 ul.tools > li {
   cursor: pointer;
   height: 100%;
-  width: 2.4rem;
   float: left;
   margin-left: 0.2rem;
   list-style: none;
@@ -54,6 +55,7 @@ ul.tools > li:not(.handler) > input[type="checkbox"]:checked + label {
   background-color: #365f9c;
   color: #fff;
   /*box-shadow: inset 1px 1px 1px rgba(0, 0, 0, 0.3);*/
+  padding: 0 2px 2px 2px;
 }
 
 ul.tools > li:not(.handler) > input[type="checkbox"] + label:hover {
@@ -62,13 +64,8 @@ ul.tools > li:not(.handler) > input[type="checkbox"] + label:hover {
 
 /* ------------- */
 
-.drop_down_container{
-  position: relative;
-  padding: 5px;
-}
-
 ul.drop_down {
-  width: 2.4rem;
+  z-index: 100;
   font-size: 1.4rem;
   padding: 0;
   margin: 0;
@@ -78,11 +75,29 @@ ul.drop_down {
 }
 
 ul.tools > li:hover ul.drop_down {
-  flex-direction: row; /* Consumes less space */
-  display: flex;
+  flex-direction: column; /* Consumes less space */
+  display: block;
   width: fit-content;
   width: -moz-fit-content;
 }
+
+.camic-logo{
+  min-width: 25px;
+  min-height: 25px;
+}
+
+.material-icons.md-36 { 
+  font-size: 36px;
+}
+
+@media (max-width: 750px) {
+  .material-icons.md-36 {
+    font-size: 24px;
+  }
+}
+
+
+
 
 ul.drop_down li {
   cursor: pointer;
