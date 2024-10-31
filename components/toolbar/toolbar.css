@@ -62,6 +62,11 @@ ul.tools > li:not(.handler) > input[type="checkbox"] + label:hover {
 
 /* ------------- */
 
+.drop_down_container{
+  position: relative;
+  padding: 5px;
+}
+
 ul.drop_down {
   width: 2.4rem;
   font-size: 1.4rem;
