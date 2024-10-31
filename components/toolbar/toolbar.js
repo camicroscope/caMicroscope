@@ -530,8 +530,6 @@ CaToolbar.prototype.__createDropDown = function(options) {
   li.appendChild(icon);
 
   // create drop_down
-  const _drop_container = document.createElement('div');
-  _drop_container.classList.add("drop_down_container")
   const _drop = document.createElement('ul');
   _drop.classList.add('drop_down');
 
@@ -543,8 +541,7 @@ CaToolbar.prototype.__createDropDown = function(options) {
     lists.push(radio);
     _drop.appendChild(radio);
   }
-  _drop_container.appendChild(_drop)
-  li.appendChild(_drop_container);
+  li.appendChild(_drop);
 
   function getStatus(e) {
     const args = {};
