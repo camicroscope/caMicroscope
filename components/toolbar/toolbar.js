@@ -55,7 +55,7 @@
  *
  */
 
-const camic_svg = `
+const camicSvg = `
 <svg
    version="1.1"
    id="svg1"
@@ -88,7 +88,7 @@ const camic_svg = `
        d="m 199.36286,333.54662 -1.94994,19.73107 132.52921,-0.93353 -4.77015,-29.85319 z" />
   </g>
 </svg>
-`
+`;
 
 function CaToolbar(options) {
   this.name = 'CaToolbar';
@@ -191,12 +191,12 @@ CaToolbar.prototype.__createBtn = function(options) {
   const btn = document.createElement('i');
   btn.classList.add('material-icons');
   btn.classList.add('md-36');
-  if (options.icon =="camic"){
-    btn.innerHTML = camic_svg;
-    btn.classList.add("camic-logo");
-    btn.title = "camic";
-    btn.style.height = "36px"
-    btn.style.width = "36px"
+  if (options.icon =='camic') {
+    btn.innerHTML = camicSvg;
+    btn.classList.add('camic-logo');
+    btn.title = 'camic';
+    btn.style.height = '36px';
+    btn.style.width = '36px';
   } else {
     btn.textContent = options.icon;
   }
@@ -256,11 +256,11 @@ CaToolbar.prototype.__createCheck = function(options) {
   const icon = document.createElement('label');
   icon.classList.add('material-icons');
   icon.classList.add('md-36');
-  if (options.icon == "camic"){
-    icon.innerHTML = camic_svg;
-    icon.title = "camic";
-    icon.style.height = "36px"
-    icon.style.width = "36px"
+  if (options.icon == 'camic') {
+    icon.innerHTML = camicSvg;
+    icon.title = 'camic';
+    icon.style.height = '36px';
+    icon.style.width = '36px';
   } else {
     icon.textContent = options.icon;
   }
@@ -567,10 +567,10 @@ CaToolbar.prototype.__createDropDown = function(options) {
   const icon = document.createElement('label');
   icon.classList.add('material-icons');
   icon.classList.add('md-36');
-  if (options.ariaLabel){
+  if (options.ariaLabel) {
     icon.ariaLabel = options.ariaLabel;
     icon.title = options.ariaLabel;
-  } 
+  }
   icon.textContent = options.icon;
   icon.htmlFor = id;
   if (options.title) {
