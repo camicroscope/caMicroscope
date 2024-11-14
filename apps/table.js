@@ -520,8 +520,6 @@ function initialize() {
                 resetTable();
                 pageIndicatorVisible($('#datatables tbody tr').length);
               });
-              pageIndicatorVisible($('#datatables tbody tr').length);
-              resetTable();
               $('#datatables').stacktable();
               checkUserPermissions();
             });
