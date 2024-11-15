@@ -147,14 +147,15 @@ CaToolbar.prototype.__createBtn = function(options) {
     console.warn(`${this.name}.__createBtn:No Option`);
     return;
   }
-  // create UI
   const li = document.createElement('li');
   if (options.name) li.name = options.name;
+
   const btn = document.createElement('i');
-  btn.classList.add('material-icons');
-  btn.classList.add('md-24');
+  btn.classList.add('material-icons', 'md-24');
   btn.textContent = options.icon;
+  // Add accessible label
   if (options.title) {
+    btn.setAttribute('aria-label', options.title);
     tippy(btn, {
       content: options.title,
       placement: 'bottom',
@@ -164,23 +165,18 @@ CaToolbar.prototype.__createBtn = function(options) {
   }
   li.appendChild(btn);
 
-  // binding event
+  // Binding event
   if (options.callback) {
-    li.addEventListener(
-        'click',
-        function(e) {
-        // callback arguments
-          const args = {};
-          if (options.value) args.value = options.value;
-
-          //
-          options.callback.call(e, args);
-        },
-    );
+    li.addEventListener('click', function(e) {
+      const args = {};
+      if (options.value) args.value = options.value;
+      options.callback.call(e, args);
+    });
   }
 
   return li;
 };
+
 /*
  * @private
  * __createCheck - create tool as checkbox.
