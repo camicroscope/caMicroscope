@@ -22,6 +22,8 @@ async function populateUserEdit(){
   }
   else if (user.userType == "Expert"){
     document.getElementById('expert-select').checked=true;
+  } else if (user.userType == "Download"){
+    document.getElementById('download-select').checked=true;
   } else {
     document.getElementById('public-select').checked=true;
   }
@@ -80,6 +82,8 @@ async function updateUser(e){
     user.userType = "Admin"
   } else if (document.getElementById('participant-select').checked){
     user.userType = "Participant"
+  } else if (document.getElementById('download-select').checked){
+    user.userType = "Download"
   } else {
     user.userType = "Public"
   }
