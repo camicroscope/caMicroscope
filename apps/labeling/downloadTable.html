@@ -364,6 +364,14 @@
           document.getElementById("collectionName").innerText = collectionInfo[0].name
           document.getElementById("collectionDesc").innerText = collectionInfo[0].description
         }
+        if (collectionInfo[0].zip){
+          let zipButton = document.createElement("button")
+          zipButton.innerText = "Download Whole Collection";
+          zipButton.classList.add(["btn"]);
+          zipButton.dataset.zipurl = collectionInfo[0].zip;
+          zipButton.onclick = downloadCollection;
+          document.getElementById("collectionInfo").appendChild(zipButton)
+        }
         // set slides
         const slides = await store.findSlideLabelingStat(cid, getUserId());
         if (slides && Array.isArray(slides)) {
@@ -382,7 +390,7 @@
               keys.forEach((key, i) => {
                 rs.push(slide[key]);
               });
-              const btn = `<button class="btn" data-id='${rs[0]}' onclick='downloadSlide(this)'>Download</button>`;
+              const btn = `<button class="btn" data-id='${rs[0]}' onclick='downloadSlide(this)'>Download</button> Select ROIs</button> &nbsp; <button style="background-color:#008000" class="btn" data-id='${rs[0]}' onclick='openGenericReview(this)'>Preview</button>`;
               rs.push(btn);
               return rs;
             })
@@ -448,6 +456,19 @@
       } else {
         alert("No Data Matches");
       }
+    }
+
+    async function downloadCollection(evt) {
+      console.log(evt)
+      let e = evt.target
+      let store = new Store("../../data/");
+      const zipUrl = e.dataset.zipurl;
+      const a = document.createElement('a');
+      a.href = zipUrl;
+      a.download = '';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
     }
 
     function openGenericReview(e){
