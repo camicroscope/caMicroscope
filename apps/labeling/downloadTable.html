@@ -390,7 +390,7 @@
               keys.forEach((key, i) => {
                 rs.push(slide[key]);
               });
-              const btn = `<button class="btn" data-id='${rs[0]}' onclick='downloadSlide(this)'>Download</button> Select ROIs</button> &nbsp; <button style="background-color:#008000" class="btn" data-id='${rs[0]}' onclick='openGenericReview(this)'>Preview</button>`;
+              const btn = `<button class="btn" data-id='${rs[0]}' onclick='downloadSlide(this)'>Download</button>&nbsp; <button style="background-color:#008000" class="btn" data-id='${rs[0]}' onclick='openGenericReview(this)'>Preview</button>`;
               rs.push(btn);
               return rs;
             })
