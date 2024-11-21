@@ -54,6 +54,42 @@
  *        changing status(check/radio/dropdown), return a object which has value and status.
  *
  */
+
+const camicSvg = `
+<svg
+   version="1.1"
+   id="svg1"
+   viewBox="0 0 392 392"
+   xmlns="http://www.w3.org/2000/svg">
+  <g id="layer1">
+    <path
+       style="fill:currentColor"
+       d="m 235.37858,200.06453 48.41567,-17.02896 C 246.56105,133.47258 219.56516,83.165139 201.98846,21.427389 l -19.03237,8.013628 z" />
+    <path
+       style="fill:currentColor"
+       d="m 156.28676,116.50371 c 0,0 14.69165,-11.68654 0,0 z" />
+    <path
+       style="fill:currentColor"
+       d="m 155.95286,116.83761 c 0,0 5.34242,-6.01022 0,0 z" />
+    <path
+       style="fill:currentColor;stroke-width:1.09145"
+       d="m 139.38922,122.8447 c 15.23488,-7.61623 35.55245,-11.52666 49.73998,-13.86767 l -5.41955,-17.127845 c -19.13718,3.23649 -39.75853,8.958985 -54.66219,16.637765 z" />
+    <path
+       style="fill:currentColor;stroke-width:1.09145"
+       d="m 122.16662,133.77573 c -23.015532,15.981 -35.642057,37.20602 -39.521215,57.6266 l -23.492631,-4.34071 c 8.128925,-25.58183 23.897012,-50.05419 51.164286,-68.27094 z" />
+    <path
+       style="fill:currentColor;stroke-width:1.09145"
+       d="m 79.122739,208.94401 c -1.547813,23.32001 -2.010619,45.68546 13.242816,64.59801 L 71.955844,284.72771 C 57.431731,260.5187 51.196077,234.95396 55.733377,204.52227 Z" />
+    <path
+       style="fill:currentColor;stroke-width:1.09145"
+       d="m 107.61472,290.35656 c 18.94063,20.51975 41.85149,37.02418 68.16374,42.40749 l -4.70291,18.87034 C 141.91129,341.51155 109.06814,329.00813 87.063288,303.43108 Z" />
+    <path
+       style="fill:currentColor;stroke-width:1.38034"
+       d="m 199.36286,333.54662 -1.94994,19.73107 132.52921,-0.93353 -4.77015,-29.85319 z" />
+  </g>
+</svg>
+`;
+
 function CaToolbar(options) {
   this.name = 'CaToolbar';
   // DOM elts
@@ -80,7 +116,7 @@ function CaToolbar(options) {
     // may be it can be extension in future...
     mainTools: [
       {
-        icon: 'apps',
+        icon: 'camic',
         title: 'Applications',
         type: 'check',
         value: 'apps',
@@ -154,8 +190,16 @@ CaToolbar.prototype.__createBtn = function(options) {
   if (options.name) li.name = options.name;
   const btn = document.createElement('i');
   btn.classList.add('material-icons');
-  btn.classList.add('md-24');
-  btn.textContent = options.icon;
+  btn.classList.add('md-36');
+  if (options.icon =='camic') {
+    btn.innerHTML = camicSvg;
+    btn.classList.add('camic-logo');
+    btn.title = 'camic';
+    btn.style.height = '36px';
+    btn.style.width = '36px';
+  } else {
+    btn.textContent = options.icon;
+  }
   if (options.title) {
     tippy(btn, {
       content: options.title,
@@ -211,8 +255,15 @@ CaToolbar.prototype.__createCheck = function(options) {
   // icon
   const icon = document.createElement('label');
   icon.classList.add('material-icons');
-  icon.classList.add('md-24');
-  icon.textContent = options.icon;
+  icon.classList.add('md-36');
+  if (options.icon == 'camic') {
+    icon.innerHTML = camicSvg;
+    icon.title = 'camic';
+    icon.style.height = '36px';
+    icon.style.width = '36px';
+  } else {
+    icon.textContent = options.icon;
+  }
   if (options.ariaLabel) icon.ariaLabel = options.ariaLabel;
   icon.htmlFor = id;
   if (options.title) {
@@ -275,7 +326,7 @@ CaToolbar.prototype.__createRadio = function(options) {
   const icon = document.createElement('label');
   if (options.icon) {
     icon.classList.add('material-icons');
-    icon.classList.add('md-24');
+    icon.classList.add('md-36');
     if (options.ariaLabel) icon.ariaLabel = options.ariaLabel;
     icon.textContent = options.icon;
   } else {
@@ -333,7 +384,7 @@ CaToolbar.prototype.__createMultiStateBtns = function(options) {
   const icon = document.createElement('label');
   icon.id = randomId(); // create a timestamp id
   icon.classList.add('material-icons');
-  icon.classList.add('md-24');
+  icon.classList.add('md-36');
   if (options.ariaLabel) icon.ariaLabel = options.ariaLabel;
   icon.classList.add(0);
   icon.dataset.state = 0;
@@ -387,7 +438,7 @@ CaToolbar.prototype.__createMultiDropDown = function(options) {
   // icon
   const icon = document.createElement('label');
   icon.classList.add('material-icons');
-  icon.classList.add('md-24');
+  icon.classList.add('md-36');
   if (options.ariaLabel) icon.ariaLabel = options.ariaLabel;
   icon.textContent = options.icon;
   icon.htmlFor = id;
@@ -515,8 +566,11 @@ CaToolbar.prototype.__createDropDown = function(options) {
   // icon
   const icon = document.createElement('label');
   icon.classList.add('material-icons');
-  icon.classList.add('md-24');
-  if (options.ariaLabel) icon.ariaLabel = options.ariaLabel;
+  icon.classList.add('md-36');
+  if (options.ariaLabel) {
+    icon.ariaLabel = options.ariaLabel;
+    icon.title = options.ariaLabel;
+  }
   icon.textContent = options.icon;
   icon.htmlFor = id;
   if (options.title) {
