@@ -367,6 +367,9 @@
         if (collectionInfo[0].zip){
           let zipButton = document.createElement("button")
           zipButton.innerText = "Download Whole Collection";
+          if (collectionInfo[0].zipText){
+            zipButton.innerText = collectionInfo[0].zipText;
+          }
           zipButton.classList.add(["btn"]);
           zipButton.dataset.zipurl = collectionInfo[0].zip;
           zipButton.onclick = downloadCollection;
