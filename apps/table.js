@@ -720,7 +720,7 @@ function fileNameChange() {
     let fDiv = document.createElement('div');
     fDiv.classList.add('invalid-feedback');
     fDiv.id = 'filename-feedback0';
-    fDiv.textContent = fileExtension + ' files are not compatible';
+    fDiv.textContent = 'The file name you provided is incompatible. File names should follow this format "filename.ext"';
     if (fileNameInput.parent().children().length === 1) {
       fileNameInput.parent().append(fDiv);
     } else {
