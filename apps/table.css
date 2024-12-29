@@ -161,6 +161,25 @@ nav li:not(.active):hover {
   z-index: 1000;
 }
 
+.skip-to-content {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background-color: #000;
+  color: #fff;
+  padding: 10px;
+  z-index: 1000;
+  text-decoration: none;
+  transform: translateY(-100%);
+  transition: transform 0.3s ease-in-out;
+}
+
+.skip-to-content:focus {
+  transform: translateY(0);
+}
+
+
+
 .notification-box {
   padding: 10px 0px;
   color: black;

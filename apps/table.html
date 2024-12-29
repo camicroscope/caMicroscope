@@ -40,9 +40,39 @@
 <script src='../common/stacktable.js'></script>
 	<link rel="stylesheet" href="./table.css" />
 	<link rel="shortcut icon" type="image/x-icon" href="/apps/landing/favicon.png">
+
+    <style>
+        .skip-to-content {
+            position: absolute;
+            top: 100px;
+            left: 10px;
+            background-color: #007bff; /* Bright blue for visibility */
+            color: #fff; /* White text for contrast */
+            padding: 8px 12px; /* Smaller padding for a compact feel */
+            z-index: 1000;
+            text-decoration: none;
+            font-size: 0.9rem; /* Slightly smaller text */
+            font-weight: bold; /* Keep text bold for clarity */
+            border-radius: 4px; /* Subtle rounded corners */
+            box-shadow: 0px 3px 5px rgba(0, 0, 0, 0.2); /* Subtle shadow for depth */
+            opacity: 0; /* Hidden by default */
+            transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out; /* Smooth transition for appearance */
+        }
+
+        .skip-to-content:focus {
+            opacity: 1; /* Visible when focused */
+            transform: translateY(0); /* Bring into view */
+            outline: 2px dashed #fff; /* Accessible outline for focus */
+            box-shadow: 0px 5px 7px rgba(0, 0, 0, 0.4); /* Stronger shadow for focus state */
+        }
+        .main-content {
+            padding-top: 70px; /* Adjust if the navbar height changes */
+        }
+    </style>
 </head>
 
 <body>
+    <a href="#collection-list" class="skip-to-content">Skip to main content</a>
 	<div class="page-container">
 	<div>
 	<nav class="navbar navbar-expand-lg navbar-dark fixed-top bg-dark" style="position: sticky; margin-top: -4em;">

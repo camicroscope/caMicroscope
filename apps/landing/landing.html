@@ -1,41 +1,71 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
-
     <title>caMicroscope</title>
     <meta charset="utf-8" />
-
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css" rel="stylesheet" 
-        integrity="sha384-wEmeIV1mKuiNpC+IOBjI7aAzPcEZeedi5yW5f2yOq55WWLwNGmvvx4Um1vskeMj0"
-        crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-wEmeIV1mKuiNpC+IOBjI7aAzPcEZeedi5yW5f2yOq55WWLwNGmvvx4Um1vskeMj0" crossorigin="anonymous">
     <link rel="stylesheet" href="./main.css" />
     <!-- common styling -->
-	<link rel='stylesheet' type='text/css' media='all' href='../common.css'/>
+    <link rel='stylesheet' type='text/css' media='all' href='../common.css' />
     <link rel="shortcut icon" type="image/x-icon" href="favicon.png">
 
+    <style>
+        .skip-to-content {
+            position: absolute;
+            top: 100px;
+            left: 10px;
+            background-color: #007bff; /* Bright blue for visibility */
+            color: #fff; /* White text for contrast */
+            padding: 8px 12px; /* Smaller padding for a compact feel */
+            z-index: 1000;
+            text-decoration: none;
+            font-size: 0.9rem; /* Slightly smaller text */
+            font-weight: bold; /* Keep text bold for clarity */
+            border-radius: 4px; /* Subtle rounded corners */
+            box-shadow: 0px 3px 5px rgba(0, 0, 0, 0.2); /* Subtle shadow for depth */
+            opacity: 0; /* Hidden by default */
+            transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out; /* Smooth transition for appearance */
+        }
+
+        .skip-to-content:focus {
+            opacity: 1; /* Visible when focused */
+            transform: translateY(0); /* Bring into view */
+            outline: 2px dashed #fff; /* Accessible outline for focus */
+            box-shadow: 0px 5px 7px rgba(0, 0, 0, 0.4); /* Stronger shadow for focus state */
+        }
+        .main-content {
+            padding-top: 70px; /* Adjust if the navbar height changes */
+        }
+    </style>
 </head>
 <body>
-  
-<!-- loading animation -->
-<div class="main-site">
-    <!-- adding css -->
-    <div class="main-content" role="timer" id="mainContent">
-        <div class="loader loader-black loader-5"></div>
-    </div>
-</div>
+    <!-- Skip to Content Link -->
+    <a href="#main" class="skip-to-content">Skip to main content</a>
 
-<nav class="navbar navbar-expand-lg navbar-dark fixed-top bg-dark" style="position: sticky; margin-top: -4em;">
-    <div class="container-fluid">
-        <button class="navbar-toggler m-1" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation" style="width: 100%;">
-            <span class="navbar-toggler-icon"></span>
+    <!-- Loading Animation -->
+    <div class="main-site">
+        <div class="main-content" role="main" id="mainContent" tabindex="-1">
+            <div class="loader loader-black loader-5"></div>
+        </div>
+    </div>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top bg-dark">
+        <div class="container-fluid">
+            <button class="navbar-toggler m-1" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+                aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
             </button>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent" >
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav mr-auto gap-1">
                     <li class="nav-item active link" style="font-family: sans-serif;">
-                       <a class="nav-link" href="landing.html"> <i class="fas fa-home"></i> Home</a>
+                        <a class="nav-link" href="landing.html"> <i class="fas fa-home"></i> Home</a>
                     </li>
-                    <li class="nav-item  link" style="font-family: sans-serif;">
-                        <a class="nav-link" href="../table.html"> <i class="fas fa-list-ul"></i>  Slides</a>
+                    <li class="nav-item link" style="font-family: sans-serif;">
+                        <a class="nav-link" href="../table.html"> <i class="fas fa-list-ul"></i> Slides</a>
                     </li>
                     <li class="nav-item link">
                         <a class="nav-link" href="../Info.html"> <i class="fas fa-info-circle"></i> Info</a>
@@ -47,88 +77,69 @@
                         <a class="nav-link" href="../signup/signup.html"> <i class="fas fa-user-plus"></i> Signup</a>
                     </li>
                     <li class="nav-item link" style="font-family: sans-serif;">
-                        <a class="nav-link" target="_blank" href="https://github.com/camicroscope/caMicroscope/issues"> <i class="fas fa-comment"></i> Feedback</a>
+                        <a class="nav-link" target="_blank" href="https://github.com/camicroscope/caMicroscope/issues"> <i
+                                class="fas fa-comment"></i> Feedback</a>
                     </li>
                 </ul>
             </div>
-    </div>
-</nav>
-
-
-
-<!-- Main -->
-
-<section id="main" class="wrapper">
-
-    <div class="inner">
-
-        <div role="heading">
-            <header class="major">
-                <h1>caMicroscope</h1>
-            </header>
         </div>
+    </nav>
 
-        <!-- Content -->
-
-        
-        <div role="contentinfo" class="content">
-            <p>caMicroscope is a tool to view, annotate, and analyze biomedical images.</p>
-            <a href="#" class="image fit" aria-label="Reload Home Page"><img src="./banner1.jpg" alt="" /></a>
-
+    <!-- Main Content -->
+    <section id="main" class="wrapper">
+        <div class="inner">
+            <div role="heading">
+                <header class="major">
+                    <h1>caMicroscope</h1>
+                </header>
+            </div>
+            <div role="contentinfo" class="content">
+                <p>caMicroscope is a tool to view, annotate, and analyze biomedical images.</p>
+                <a href="#" class="image fit" aria-label="Reload Home Page"><img src="./banner1.jpg" alt="" /></a>
+            </div>
+            <div class="posts" role="main" style="margin-top: 5em;">
+                <section class="post">
+                    <a href="../table.html" class="image" aria-label="Visit Slides Page"><img src="./camic.jpg"
+                            alt="" /></a>
+                    <div class="content">
+                        <h3>caMicroscope</h3>
+                        <p>Use camicroscope to explore and mark slides uploaded. If this is a restricted access
+                            deployment, you will be prompted to log in here.</p>
+                        <a href="../table.html" class="button">More</a>
+                    </div>
+                </section>
+                <section class="post">
+                    <a target="_blank" href="https://camicroscope.github.io/docs/" class="image"
+                        aria-label="Visit Documentation Page"><img src="./code.jpg" alt="" /></a>
+                    <div class="content">
+                        <h3>Documentation</h3>
+                        <p>Read documentation for using and developing caMicroscope.</p>
+                        <a target="_blank" href="https://camicroscope.github.io/docs/" class="button">More</a>
+                    </div>
+                </section>
+            </div>
         </div>
+    </section>
 
-        <div class="posts" role="main" style="margin-top: 5em;">
-            <section class="post">
-                <a href="../table.html" class="image" aria-label="Visit Slides Page"><img src="./camic.jpg" alt=""/></a>
-                <div class="content">
-                    <h3>caMicroscope</h3>
-                    <p>Use camicroscope to explore and mark slides uploaded. If this is a restricted access deployment, you will be prompted to log in here.</p>
-                    <a href="../table.html" class="button">More</a>
-                </div>
-            </section>
-            <section class="post">
-                <a target="_blank" href="https://camicroscope.github.io/docs/" class="image" aria-label="Visit Documentation Page"><img src="./code.jpg" alt=""/></a>
-                <div class="content">
-                    <h3>Documentation</h3>
-                    <p>Read documentation for using and developing caMicroscope.</p>
-                    <a target="_blank" href="https://camicroscope.github.io/docs/" class="button">More</a>
-                </div>
-            </section>
-        </div>
-</section>
+    <!-- Footer -->
+    <footer id="footer-layout"></footer>
 
-
-
-<!-- Footer -->
-<footer id="footer-layout"></footer>
-
-
-
-
-
-<!-- Scripts -->
-<!-- loading animation script -->
-<script>
-    var loader= document.querySelector('.loader');
-    window.addEventListener('load', function() {
-        loader.style.display = 'none';
-    });
-</script>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-p34f1UUtsS3wqzfto5wAAmdvj+osOnFyQFpp4Ua3gs/ZVWx6oOypYoCJhGGScy+8" crossorigin="anonymous"></script>
-<script src="./jquery.min.js"></script>
-
-<script src="./jquery.dropotron.min.js"></script>
-
-<script src="./jquery.scrollex.min.js"></script>
-
-<script src="./skel.min.js"></script>
-
-<script src="./util.js"></script>
-<script src="../../common/util.js"></script>
-
-    <!-- script to call a footer(layout footer in the common > utils folder) function -->
-<script> insertFooterLayout(); </script>
+    <!-- Scripts -->
+    <script>
+        var loader = document.querySelector('.loader');
+        window.addEventListener('load', function () {
+            loader.style.display = 'none';
+        });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-p34f1UUtsS3wqzfto5wAAmdvj+osOnFyQFpp4Ua3gs/ZVWx6oOypYoCJhGGScy+8"
+        crossorigin="anonymous"></script>
+    <script src="./jquery.min.js"></script>
+    <script src="./jquery.dropotron.min.js"></script>
+    <script src="./jquery.scrollex.min.js"></script>
+    <script src="./skel.min.js"></script>
+    <script src="./util.js"></script>
+    <script src="../../common/util.js"></script>
+    <script> insertFooterLayout(); </script>
 </body>
-
 </html>
