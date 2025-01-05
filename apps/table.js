@@ -714,8 +714,21 @@ function fileNameChange() {
   const fileName = fileNameInput.val();
   let newFileName = fileName.split(' ').join('_');
   fileNameInput.val(newFileName);
-  let fileExtension = newFileName.toLowerCase().split('.').reverse()[0];
-  if (!allowedExtensions.includes(fileExtension)) {
+  let fileParts = newFileName.split('.');
+  let fileExtension = fileParts.length > 1 ? fileParts.reverse()[0].toLowerCase() : null;
+  if (!fileExtension) {
+    fileNameInput.addClass('is-invalid');
+    let fDiv = document.createElement('div');
+    fDiv.classList.add('invalid-feedback');
+    fDiv.id = 'filename-feedback0';
+    fDiv.textContent = 'The file name you provided is incompatible. File names should follow this format "filename.ext"';
+    if (fileNameInput.parent().children().length === 1) {
+      fileNameInput.parent().append(fDiv);
+    } else {
+      document.getElementById('filename-feedback0').innerHTML = '';
+      document.getElementById('filename-feedback0').append(fDiv);
+    }
+  } else if (!allowedExtensions.includes(fileExtension)) {
     fileNameInput.addClass('is-invalid');
     let fDiv = document.createElement('div');
     fDiv.classList.add('invalid-feedback');
@@ -734,6 +747,8 @@ function fileNameChange() {
     }
   }
 }
+
+
 function switchToFile() {
   $('.urlUploadClass').css('display', 'none');
   $('.fileInputClass').css('display', 'block');
