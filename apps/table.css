@@ -161,25 +161,6 @@ nav li:not(.active):hover {
   z-index: 1000;
 }
 
-.skip-to-content {
-  position: absolute;
-  top: 10px;
-  left: 10px;
-  background-color: #000;
-  color: #fff;
-  padding: 10px;
-  z-index: 1000;
-  text-decoration: none;
-  transform: translateY(-100%);
-  transition: transform 0.3s ease-in-out;
-}
-
-.skip-to-content:focus {
-  transform: translateY(0);
-}
-
-
-
 .notification-box {
   padding: 10px 0px;
   color: black;
@@ -262,7 +243,7 @@ nav li:not(.active):hover {
 
 td {
   text-align: center; /* or left, right, justify, etc. */
-=======
+}
 
 .d-md-inline-flex{
   display: flex;
@@ -278,5 +259,34 @@ td {
   line-height: 1;
   font-size: 24px;
 
-}
+}/* Mobile View: Adjust layout for screens <= 500px */
+@media (max-width: 500px) {
+  .d-md-inline-flex {
+      display: flex; /* Flexbox for layout */
+      flex-wrap: wrap; /* Allow wrapping */
+      justify-content: auto; /* Center align all buttons */
+      gap: 10px; /* Add spacing between buttons */
+  }
 
+  .d-md-inline-flex > div {
+      flex: 1 1 calc(50% - 10px); /* Each child takes 50% of the row width minus spacing */
+      margin: 5px; /* Add spacing around items */
+      text-align: center; /* Center content within each item */
+  }
+
+  .btn-group {
+      display: flex; /* Ensure buttons in groups stay together */
+      flex-wrap: nowrap; /* Prevent wrapping within the group */
+      justify-content: center; /* Center align dropdown buttons */
+      
+  }
+
+  .btn-group .btn {
+      flex: 1; /* Ensure equal width for buttons within the group */
+  }
+
+  .btn {
+      width: 100%; /* Buttons take full width of their container */
+      text-align: center; /* Center-align text within buttons */
+  }
+}
