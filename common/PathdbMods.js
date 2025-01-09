@@ -103,13 +103,14 @@ async function PathDbMods() {
       })
     }).then(function(response) {
       console.log(response);
-      if (!response.ok) 
+      if (!response.ok) {
         console.log("response not ok", response.statusText);
         return {
-        error: !response.ok,
-        text: response.statusText,
-        url: response.url
-      };
+          error: !response.ok,
+          text: response.statusText,
+          url: response.url
+        };
+      }
       return response.json().then(x=>convertPathDbSlide(x[0])).then(x => [x]);
     })
   }
@@ -124,13 +125,14 @@ async function PathDbMods() {
       })
     }).then(function(response) {
       console.log(response);
-      if (!response.ok)
+      if (!response.ok){
         console.log("response not ok", response.statusText);
         return {
-        error: !response.ok,
-        text: response.statusText,
-        url: response.url
-      };
+          error: !response.ok,
+          text: response.statusText,
+          url: response.url
+        };
+      }
       return response.json().then(convertPathDbSlide).then(x => [x]);;
     })
   }
