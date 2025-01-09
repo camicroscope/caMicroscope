@@ -279,6 +279,7 @@ function draw(e) {
     }
     if ($CAMIC.status == 'normal') {
       annotationOn.call(this, state, target);
+      mlAsisstantOn();
       return;
     }
     toolsOff();
@@ -288,6 +289,7 @@ function draw(e) {
           // all tool has turn off
             clearInterval(checkAllToolsOff);
             annotationOn.call(this, state, target);
+            mlAsisstantOn();
           }
         }.bind(this),
         100,
@@ -295,6 +297,7 @@ function draw(e) {
   } else {
     // off
     annotationOff();
+    mlAsisstantOff();
   }
 }
 
@@ -311,10 +314,14 @@ function toolsOff() {
       break;
     case 'normal':
       annotationOff();
+      mlAsisstantOff();
       break;
-
     case 'label':
       presetLabelOff();
+      mlAsisstantOff();
+      break;
+    case 'download_selection':
+      downloadSelectionOff();
       break;
   }
 }
@@ -329,6 +336,7 @@ function annotationOn(state, target) {
   canvasDraw.style.color = style.color;
 
   li.appendChild(label);
+  $UI.AssistantViewer.undoBtn.onclick=()=>canvasDraw.__align_undo();
   switch (state) {
     case 1:
       spen.menu(65, 0.2);
@@ -459,6 +467,33 @@ function toggleMeasurement(data) {
 }
 
 /**
+ * switches download Selection tool on, called from toggleMeasurement
+ */
+function downloadSelectionOn() {
+  if (!$CAMIC.viewer.canvasDrawInstance) return;
+  $CAMIC.viewer.canvasDrawInstance.drawOn();
+  getDrawOption();
+  $CAMIC.viewer.canvasDrawInstance.drawMode = 'rect';
+  $CAMIC.viewer.canvasDrawInstance.style.color = '#000';
+  const li = $UI.toolbar.getSubTool('download_selection');
+  li.querySelector('input[type=checkbox]').checked = true;
+  $CAMIC.status = 'download_selection';
+}
+
+/**
+ * switches downloadSelection tool off, called from toggleMeasurement
+ */
+function downloadSelectionOff() {
+  if (!$CAMIC.viewer.canvasDrawInstance) return;
+  $CAMIC.viewer.canvasDrawInstance.drawOff();
+  $CAMIC.viewer.canvasDrawInstance.clear();
+  setDrawOption();
+  const li = $UI.toolbar.getSubTool('download_selection');
+  li.querySelector('input[type=checkbox]').checked = false;
+  $CAMIC.status = null;
+}
+
+/**
  * switches measuring tool on, called from toggleMeasurement
  */
 function measurementOn() {
@@ -557,17 +592,17 @@ function imageDownload() {
       .getSlide(id)
       .then((response) => {
         if (response[0]) {
-          return response[0]['location'];
+          if (response[0]['filepath']) {
+            return response[0]['filepath'];
+          }
+          let location = response[0]['location'];
+          return location.substring(
+              location.lastIndexOf('/') + 1,
+              location.length,
+          );
         } else {
           throw new Error('Slide not found');
         }
-      })
-      .then((location) => {
-        fileName = location.substring(
-            location.lastIndexOf('/') + 1,
-            location.length,
-        );
-        return fileName;
       })
       .then((fileName) => {
         fetch(downloadURL + fileName, {
@@ -631,6 +666,7 @@ function mainMenuChange(data) {
     $UI.labelsSideMenu.open();
   } else {
     presetLabelOff();
+    mlAsisstantOff();
   }
 }
 
@@ -942,6 +978,31 @@ function annoCallback(data) {
       .finally(() => {});
 }
 
+function editAnnoCallback(id, slide, annotJson) {
+  // save edit annotation
+  $CAMIC.store
+      .updateMaskEdit(id, slide, annotJson)
+      .then((data) => {
+        // server error
+        if (data.error) {
+          $UI.message.addError(`${data.text}:${data.url}`);
+          Loading.close();
+          return;
+        }
+
+        // no data added
+        if (data.count < 1) {
+          Loading.close();
+          $UI.message.addWarning(`Edit Annotation Failed`);
+          return;
+        }
+      })
+      .catch((e) => {
+        Loading.close();
+      })
+      .finally(() => {});
+}
+
 function saveAnnotCallback() {
   /* reset as default */
   // clear draw data and UI
@@ -975,6 +1036,53 @@ function algoCallback(data) {
  * @param {Object} data
  */
 const heatmapDefaultColor = '#1034a6';
+
+const drawOptionRecord = {};
+function getDrawOption() {
+  drawOptionRecord.drawMode = $CAMIC.viewer.canvasDrawInstance.drawMode;
+  drawOptionRecord.color = $CAMIC.viewer.canvasDrawInstance.style.color;
+}
+function setDrawOption() {
+  $CAMIC.viewer.canvasDrawInstance.drawMode = drawOptionRecord.drawMode || 'free';
+  $CAMIC.viewer.canvasDrawInstance.style.color = drawOptionRecord.color || '#7cfc00';
+}
+
+function toggleDownloadSelection(data) {
+  // const canvasDraw = $CAMIC.viewer.canvasDrawInstance;
+
+  // if(e.checked) {
+  //   downloadSelectionOn();
+  // } else {
+  //   downloadSelectionOff();
+  // }
+  if (!$CAMIC.viewer.canvasDrawInstance) {
+    console.warn('No Draw Tool');
+    return;
+  }
+  if (data.checked) {
+    // trun off the main menu
+    $UI.layersSideMenu.close();
+    if ($CAMIC.status == 'download_selection') {
+      downloadSelectionOn();
+      return;
+    }
+    // turn off download SelectionOn
+    toolsOff();
+    var checkAllToolsOff = setInterval(function() {
+      if ($CAMIC && $CAMIC.status == null) {
+        // all tool has turn off
+        clearInterval(checkAllToolsOff);
+        downloadSelectionOn();
+      }
+    }, 100);
+    // turn off magnifier
+    // magnifierOff();
+  } else {
+    downloadSelectionOff();
+  }
+}
+
+
 async function callback(data) {
   const viewerName = this.toString();
   let camic = null;
@@ -988,7 +1096,6 @@ async function callback(data) {
     default:
       break;
   }
-  // console.log(data)
 
   // return;
   data.forEach(function(d) {
@@ -1440,7 +1547,8 @@ function locationCallback(layerData) {
     return;
   }
   //  locate annotation 3.0
-  if (item.data.geometries.features[0].geometry.type == 'Point') {
+  const geoType = item.data.geometries.features[0].geometry.type;
+  if (geoType == 'Point'||geoType == 'Circle'||geoType == 'Ellipse') {
     const bound = item.data.geometries.features[0].bound.coordinates;
     const center = $CAMIC.viewer.viewport.imageToViewportCoordinates(
         bound[0],
@@ -1531,6 +1639,16 @@ function saveAnalytics() {
   console.log('saveAnalytics');
 }
 function startDrawing(e) {
+  //
+  if (
+    $UI.toolbar.getSubTool('download_selection') &&
+    $UI.toolbar.getSubTool('download_selection').querySelector('input[type=checkbox]')
+        .checked
+  ) {
+    console.log('start download_selection');
+    return;
+  }
+
   if (
     $UI.toolbar.getSubTool('preset_label') &&
     $UI.toolbar.getSubTool('preset_label').querySelector('input[type=checkbox]')
@@ -1551,7 +1669,94 @@ function startDrawing(e) {
   //     : !$UI.annotOptPanel._form_.isValid();
   return;
 }
+function downloadSelection() {
+  const chks = $UI.downloadSelectionModal.body.querySelectorAll('input[type=checkbox][name=downloadSelection]:checked');
+  if (!chks.length) {
+    alert('Please Check Annotation to Download.');
+    return;
+  }
+  //
+  const execIds = [];
+  chks.forEach((chk)=>execIds.push(chk.dataset.id));
+  // get annotation by
+  const bbox = $CAMIC.viewer.canvasDrawInstance._draws_data_[0].bound.coordinates[0];
+  const height = $CAMIC.viewer.imagingHelper.imgHeight;
+  const width = $CAMIC.viewer.imagingHelper.imgWidth;
+  const x0 = bbox[0][0]/width;
+  const y0 = bbox[0][1]/height;
+  const x1 = bbox[2][0]/width;
+  const y1 = bbox[2][1]/height;
+  //
+  $CAMIC.store.getMarkByIds(execIds, $D.params.slideId, null, 'computer', null, x0, x1, y0, y1).then((data)=>{
+    const element = document.createElement('a');
+    const blob = new Blob([JSON.stringify(data)], {type: 'application/json'});
+    const uri = URL.createObjectURL(blob);
+    element.setAttribute('href', uri);
+    element.setAttribute('download', `${$D.params.data.name}_${new Date().toISOString()}.json`);
+    element.style.display = 'none';
+    document.body.appendChild(element);
+    element.click();
+    document.body.removeChild(element);
+    hideDownloadSelection();
+  });
+}
+
+function showDownloadSelection() {
+  // get selection area
+  const height = $CAMIC.viewer.imagingHelper.imgHeight;
+  const width = $CAMIC.viewer.imagingHelper.imgWidth;
+  // get annotation by
+  const bbox = $CAMIC.viewer.canvasDrawInstance._draws_data_[0].bound.coordinates[0];
+  const x0 = bbox[0][0]/width;
+  const y0 = bbox[0][1]/height;
+  const x1 = bbox[2][0]/width;
+  const y1 = bbox[2][1]/height;
+  // show up loading
+  $UI.downloadSelectionModal.body.innerHTML = 'Loading ...';
+  $CAMIC.store.markSegmentationCount($D.params.slideId, x0, x1, y0, y1).then((data)=>{
+    if (data&&Array.isArray(data)&&data.length) {
+      createSegmentTable(data);
+    } else {
+      $UI.downloadSelectionModal.body.innerHTML = 'No Data loaded ...';
+    }
+  });
+  $UI.downloadSelectionModal.open();
+}
+function createSegmentTable(data) {
+  $UI.downloadSelectionModal.body.innerHTML = '';
+  $UI.downloadSelectionModal.body.innerHTML = `<table style="width:100%;color:#154081;">
+<thead>
+  <tr>
+    <th>Name</th>
+    <th>Count</th>
+    <th>Download</th>
+  </tr>
+</thead>
+<tbody>
+  ${data.sort((a, b)=> b._id - a._id).map((d)=>`<tr>
+    <td style="text-align:center;">Segmentation / ${d._id}</td>
+    <td style="text-align:center;">${d.count}</td>
+    <td style="text-align:center;"><input data-id=${d._id} name='downloadSelection' type='checkbox' checked></td>
+  </tr>`).join('')}
+</tbody>
+</table>`;
+}
+function hideDownloadSelection() {
+  downloadSelectionOff();
+  $UI.downloadSelectionModal.close();
+}
+
 function stopDrawing(e) {
+  if (
+    $UI.toolbar.getSubTool('download_selection') &&
+    $UI.toolbar.getSubTool('download_selection').querySelector('input[type=checkbox]')
+        .checked
+  ) {
+    //
+    showDownloadSelection();
+    return;
+  }
+
   // preset label annotation
   if (
     $UI.toolbar.getSubTool('preset_label') &&
@@ -1771,6 +1976,7 @@ function drawLabel(e) {
   if (e.checked) {
     if ($CAMIC.status == 'label') {
       presetLabelOn.call(this, labels);
+      mlAsisstantOn(false);
       return;
     }
     // turn off annotation
@@ -1782,6 +1988,7 @@ function drawLabel(e) {
           // all tool has turn off
             clearInterval(checkAllToolsOff);
             presetLabelOn.call(this, labels);
+            mlAsisstantOn(false);
           }
         }.bind(this),
         100,
@@ -1789,6 +1996,7 @@ function drawLabel(e) {
   } else {
     // off preset label
     presetLabelOff();
+    mlAsisstantOff();
   }
 }
 
@@ -1842,6 +2050,21 @@ function presetLabelOff() {
   }
 }
 
+function mlAsisstantOff() {
+  $UI.AssistantViewer.enableBtn.checked = false;
+  $UI.AssistantViewer.elt.style.display = 'none';
+  $UI.AssistantSideMenu.close();
+}
+
+function mlAsisstantOn(enableUndo = true) {
+  if (!enableUndo) {
+    $UI.AssistantViewer.disableUndo();
+  } else {
+    $UI.AssistantViewer.enableUndo();
+  }
+  $UI.AssistantSideMenu.open();
+}
+
 function savePresetLabel() {
   if ($CAMIC.viewer.canvasDrawInstance._path_index === 0) {
     // toast
@@ -1854,6 +2077,7 @@ function savePresetLabel() {
     $UI.message.addWarning('No Label Selected. Please select One.', 4000);
     return;
   }
+  const features = $CAMIC.viewer.canvasDrawInstance.getImageFeatureCollection().features;
   const execId = randomId();
   const labelId = data.id;
   const labelName = data.type;
@@ -1864,14 +2088,48 @@ function savePresetLabel() {
     name: labelName,
     notes: data.type,
   };
-  const feature = $CAMIC.viewer.canvasDrawInstance.getImageFeatureCollection()
-      .features[0];
   let annotJson;
-  if (feature.properties.size) {
+  if (Array.isArray(features) && features[0].properties.size) {
+    // many brush
+    const values = features.reduce((p, f) => {
+      return p.concat(getGrids(
+          f.geometry.coordinates[0],
+          f.properties.size,
+      ));
+    }, []);
+    const set = new Set();
+    values.map((i) => i.toString()).forEach((v) => set.add(v));
+    const points = Array.from(set).map((d) => d.split(','));
+    annotJson = {
+      creator: getUserId(),
+      created_date: new Date(),
+      provenance: {
+        image: {
+          slide: $D.params.slideId,
+        },
+        analysis: {
+          source: 'human',
+          execution_id: execId, // randomId
+          name: labelName, // labelName
+          labelId: labelId,
+          type: 'label',
+          isGrid: true,
+        },
+      },
+      properties: {
+        annotations: noteData,
+      },
+      geometries: convertGeometries(points, {
+        note: data.type,
+        size: features[0].properties.size,
+        color: features[0].properties.style.color,
+      }),
+    };
+  } else if (!Array.isArray(features) && features.properties.size) {
     // brush
     const values = getGrids(
-        feature.geometry.coordinates[0],
-        feature.properties.size,
+        features.geometry.coordinates[0],
+        features.properties.size,
     );
     const set = new Set();
     values.map((i) => i.toString()).forEach((v) => set.add(v));
@@ -1897,8 +2155,8 @@ function savePresetLabel() {
       },
       geometries: convertGeometries(points, {
         note: data.type,
-        size: feature.properties.size,
-        color: feature.properties.style.color,
+        size: features.properties.size,
+        color: features.properties.style.color,
       }),
     };
   } else {
@@ -2036,7 +2294,6 @@ function deleteRulerHandler(execId) {
   $CAMIC.store
       .deleteMarkByExecId(execId, $D.params.data.slide)
       .then((datas) => {
-        console.log(datas);
         // server error
         if (datas.error) {
           const errorMessage = `${datas.text}: ${datas.url}`;
@@ -2240,7 +2497,6 @@ function onAddRuler(ruler) {
 }
 
 async function rootCallback({root, parent, parentName, items}) {
-  console.log({root, parent, items});
   // start a message
   openLoadStatus(`${root==parent?root:`${root} - ${parentName}`}`);
   //
@@ -2498,3 +2754,4 @@ function oldAnnoRender(ctx, data) {
   DrawHelper.draw(ctx, data);
 }
 /* --  -- */
+

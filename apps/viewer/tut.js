@@ -145,3 +145,4 @@ var tour = new Tour({
   },
 });
 tour.init();
+

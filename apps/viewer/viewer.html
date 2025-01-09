@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html  lang="en">
   <head>
     <meta name="keywords" content="camicroscope, quip" />
     <meta charset="utf-8" />
@@ -13,7 +13,6 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
     <!-- Thank you -->
     <script src="../../common/authChecker.js"></script>
-    <script type="text/javascript" src="../../common/util.js"></script>
     <script>
       __auth_check(2);
     </script>
@@ -72,6 +71,13 @@
       type="text/css"
       media="all"
       href="../../components/layersviewer/layersviewer.css"
+    />
+    <!-- machine learning assistant css -->
+    <link
+      rel="stylesheet"
+      type="text/css"
+      media="all"
+      href="../../components/ml-assistant/ml-assistant.css"
     />
     <!-- labels controller css -->
     <link
@@ -171,7 +177,8 @@
     />
     <link href="../../common/bootstrap-tour-standalone/bootstrap-tour-standalone.min.css" rel="stylesheet">
     <!-- tippy theme -->
-    <link rel="stylesheet" href="../../common/tippy-light-border.css" />
+    <link rel="stylesheet" href="https://unpkg.com/tippy.js@6/themes/light-border.css" />
+    <link rel="stylesheet" href="https://unpkg.com/tippy.js@6/themes/translucent.css" />
 
     <!--  common js START -->
     <!-- Smartpen -->
@@ -180,7 +187,12 @@
     <link rel="stylesheet" type="text/css" media="all" href="../../common/smartpen/autoalign.css"/>
     <!-- Smartpen end -->
 
+    <!-- machine learning tool start -->
+    <script type="text/javascript" src="../../components/ml-assistant/ml-tool.js"></script>
+    <!-- machine learning tool end -->
+
     <!-- util.js -->
+    <script type="text/javascript" src="../../common/util.js"></script>
     <script type="text/javascript" src="../../common/DrawHelper.js"></script>
     <script type="text/javascript" src="../../common/simplify.js"></script>
     <script type="text/javascript" src="../../common/paths.js"></script>
@@ -283,6 +295,11 @@
       type="text/javascript"
       src="../../components/modalbox/modalbox.js"
     ></script>
+    <!-- ml-assistant -->
+    <script
+      type="text/javascript"
+      src="../../components/ml-assistant/ml-assistant.js"
+    ></script>
     <!--  components js END -->
 
     <!-- osd & core js START -->
@@ -309,6 +326,15 @@
     <script type="text/javascript" src="../../core/Validation.js"></script>
     <script type="text/javascript" src="../../core/Store.js"></script>
     <script type="text/javascript" src="../../core/CaMic.js"></script>
+
+    <!-- opencv.js -->
+    <script type='text/javascript' src='../segment/opencv.js'></script>
+    <!-- turf.js -->
+    <script type='text/javascript' src='turf.min.js'></script>
+    <!-- tensorflow.js -->
+    <script type='text/javascript' src='../../common/tf.min.js'></script>
+    <!-- tfjs visulisation -->
+    <script type='text/javascript' src='../../common/tfjs-vis.min.js'></script>
 
     <script
       type="text/javascript"
@@ -358,6 +384,7 @@
     <!-- toolbar -->
     <div id="ca_tools"></div>
     <div id="modalbox"></div>
+    <div id="downloadSelectionModal"></div>
     <!-- main viewer -->
     <div id="main_viewer" class="main"></div>
     <div id="minor_viewer" class="none"></div>
@@ -369,6 +396,9 @@
       <button class="reset" style="float: left;">Clear</button
       ><button class="action" style="float: right;">Save</button>
     </div> -->
+    <!-- modalbox -->
+    <div id="model_info"></div>
+    <div id="upload_panel"></div>
     <!-- side menu for apps-->
     <div id="side_apps" style="z-index:600"></div>
 
@@ -377,6 +407,8 @@
 
     <!-- side menu for labels -->
     <div id="labels_layers" style="z-index:600"></div>
+    <!-- side menu for labels -->
+    <div id="ml_assistant_layers" style="z-index:600"></div>
 
     <!-- collapsible list - annotation and analytics -->
     <div id="collapsiblelist" style="z-index:600"></div>
@@ -389,9 +421,12 @@
 
     <!-- labels manager -->
     <div id="labelmanager" style="z-index:600"></div>
+    <!-- machine learning assistant -->
+    <div id="ml_assistant" style="z-index:600"></div>
+    <div id="popup-container"></div>
     <!-- Popper & tippy -->
-    <script src="../../common/popper.js"></script>
-    <script src="../../common/tippy.js"></script>
+    <script src="https://unpkg.com/@popperjs/core@2"></script>
+    <script src="https://unpkg.com/tippy.js@6"></script>
 
   </body>
 
@@ -404,6 +439,11 @@
     //Loading.open(document.body, 'CaMicroscope is initializing...');
     // get slide id from url
     $D.params = getUrlVars();
+
+    if ($D.params.mode == 'pathdb') {
+      $D.pages.home = '../../../';
+      $D.pages.table = '../../../';
+    }
 
     // load if we have at least one slide query element
     if ($D.params && $D.params.slideId) {
@@ -418,12 +458,13 @@
         $D.params.collection
       )
     ) {
-      let STORE = new Store();
+      let STORE = new Store('../../data/');
       STORE.findSlide(
         $D.params.slide,
-        $D.params.study,
         $D.params.specimen,
+        $D.params.study,
         $D.params.location,
+        null,
         $D.params.collection
       )
         .then(x => {
@@ -461,3 +502,4 @@
 
   </script>
 </html>
+
