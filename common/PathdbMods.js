@@ -102,7 +102,9 @@ async function PathDbMods() {
         'Authorization': 'Bearer ' + getCookie("token"),
       })
     }).then(function(response) {
-      if (!response.ok) return {
+      if (!response.ok) 
+        console.log("response not ok", response.statusText)
+        return {
         error: !response.ok,
         text: response.statusText,
         url: response.url
@@ -120,7 +122,9 @@ async function PathDbMods() {
         'Authorization': 'Bearer ' + getCookie("token"),
       })
     }).then(function(response) {
-      if (!response.ok) return {
+      if (!response.ok)
+        console.log("response not ok", response.statusText)
+        return {
         error: !response.ok,
         text: response.statusText,
         url: response.url
