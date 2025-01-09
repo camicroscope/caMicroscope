@@ -105,6 +105,9 @@ async function PathDbMods() {
       console.log(response);
       if (!response.ok) {
         console.log("response not ok", response.statusText);
+      // construct pathdb login w redirect. needs relative path, and needs escaped &. 
+      let thisurl = window.location.pathname + window.location.search;
+      $D.pages.table = "/user/login?destination=" + thisurl.slice(1).replaceAll("&","%26");
         return {
           error: !response.ok,
           text: response.statusText,
@@ -126,6 +129,9 @@ async function PathDbMods() {
       })
     }).then(function(response) {
       console.log(response);
+      // construct pathdb login w redirect. needs relative path, and needs escaped &. 
+      let thisurl = window.location.pathname + window.location.search;
+      $D.pages.table = "/user/login?destination=" + thisurl.slice(1).replaceAll("&","%26");
       if (!response.ok){
         console.log("response not ok", response.statusText);
         return {
