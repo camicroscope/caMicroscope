@@ -97,6 +97,7 @@ async function PathDbMods() {
     var url = `/idlookup/${collection}/${study}/${specimen}/${slide}?_format=json`
     return fetch(url, {
       mode: "cors",
+      credentials: 'include',
       headers: new Headers({
         'Authorization': 'Bearer ' + getCookie("token"),
       })
@@ -114,6 +115,7 @@ async function PathDbMods() {
     var url = "/node/" + id + "?_format=json"
     return fetch(url, {
       mode: "cors",
+      credentials: 'include',
       headers: new Headers({
         'Authorization': 'Bearer ' + getCookie("token"),
       })
