@@ -111,7 +111,8 @@ async function PathDbMods() {
           url: response.url
         };
       }
-      return response.json().then(x=>convertPathDbSlide(x[0])).then(x => [x]);
+      let slidePromise = response.json().then(x=>convertPathDbSlide(x[0])).then(x => [x]);
+      return slidePromise;
     })
   }
   Store.prototype.default_getSlide = Store.prototype.getSlide
@@ -133,7 +134,8 @@ async function PathDbMods() {
           url: response.url
         };
       }
-      return response.json().then(convertPathDbSlide).then(x => [x]);;
+      let slidePromise = response.json().then(convertPathDbSlide).then(x => [x]);
+      return slidePromise;
     })
   }
 
