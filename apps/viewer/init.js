@@ -178,6 +178,10 @@ function initCore() {
     $D.pages.home = '../../../';
     $D.pages.table = '../../../';
   }
+  // override for htt
+  console.log("HTT page redir defaults override for table, home")
+  $D.pages.home = '../../';
+  $D.pages.table = '../../';
 
   try {
     const slideQuery = {};

@@ -151,6 +151,10 @@
         background-color: #FCD299 !important;
       }
 
+      .freeform{
+        background-color: #ce59d0
+      }
+
       .download{
         background-color: #00cc99 !important;
       }
@@ -250,6 +254,11 @@
         if (d.task == "proficiency"){
           workflow_title = "Proficency";
           workflow_url = `../labeling/profTable.html?collectionId=${d._id.$oid}`
+        }
+        if (d.task == "freeform"){
+          workflow_title = "Freeform";
+          workflow_url = `../labeling/freeformTable.html?collectionId=${d._id.$oid}`
+          card.classList.add("freeform");
         }
 
         if (d.hasFeedback) card.classList.add("feedback");
