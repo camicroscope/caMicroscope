@@ -71,6 +71,7 @@
         <i data-feather="arrow-left" class="text-white"></i>
       </div>
 
+
       <!-- Navbar brand --> 
      
       <div class="navbar-brand-div flex-grow-1">
@@ -78,6 +79,45 @@
         
       </div>
       <div>
+
+      <!-- Help/User-Guide Modal -->
+        <div
+        class="modal fade"
+        id="helpModal"
+        tabindex="-1"
+        role="dialog"
+        aria-hidden="true"
+      >
+        <div
+          class="modal-dialog modal-top modal-full-height modal-dialog-scrollable"
+          role="document"
+        >
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="helpModalTitle">Help - User Guide</h5>
+              <button
+                type="button"
+                class="close"
+                data-dismiss="modal"
+                aria-label="Close"
+              >
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body" style="align-content: center;"></div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-secondary px-3"
+                data-dismiss="modal"
+                style="border-radius: 5px; font-size: 1em; padding: 0.65em;"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
 
       
       <ul class="navbar-nav mr-auto px-2">
@@ -119,7 +159,7 @@
               onClick="displayUserGuide()"
             >
               <i class="fas fa-question-circle"></i>
-              &nbsp;&nbsp;Help/User Guide</a
+             &nbsp;&nbsp;Help/User Guide</a
             >
             </div>
 
@@ -437,45 +477,6 @@
               </button>
             </div>
           </form>
-        </div>
-      </div>
-    </div>
-
-    <!-- Help/User-Guide Modal -->
-    <div
-      class="modal fade"
-      id="helpModal"
-      tabindex="-1"
-      role="dialog"
-      aria-hidden="true"
-    >
-      <div
-        class="modal-dialog modal-top modal-full-height modal-dialog-scrollable"
-        role="document"
-      >
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="helpModalTitle">Help - User Guide</h5>
-            <button
-              type="button"
-              class="close"
-              data-dismiss="modal"
-              aria-label="Close"
-            >
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div class="modal-body" style="align-content: center;"></div>
-          <div class="modal-footer">
-            <button
-              type="button"
-              class="btn btn-secondary px-3"
-              data-dismiss="modal"
-              style="border-radius: 5px; font-size: 1em; padding: 0.65em;"
-            >
-              Close
-            </button>
-          </div>
         </div>
       </div>
     </div>
