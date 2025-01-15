@@ -267,7 +267,7 @@
                         const path = layer.data[j].geometry.path;
                         let style = layer.data[j].properties.style;
                         if (style == undefined || style == null){
-                            style = {"color": "#FF6296")
+                            style = {"color": "#FF6296"};
                         }
                         const pathData = layer.data[j];
                         if(layer.hoverable&&path.contains(img_point.x,img_point.y)){
