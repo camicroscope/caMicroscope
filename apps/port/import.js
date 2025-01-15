@@ -6,6 +6,8 @@ function prepareAnnot() {
     output['provenance']['image']['slide'] = document.getElementById('slide_id').value;
     output['provenance']['analysis']['execution'] = document.getElementById('annot_name').value;
     output['properties']['annotations']['name'] = document.getElementById('annot_name').value;
+    output['provenance']['analysis']['name'] = document.getElementById('annot_name').value;
+    output['provenance']['analysis']['execution_id'] = document.getElementById('annot_name').value;
   } catch (e) {
     alert(e);
   }
@@ -15,8 +17,8 @@ function prepareAnnot() {
 function saveAnnot() {
   try {
     let doc = JSON.parse(document.getElementById('output').value);
+    store.addMark(doc).then((x)=>alert('done!')).catch((e)=>alert(e));
   } catch (e) {
     alert(e);
   }
-  store.addMark(doc).then((x)=>alert('done!')).catch((e)=>alert(e));
 }
