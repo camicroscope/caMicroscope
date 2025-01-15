@@ -191,8 +191,11 @@ caDrawHelper.prototype.drawPolygon = function(ctx, paths){
 caDrawHelper.prototype.draw = function(ctx, image_data){
     for (let i = 0; i < image_data.length; i++) {
         const polygon = image_data[i];
+        if (polygon.properties == undefined || polygon.properties == null){
+            polygon.properties = {}
+        }
         const style = polygon.properties.style;
-
+    
         // if there is path using path to draw
         // if(polygon.geometry.path){
         //     ctx.fillStyle = hexToRgbA(style.color,0.5);
@@ -287,6 +290,9 @@ caDrawHelper.prototype.doesDraw = function(bbox, ctx){
 
 caDrawHelper.prototype.drawGrids = function(ctx, image_data){
     image_data.forEach(polygon =>{
+        if (polygon.properties == undefined || polygon.properties == null){
+            polygon.properties = {}
+        }
         const style = polygon.properties.style;
         const size = polygon.properties.size;
         //this.setStyle(ctx, style);
@@ -297,6 +303,9 @@ caDrawHelper.prototype.drawGrids = function(ctx, image_data){
     })
 }
 caDrawHelper.prototype.drawGrid = function(ctx, polygon){
+        if (polygon.properties == undefined || polygon.properties == null){
+            polygon.properties = {}
+        }
         const style = polygon.properties.style;
         const size = polygon.properties.size;
         //this.setStyle(ctx, style);
@@ -330,6 +339,14 @@ caDrawHelper.prototype.drawGrid = function(ctx, polygon){
  *        how the end points of every line are drawn. There are three possible values: 'butt', 'round' and 'square'
  */
 caDrawHelper.prototype.setStyle = function(ctx,style){
+    if (style == undefined || style == null){
+        style = {
+            "color":"#fccde5",
+            "lineJoin":"round",
+            "lineCap":"round",
+            "isFill":true
+        };
+    }
     ctx.strokeStyle = style.color;
     ctx.lineJoin = style.lineJoin;
     ctx.lineCap = style.lineCap;
