@@ -15,8 +15,9 @@ function prepareAnnot() {
 function saveAnnot() {
   try {
     let doc = JSON.parse(document.getElementById('output').value);
+    store.addMark(doc).then((x)=>alert('done!')).catch((e)=>alert(e));
   } catch (e) {
     alert(e);
   }
-  store.addMark(doc).then((x)=>alert('done!')).catch((e)=>alert(e));
+  
 }
