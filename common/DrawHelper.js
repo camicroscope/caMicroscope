@@ -192,9 +192,12 @@ caDrawHelper.prototype.draw = function(ctx, image_data){
     for (let i = 0; i < image_data.length; i++) {
         const polygon = image_data[i];
         if (polygon.properties == undefined || polygon.properties == null){
-            polygon.properties = {}
+            polygon.properties = {};
         }
-        const style = polygon.properties.style;
+        let style = polygon.properties.style;
+        if (style == undefined || style == null){
+            style = {};
+        }
     
         // if there is path using path to draw
         // if(polygon.geometry.path){
