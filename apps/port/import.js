@@ -6,6 +6,9 @@ function prepareAnnot() {
     output['provenance']['image']['slide'] = document.getElementById('slide_id').value;
     output['provenance']['analysis']['execution'] = document.getElementById('annot_name').value;
     output['properties']['annotations']['name'] = document.getElementById('annot_name').value;
+    output['provenance']['analysis']['name'] = document.getElementById('annot_name').value;
+    output['provenance']['analysis']['execution_id'] = document.getElementById('annot_name').value;
+    
   } catch (e) {
     alert(e);
   }
