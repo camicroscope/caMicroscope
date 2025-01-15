@@ -2,7 +2,7 @@ const store = new Store('../../data');
 
 function prepareAnnot() {
   try {
-    let output = JSON.parse(document.getElementById('input'));
+    let output = JSON.parse(document.getElementById('input').value);
     output['provenance']['image']['slide'] = document.getElementById('slide_id').value;
     output['provenance']['analysis']['execution'] = document.getElementById('annot_name').value;
     output['properties']['annotations']['name'] = document.getElementById('annot_name').value;
@@ -14,7 +14,7 @@ function prepareAnnot() {
 
 function saveAnnot() {
   try {
-    let doc = JSON.parse(document.getElementById('output'));
+    let doc = JSON.parse(document.getElementById('output').value);
   } catch (e) {
     alert(e);
   }
