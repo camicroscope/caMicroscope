@@ -12,7 +12,6 @@
     <!-- common styling -->
 	<link rel='stylesheet' type='text/css' media='all' href='../common.css'/>
     <link rel="shortcut icon" type="image/x-icon" href="favicon.png">
-
 </head>
 <body>
   
@@ -23,6 +22,8 @@
         <div class="loader loader-black loader-5"></div>
     </div>
 </div>
+
+
 
 <nav class="navbar navbar-expand-lg navbar-dark fixed-top bg-dark" style="position: sticky; margin-top: -4em;">
     <div class="container-fluid">
@@ -49,6 +50,22 @@
                     <li class="nav-item link" style="font-family: sans-serif;">
                         <a class="nav-link" target="_blank" href="https://github.com/camicroscope/caMicroscope/issues"> <i class="fas fa-comment"></i> Feedback</a>
                     </li>
+
+                        <!-- Darkmode Button as List Item -->
+                    <li class="nav-item link">
+                        <button onclick="darkMode()" class="darkmode-btn">
+                            <i class="fas fa-moon"></i> Darkmode
+                        </button>
+                    </li>
+                </ul>
+
+                <script>
+                    function darkMode() {
+                        var element = document.body;
+                        element.classList.toggle("dark-mode");
+                    }
+                </script>
+                </div>
                 </ul>
             </div>
     </div>
@@ -68,9 +85,21 @@
             </header>
         </div>
 
-        <!-- Content -->
 
-        
+        <!-- adding a darkmode
+            <div>
+                <button onclick="darkMode()" class="darkmode-btn">
+                    <i class="fas fa-moon"></i> Darkmode
+                </button>
+            </div>
+            <script>
+                function darkMode() {
+                    var element = document.body;
+                    element.classList.toggle("dark-mode");
+                }
+            </script> -->
+
+        <!-- Content -->
         <div role="contentinfo" class="content">
             <p>caMicroscope is a tool to view, annotate, and analyze biomedical images.</p>
             <a href="#" class="image fit" aria-label="Reload Home Page"><img src="./banner1.jpg" alt="" /></a>

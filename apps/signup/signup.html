@@ -28,10 +28,6 @@
     src="https://code.jquery.com/jquery-3.4.1.min.js"
     integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
     crossorigin="anonymous"></script>
-    
-
-
-
   </head>
 
   <body>
@@ -50,12 +46,30 @@
                       </li>
                   </ul>
                   <ul class="navbar-nav ms-auto gap-1">
+
+
+							 
                       <li class="nav-item link active" style="font-family: sans-serif;">
                           <a class="nav-link" href="./signup.html"> <i class="fas fa-user-plus"></i> Signup</a>
                       </li>
                       <li class="nav-item link" style="font-family: sans-serif;">
                           <a class="nav-link" target="_blank" href="https://github.com/camicroscope/caMicroscope/issues"> <i class="fas fa-comment"></i> Feedback</a>
                       </li>
+
+                             <!-- Darkmode Button as List Item -->
+                             <li class="nav-item link" style="font-family: sans-serif;">
+                              <button onclick="darkMode()" class="darkmode-btn">Darkmode</button>
+                          </li>
+                          </ul>
+    
+                                <script>
+                                function darkMode() {
+                                  var element = document.body;
+                                  element.classList.toggle("dark-mode");
+                                }
+                                </script>
+    
+    
                   </ul>
               </div>
       </div>

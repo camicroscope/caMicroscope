@@ -38,6 +38,7 @@
 	<link rel="stylesheet" href="./table.css" />
   <link rel="stylesheet" href="./info.css" />
 	<link rel="shortcut icon" type="image/x-icon" href="/apps/landing/favicon.png">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 
 <body>
@@ -65,6 +66,22 @@
 							<li class="nav-item link" style="font-family: sans-serif;">
 								<a class="nav-link" href="./signup/signup.html"> <i class="fas fa-user-plus"></i> Signup</a>
 							</li>
+
+							 <!-- Darkmode Button as List Item -->
+							 <li class="nav-item link">
+                                <button onclick="darkMode()" class="darkmode-btn">
+									<i class="fas fa-moon"></i> Darkmode
+								</button>
+
+                            </li>
+							</ul>
+
+							<script>
+								function darkMode() {
+									var element = document.body;
+									element.classList.toggle("dark-mode");
+								}
+							</script>
 						</ul>
 					</div>
 			</div>

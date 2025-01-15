@@ -7,8 +7,8 @@
 	License: pixelarity.com/license
 */
 
-/* Reset */
 
+/* Reset */
 /* addind loader animation */
 .loader {
     width: 50px;
@@ -4825,3 +4825,149 @@
 		::-webkit-scrollbar-thumb:hover {
 		background: grey;
 		}
+
+/* Dark Mode Option: */
+
+	/* Darkmode button styling */
+	.darkmode-btn {
+		background-color: transparent; /* Override parent styles */
+		color: #bcbbbb;
+		transition: all 0.3s ease;
+	}
+
+
+	/* Dark mode hover effect */
+	.dark-mode .darkmode-btn:hover {
+		background-color: transparent !important; /* No background in dark mode hover */
+		color: #ccc; /* Optional: Light gray text on hover in dark mode */
+		border-color: #ccc; /* Optional: Adjust border color in dark mode */
+		transform: scale(1.05); /* Keep the hover scaling effect */
+		box-shadow: none !important; /* Ensure no shadow in dark mode */
+	}
+
+
+	.dark-mode .nav-item.active.link{
+		color:black !important;
+	}
+
+
+	/* Dark Mode */
+	body {
+		background-color: white;
+		color: rgba(0, 0, 0, 0.599);
+		
+	}
+
+	.dark-mode {
+		background-color: rgb(24, 23, 23);
+		color: white;
+	}
+
+	.dark-mode h1,
+	.dark-mode h2,
+	.dark-mode h3,
+	.dark-mode p,
+	.dark-mode span{
+		color: white !important; /* Force text to be white */
+	}
+
+	.dark-mode .major::after {
+		background-color: rgba(255, 255, 255, 0.516); /* Change line color to white in dark mode */
+	}
+
+	.dark-mode .posts {
+		background-color: #121212; /* Dark background for posts container */
+		color: #e0e0e0; /* Light text color for better contrast */
+	}
+
+	.dark-mode .posts .post {
+		background-color: #1e1e1e; /* Slightly lighter than the container for distinction */
+		color: #ffffff; /* Text color for posts */
+		transition: background-color 0.3s ease, transform 0.3s ease;
+	}
+
+	.dark-mode .posts .post:hover {
+		background-color: #363535; /* Darker background on hover */
+		transform: translateY(-10px); /* Retain hover transform effect */
+	}
+
+	.dark-mode .posts .post .image {
+		display: block;
+		margin-right: 2em;
+		width: 40%;
+		flex: auto;
+		-ms-flex: auto;
+	}
+
+	.dark-mode .posts .post .image img {
+		display: block;
+		width: 100%;
+		border: 1px solid #333; 
+	}
+
+	.dark-mode .posts .post .content {
+		width: 60%;
+		flex: auto;
+		-ms-flex: auto;
+	}
+
+	.dark-mode .posts .post .content > :last-child {
+		margin-bottom: 0;
+	}
+
+	.dark-mode .posts > * {
+		margin: 0 0 4em 0;
+		padding: 0 1.5em;
+		width: 50%;
+	}
+
+	.dark-mode .posts > :nth-child(2n) {
+		padding-right: 0;
+	}
+
+	.dark-mode .posts > :nth-child(2n + 1) {
+		padding-left: 0;
+	}
+
+	.dark-mode .posts > :nth-last-child(1),
+	.dark-mode .posts > :nth-last-child(2) {
+		margin-bottom: 0;
+	}
+
+	@media screen and (max-width: 980px) {
+		.dark-mode .posts .post .image {
+			width: 30%;
+		}
+
+		.dark-mode .posts .post .content {
+			width: 70%;
+		}
+
+		.dark-mode .posts > * {
+			margin: 0 0 3em 0 !important;
+			padding: 0;
+			width: 100%;
+		}
+
+		.dark-mode .posts > :last-child {
+			margin-bottom: 0 !important;
+		}
+	}
+
+	@media screen and (max-width: 736px) {
+		.dark-mode .posts .post .image {
+			width: 30%;
+			min-width: 6em;
+		}
+
+		.dark-mode .posts .post .content {
+			width: 70%;
+		}
+	}
+
+	@media screen and (max-width: 480px) {
+		.dark-mode .posts .post .image {
+			margin-right: 1.5em;
+		}
+	}
+
