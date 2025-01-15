@@ -196,7 +196,7 @@ caDrawHelper.prototype.draw = function(ctx, image_data){
         }
         let style = polygon.properties.style;
         if (style == undefined || style == null){
-            style = {};
+            style = {"color":"#FF6926"};
         }
     
         // if there is path using path to draw
