@@ -368,6 +368,10 @@
         drawEditPoints: function(ctx, pathData, style) {
             if (!pathData) return;
 
+            if (style == undefined || style == null){
+                style = {"color": "#FF6296"};
+            }
+
             this.editPointPathList = [];
             pathData = pathData.geometry.coordinates;
             ctx.lineJoin = 'round';
