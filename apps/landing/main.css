@@ -4854,12 +4854,12 @@
 	/* Dark Mode */
 	body {
 		background-color: white;
-		color: rgba(0, 0, 0, 0.599);
+		color: black;
 		
 	}
 
 	.dark-mode {
-		background-color: rgb(24, 23, 23);
+		background-color: black;
 		color: white;
 	}
 
