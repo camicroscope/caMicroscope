@@ -694,6 +694,9 @@
          * @param  {Object} style  the style of drawing
          */
         drawOnHover:function(ctx,div,path,style){
+            if (style == undefined || style == null){
+                style = {"color": "#FF6296"};
+            }
             div.style.cursor = 'point';
             ctx.lineJoin = 'round';
             ctx.lineCap = 'round';
