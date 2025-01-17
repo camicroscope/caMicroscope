@@ -372,9 +372,14 @@ td {
     color:black !important;
 }
 
+.dark-mode .form-control {
+  background-color: #a4a6a837 ;
+  color: white !important;
+}
+
 
 .dark-mode .bg-light{
-    background-color: black !important;
+    background-color: #343a405c !important;
 }
 
 .dark-mode .has-search .form-control-feedback{
