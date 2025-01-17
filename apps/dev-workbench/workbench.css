@@ -131,7 +131,8 @@
 }
 
 .dark-mode .step-content.grey.grey.lighten-3{
-  color: black !important;
+  color: white !important;
+  background-color: #212529 !important;
 }
 
 
