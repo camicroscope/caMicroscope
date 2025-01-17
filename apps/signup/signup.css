@@ -179,13 +179,36 @@ nav li:not(.active):hover a{
 
   .dark-mode .nav-item.active.link{
 	  color:black !important;
-  }
-
+  } 
 
   /* Dark Mode Styles */
   .dark-mode {
 	  background-color: black;
   }
+
+ .dark-mode .signup-form form {
+	background: #212529;
+
+  }
+
+  .dark-mode .form-control{
+	background-color:  #212529 !important;
+
+  } 
+
+
+  .dark-mode .text-center, .dark-mode .signup-form h2 {
+	color : rgba(255, 255, 255, 0.844) !important;
+  }
+
+
+  .dark-mode .form-select{
+	background-color: #a4a6a84a !important;
+	color : white !important;
+	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='%23fff' d='M7.247 11.14l-4.796-5.48A.5.5 0 013.223 5h9.554a.5.5 0 01.372.84l-4.796 5.48a.5.5 0 01-.752 0z'/%3E%3C/svg%3E") !important;
+  }
+
+
 
 /* 
   .dark-mode h1,
