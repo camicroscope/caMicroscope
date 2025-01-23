@@ -163,6 +163,7 @@ class CaMic {
     slidePromise
         .then((x)=>{
           if (!x || !OpenSeadragon.isArray(x) || !x.length || !x[0].location) {
+            console.log(x);
             redirect($D.pages.table, `Can't Find The Slide Information`);
             return;
           }

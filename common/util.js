@@ -1453,5 +1453,9 @@ const footerContent = `
 `;
 
 function insertFooterLayout() {
-  document.getElementById('footer-layout').innerHTML = footerContent;
+  document.addEventListener('DOMContentLoaded', function() {
+     document.getElementById('footer-layout').innerHTML = footerContent;
+  });
 }
+ 
+

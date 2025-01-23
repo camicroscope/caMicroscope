@@ -66,7 +66,6 @@
         style="text-align:center; background: #17a2b8; font-size: xx-large; color: white; padding: 4px; border-radius: 5px 5px 0px 0px;">
         caMicroscope
       </div>
-      <!-- <hr style="width: 24.25em;  height: 0.01em; background-color: black; margin-top: 0em; margin-bottom: 0;"> -->
 
       <form id="userForm" onsubmit="return false;">
         <h2 style="margin-top: -.5em;">User Signup</h2>
@@ -77,17 +76,18 @@
         <div class="form-group">
           <div class="input-group">
             <span class="input-group-addon"><i class="fa fa-envelope" style="margin-top: 0.5em;"></i></span>
-            <input id="mail" type="email" class="form-control" name="email" placeholder="Email" >
+            <input id="mail" type="email" class="form-control" name="email" placeholder="Email">
           </div>
-          <div id="emailerror" class="error-message"></div>
+          <div id="emailError" class="error-message text-danger"></div> 
+
         </div>
         <br>
         <div class="form-group">
           <div class="input-group">
             <span class="input-group-addon"><i class="fa fa-th-list" style="margin-top: 0.5em;"></i></span>
-            <input type="text" id="filters" class="form-control" placeholder="['list','of','filters']"
-              required="required">
+            <input type="text" id="filters" class="form-control" placeholder="['list','of','filters']">
           </div>
+          <div id="filtersError" class="error-message ml-1 text-danger"></div>
         </div> <br>
 
         <!-- User Type selection -->
@@ -103,22 +103,24 @@
           <button type="submit" id="sub" class="btn btn-primary btn-block btn-lg sub-btn" onclick="addUser()" disabled>
             Please wait ...
           </button>
-          <div class="text-center" onclick="loginPage()" style="margin-top: 0.5em;">Already have an account? </div>
+          <div class="text-center text-primary" onclick="loginPage()" style="margin-top: 0.5em;">Already have an account? </div>
         </div>
+
         <!-- <p class="small text-center">This form is only useful to Admin users. If you reach this page, it's likely that you tried to log into this instance but lack
           access. Email the administrator if you want to be added.</p> -->
         <p id="info" class="small text-center;">
+          
           Non-admin users have to submit a request ticket to admins to get their approval to signup new users.
           If you are an Admin, you can directly signup users.
         </p>
       </form>
-      <div class="text-center text-primary" onclick="loginPage()">Already have an account? </div>
-
     </div>
    
     <footer id="footer-layout"></footer>
     <!-- popup -->
-    <div id="popup-container"></div>
+  <div id="successPopup" class="alert alert-success popup" role="alert" style="display:none;">
+    User registered successfully!
+  </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js" 
             integrity="sha384-p34f1UUtsS3wqzfto5wAAmdvj+osOnFyQFpp4Ua3gs/ZVWx6oOypYoCJhGGScy+8" 
