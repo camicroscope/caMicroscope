@@ -36,11 +36,6 @@ function addUser(){
     filtersError.style.display = "block";
     filtersError.innerHTML = "Please enter atleast one filter.";
     return;
-
-  if (email === '') {
-    emailErr.textContent = 'Please enter your email';
-  } else if (!(/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(email))) {
-    emailErr.textContent = 'Please enter a valid email address. For example: name@example.com';
   }
 
 
