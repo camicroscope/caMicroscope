@@ -370,6 +370,9 @@ caDrawHelper.prototype.clearCanvas = function(canvas){
 var DrawHelper = new caDrawHelper();
 //OpenSeadragon.DrawHelper = DrawHelper;
 
+if (typeof window == 'undefined') {
+    module.exports = caDrawHelper;
+}
 
-module.exports = caDrawHelper;
+
 
