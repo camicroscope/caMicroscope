@@ -82,7 +82,9 @@ caDrawHelper.prototype.drawMultiline = function(ctx,array){
         this.drawLine(ctx,array[i-1],array[i]);
     }
 }
-caDrawHelper.prototype.circle = function(ctx, point, radius){
+caDrawHelper.prototype.circle = function(ctx, point, radius, isPoint=true){
+
+    
     const path = new Path();
     path.arc(
         point[0],
@@ -90,11 +92,34 @@ caDrawHelper.prototype.circle = function(ctx, point, radius){
         radius, 0, 2 * Math.PI
     );
     path.closePath();
-    path.strokeAndFill(ctx);
-    //path.stroke(ctx);
+    if(isPoint) {
+        path.strokeAndFill(ctx);
+    } else {
+        path.stroke(ctx);    
+    }
     // return points and path
     return path;
 }
+
+// rotation in radians
+caDrawHelper.prototype.ellipse = function(ctx, point, radius, rotation){
+    const path = new Path();
+    path.ellipse(
+        point[0],
+        point[1],
+        radius[0],
+        radius[1], 
+        rotation,
+        0,
+        2 * Math.PI
+    );
+    path.closePath();
+    // path.strokeAndFill(ctx);
+    path.stroke(ctx);
+    // return points and path
+    return path;
+}
+
 caDrawHelper.prototype.drawMultiGrid = function(ctx, points, size){
     const path = new Path();
     points.forEach(p=>{
@@ -126,25 +151,6 @@ caDrawHelper.prototype.drawLine = function(ctx, start, end){
 }
 
 /**
- * draw a circle
- * @param  {CanvasRenderingContext2D}  ctx
- *         is used for drawing rectangles, text, images and other objects onto the canvas element
- * @param  {Number}  cx
- *         The x-coordinate of the center of the circle
- * @param  {Number}  xy
- *         The x-coordinate of the center of the circle
- * @param  {Number}  r
- *         The radius of the circle   
- */
-caDrawHelper.prototype.drawCircle = function(ctx, cx, cy, r){
-    // draw line
-    ctx.beginPath();
-    ctx.arc(cx, cy, r, 0, 2 * Math.PI);
-    ctx.stroke();
-    ctx.closePath()
-    
-}
-/**
  * draw a polygon on a canvas 
  * @param  {CanvasRenderingContext2D}  ctx
  *         is used for drawing rectangles, text, images and other objects onto the canvas element
@@ -165,8 +171,8 @@ caDrawHelper.prototype.drawPolygon = function(ctx, paths){
     // close path and set style
     path.closePath()
     if(ctx.isFill ==undefined || ctx.isFill){
-        // path.fill(ctx);
-        path.stroke(ctx);
+        path.fill(ctx);
+        //path.stroke(ctx);
     }else{
         path.stroke(ctx);
     }
@@ -185,8 +191,14 @@ caDrawHelper.prototype.drawPolygon = function(ctx, paths){
 caDrawHelper.prototype.draw = function(ctx, image_data){
     for (let i = 0; i < image_data.length; i++) {
         const polygon = image_data[i];
-        const style = polygon.properties.style;
-
+        if (polygon.properties == undefined || polygon.properties == null){
+            polygon.properties = {};
+        }
+        let style = polygon.properties.style;
+        if (style == undefined || style == null){
+            style = {"color":"#FF6926"};
+        }
+    
         // if there is path using path to draw
         // if(polygon.geometry.path){
         //     ctx.fillStyle = hexToRgbA(style.color,0.5);
@@ -221,8 +233,25 @@ caDrawHelper.prototype.draw = function(ctx, image_data){
                 && !this.isPointInBBox(ctx.viewBoundBoxInData, {x:point[0],y:point[1]})) continue;
             
             ctx.fillStyle = (ctx.isFill ==undefined || ctx.isFill)?hexToRgbA(style.color,1):style.color;
+            console.log(this)
             polygon.geometry.path = this.circle(ctx, polygon.geometry.coordinates, ctx.radius);
-        }else if(false){
+        }
+        else if(polygon.geometry.type=='Circle') {
+            const point = polygon.geometry.coordinates
+            if(ctx.viewBoundBoxInData
+                && !this.isPointInBBox(ctx.viewBoundBoxInData, {x:point[0],y:point[1]})) continue;
+            
+            ctx.fillStyle = (ctx.isFill ==undefined || ctx.isFill)?hexToRgbA(style.color,1):style.color;
+            polygon.geometry.path = this.circle(ctx, polygon.geometry.coordinates, polygon.geometry.radius, false);
+        }else if(polygon.geometry.type=='Ellipse'){
+            const point = polygon.geometry.coordinates
+            if(ctx.viewBoundBoxInData
+                && !this.isPointInBBox(ctx.viewBoundBoxInData, {x:point[0],y:point[1]})) continue;
+            
+            ctx.fillStyle = (ctx.isFill ==undefined || ctx.isFill)?hexToRgbA(style.color,1):style.color;
+            polygon.geometry.path = this.ellipse(ctx, polygon.geometry.coordinates, polygon.geometry.radius, polygon.geometry.rotation);
+        }
+        else if(false){
 
         }else{
             // determine drawing or not
@@ -264,6 +293,9 @@ caDrawHelper.prototype.doesDraw = function(bbox, ctx){
 
 caDrawHelper.prototype.drawGrids = function(ctx, image_data){
     image_data.forEach(polygon =>{
+        if (polygon.properties == undefined || polygon.properties == null){
+            polygon.properties = {}
+        }
         const style = polygon.properties.style;
         const size = polygon.properties.size;
         //this.setStyle(ctx, style);
@@ -274,6 +306,9 @@ caDrawHelper.prototype.drawGrids = function(ctx, image_data){
     })
 }
 caDrawHelper.prototype.drawGrid = function(ctx, polygon){
+        if (polygon.properties == undefined || polygon.properties == null){
+            polygon.properties = {}
+        }
         const style = polygon.properties.style;
         const size = polygon.properties.size;
         //this.setStyle(ctx, style);
@@ -307,6 +342,14 @@ caDrawHelper.prototype.drawGrid = function(ctx, polygon){
  *        how the end points of every line are drawn. There are three possible values: 'butt', 'round' and 'square'
  */
 caDrawHelper.prototype.setStyle = function(ctx,style){
+    if (style == undefined || style == null){
+        style = {
+            "color":"#fccde5",
+            "lineJoin":"round",
+            "lineCap":"round",
+            "isFill":true
+        };
+    }
     ctx.strokeStyle = style.color;
     ctx.lineJoin = style.lineJoin;
     ctx.lineCap = style.lineCap;
@@ -326,3 +369,10 @@ caDrawHelper.prototype.clearCanvas = function(canvas){
 
 var DrawHelper = new caDrawHelper();
 //OpenSeadragon.DrawHelper = DrawHelper;
+
+if (typeof window == 'undefined') {
+    module.exports = caDrawHelper;
+}
+
+
+

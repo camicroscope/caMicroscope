@@ -36,6 +36,7 @@ function objToParamStr(obj) {
 class Store {
   constructor(base, validation, config) {
     this.base = base || './data/';
+
     this.validation = validation || {};
     this.config = config;
   }
@@ -153,6 +154,57 @@ class Store {
       credentials: 'include',
       mode: 'cors',
     });
+  }
+  findMarks(q) {
+    const suffix = 'Mark/find';
+    const url = this.base + suffix;
+    var query = {};
+    if (q) {
+      query = q;
+    }
+    return fetch(url + '?' + objToParamStr(query), {
+      credentials: 'include',
+      mode: 'cors',
+    }).then(this.errorHandler).then((x) => this.filterBroken(x, 'mark'));
+  }
+
+  countMarks(q) {
+    const suffix = 'Mark/count';
+    const url = this.base + suffix;
+    var query = {};
+    if (q) {
+      query = q;
+    }
+    return fetch(url + '?' + objToParamStr(query), {
+      credentials: 'include',
+      mode: 'cors',
+    }).then(this.errorHandler).then((x) => this.filterBroken(x, 'mark'));
+  }
+
+  findSlide(name, specimen, study, location, q) {
+    let query = {};
+    const suffix = 'Slide/find';
+    const url = this.base + suffix;
+    if (q) {
+      query = q;
+    } else {
+      if (name) {
+        query.name = name;
+      }
+      if (study) {
+        query.study = study;
+      }
+      if (specimen) {
+        query.specimen = specimen;
+      }
+      if (location) {
+        query.location = location;
+      }
+    }
+    return fetch(url + '?' + objToParamStr(query), {
+      credentials: 'include',
+      mode: 'cors',
+    }).then(this.errorHandler);
   }
   /**
    * find marks matching slide and/or marktype
@@ -788,6 +840,23 @@ class Store {
       body: JSON.stringify(json),
     }).then(this.errorHandler);
   }
+  /**
+   * get log by id
+   ** @param {object} json - the log data
+   * @return {promise} - promise which resolves with data
+   **/
+  getLog(id) {
+    const suffix = 'Log/find';
+    const url = this.base + suffix;
+    const query = {
+      '_id': '65f564d7dd62a90013124d3e',
+    };
+
+    return fetch(url + '?' + objToParamStr(query), {
+      credentials: 'include',
+      mode: 'cors',
+    }).then(this.errorHandler).then((x) => this.filterBroken(x, 'log'));
+  }
 
   /**
    * get a config setting
@@ -945,7 +1014,34 @@ class Store {
       body: JSON.stringify(update),
     });
   }
+  /** *
+   * dicom api start
+   *
+   */
+  async syncSeries(baseUrl, data = {}) {
+    // the data structure:
+    // const {source_url, study, series, modality} = data
 
+    const suffix = 'loader/dicomWeb/importSeries';
+    const url = baseUrl + suffix;
+    // Default options are marked with *
+    const response = await fetch(url, {
+      method: 'POST',
+      mode: 'cors',
+      cache: 'no-cache',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      redirect: 'follow',
+      referrerPolicy: 'no-referrer',
+      body: JSON.stringify(data),
+    });
+    return response.json();
+  }
+  /** *
+   * dicom api end
+   *
+   */
   addPresetLabels(labels) {
     const suffix = 'Presetlabels/add';
     const url = this.base + suffix;

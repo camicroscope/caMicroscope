@@ -153,6 +153,11 @@ Assistant.prototype.__refreshUI = async function() {
     placement: 'left',
     delay: 300,
     theme: 'translucent',
+    interactive: true,
+    trigger: 'mouseenter focus',
+    aria: {
+      content: 'describedby',
+    },
   });
 
   const thresholdLabel = this.settingZone.threshold.querySelector('pre');
@@ -162,6 +167,11 @@ Assistant.prototype.__refreshUI = async function() {
     placement: 'left',
     delay: 300,
     theme: 'translucent',
+    interactive: true,
+    trigger: 'mouseenter focus',
+    aria: {
+      content: 'describedby',
+    },
   });
 
   const overlapLabel = this.settingZone.overlap.querySelector('pre');
@@ -171,6 +181,11 @@ Assistant.prototype.__refreshUI = async function() {
     placement: 'left',
     delay: 300,
     theme: 'translucent',
+    interactive: true,
+    trigger: 'mouseenter focus',
+    aria: {
+      content: 'describedby',
+    },
   });
   this.modelPredictImgContainer = this.view.querySelector('.model-predict-image-container'),
 

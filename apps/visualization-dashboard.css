@@ -1,0 +1,10 @@
+body {
+    background-color: #cff4fc;
+    margin: 0;
+    font-family: Arial, sans-serif;
+}
+
+.material-icons {
+    font-size: 24px;
+    vertical-align: middle; 
+}

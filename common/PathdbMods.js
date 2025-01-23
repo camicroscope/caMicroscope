@@ -97,16 +97,25 @@ async function PathDbMods() {
     var url = `/idlookup/${collection}/${study}/${specimen}/${slide}?_format=json`
     return fetch(url, {
       mode: "cors",
+      credentials: 'include',
       headers: new Headers({
         'Authorization': 'Bearer ' + getCookie("token"),
       })
     }).then(function(response) {
-      if (!response.ok) return {
-        error: !response.ok,
-        text: response.statusText,
-        url: response.url
-      };
-      return response.json().then(x=>convertPathDbSlide(x[0])).then(x => [x]);
+      console.log(response);
+      if (!response.ok) {
+        console.log("response not ok", response.statusText);
+      // construct pathdb login w redirect. needs relative path, and needs escaped &. 
+      let thisurl = window.location.pathname + window.location.search;
+      $D.pages.table = "/user/login?destination=" + thisurl.slice(1).replaceAll("&","%26");
+        return {
+          error: !response.ok,
+          text: response.statusText,
+          url: response.url
+        };
+      }
+      let slidePromise = response.json().then(x=>convertPathDbSlide(x[0])).then(x => [x]);
+      return slidePromise;
     })
   }
   Store.prototype.default_getSlide = Store.prototype.getSlide
@@ -114,16 +123,25 @@ async function PathDbMods() {
     var url = "/node/" + id + "?_format=json"
     return fetch(url, {
       mode: "cors",
+      credentials: 'include',
       headers: new Headers({
         'Authorization': 'Bearer ' + getCookie("token"),
       })
     }).then(function(response) {
-      if (!response.ok) return {
-        error: !response.ok,
-        text: response.statusText,
-        url: response.url
-      };
-      return response.json().then(convertPathDbSlide).then(x => [x]);
+      console.log(response);
+      // construct pathdb login w redirect. needs relative path, and needs escaped &. 
+      let thisurl = window.location.pathname + window.location.search;
+      $D.pages.table = "/user/login?destination=" + thisurl.slice(1).replaceAll("&","%26");
+      if (!response.ok){
+        console.log("response not ok", response.statusText);
+        return {
+          error: !response.ok,
+          text: response.statusText,
+          url: response.url
+        };
+      }
+      let slidePromise = response.json().then(convertPathDbSlide).then(x => [x]);
+      return slidePromise;
     })
   }
 

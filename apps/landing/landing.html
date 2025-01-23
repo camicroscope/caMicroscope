@@ -1,6 +1,7 @@
+<html lang="en">
 <head>
 
-    <title>caMicroscope</title>
+    <title>caMicroscope - Home</title>
     <meta charset="utf-8" />
 
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -11,14 +12,33 @@
     <!-- common styling -->
 	<link rel='stylesheet' type='text/css' media='all' href='../common.css'/>
     <link rel="shortcut icon" type="image/x-icon" href="favicon.png">
+    <style>
+        .skip-link {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #212529;
+            color: white;
+            padding: 8px;
+            z-index: 9999;
+            text-decoration: none;
+            opacity: 0;
+            pointer-events: none;
+        }
+        .skip-link:focus {
+            opacity: 1;
+            pointer-events: auto;
+        }
+    </style>
 
 </head>
 <body>
-  
+<a class="skip-link" href="#main-content">Skip to main content</a>  
 <!-- loading animation -->
 <div class="main-site">
     <!-- adding css -->
-    <div class="main-content" role="main" id="mainContent">
+    <div class="main-content" role="timer" id="mainContent">
         <div class="loader loader-black loader-5"></div>
     </div>
 </div>
@@ -56,46 +76,44 @@
 
 
 <!-- Main -->
-
-<section id="main" class="wrapper">
+<main id="main-content">
+  <section id="main" class="wrapper">
 
     <div class="inner">
 
         <header class="major">
-
-            <h2>caMicroscope</h2>
-
+            <h1>caMicroscope</h1>
         </header>
 
         <!-- Content -->
 
-        <div class="content">
+        
+        <div role="contentinfo" class="content">
             <p>caMicroscope is a tool to view, annotate, and analyze biomedical images.</p>
             <a href="#" class="image fit" aria-label="Reload Home Page"><img src="./banner1.jpg" alt="" /></a>
 
         </div>
 
-        <div class="posts" style="margin-top: 5em;">
+        <div class="posts" role="main" style="margin-top: 5em;">
             <section class="post">
                 <a href="../table.html" class="image" aria-label="Visit Slides Page"><img src="./camic.jpg" alt=""/></a>
                 <div class="content">
-                    <h3>caMicroscope</h3>
+                    <h2>caMicroscope</h2>
                     <p>Use camicroscope to explore and mark slides uploaded. If this is a restricted access deployment, you will be prompted to log in here.</p>
-                    <a href="../table.html" class="button">More</a>
+                    <a href="../table.html" class="button" aria-label="Explore caMicroscope">More</a>
                 </div>
             </section>
             <section class="post">
                 <a target="_blank" href="https://camicroscope.github.io/docs/" class="image" aria-label="Visit Documentation Page"><img src="./code.jpg" alt=""/></a>
                 <div class="content">
-                    <h3>Documentation</h3>
+                    <h2>Documentation</h2>
                     <p>Read documentation for using and developing caMicroscope.</p>
-                    <a target="_blank" href="https://camicroscope.github.io/docs/" class="button">More</a>
+                    <a target="_blank" href="https://camicroscope.github.io/docs/" class="button" aria-label="Visit Documentation Page">More</a>
                 </div>
             </section>
         </div>
-<iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/prPtb89jFig" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-</section>
-
+  </section>
+</main>
 
 
 <!-- Footer -->
@@ -129,7 +147,5 @@
     <!-- script to call a footer(layout footer in the common > utils folder) function -->
 <script> insertFooterLayout(); </script>
 </body>
-
-
 
 </html>

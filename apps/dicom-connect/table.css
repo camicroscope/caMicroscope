@@ -1,0 +1,260 @@
+html,
+body {
+  width: 100%;
+  height: 100%;
+  min-height: 100%;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+footer {
+  /* position: sticky;
+  /* bottom: -8px; */
+  width: 100%;
+}
+.header {
+  margin-top: 60px;
+}
+
+.page-container {
+  height: 100vh;
+  /* flex-direction: column; */
+  /* justify-content: space-between; */
+}
+
+.link {
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  font-size: 0.99em;
+  font-weight: bold;
+  color: #5e6875;
+  text-decoration: none;
+  padding-right: 0.7rem;
+  padding-left: 0.7rem;
+  margin-top: 0.2rem;
+  font-family: "Open Sans", Helvetica, sans-serif;
+  /* line-height: 1.8; */
+}
+.bg-dark {
+  background-color: #343a40 !important;
+}
+.bg-info {
+  background-color: #17a2b8 !important;
+}
+#collection-list li.item {
+  cursor: pointer;
+}
+#collection-list li.item:hover {
+  background-color: #deeeff;
+}
+#entries {
+  cursor: pointer;
+}
+.page-item {
+  cursor: pointer;
+}
+
+/* #collection-list .item:hover {
+	background-color:#f8f9fa;
+} */
+
+#collection-list .item {
+  /* font-weight:bold; */
+  color: #007bff;
+  padding: 0.5rem;
+}
+#collection-list .item i {
+  padding: 0.25rem;
+}
+
+nav li {
+  transition: background 0.5s;
+  border-radius: 3px;
+}
+nav li:not(:first-child) {
+  margin-left: 0.3em !important;
+}
+nav li:not(.active):hover {
+  background: white;
+}
+nav li:not(.active):hover a {
+  color: black !important;
+}
+.active {
+  background: white;
+}
+.active a {
+  color: black !important;
+}
+
+nav li:not(.active):hover{
+	background: white;
+}
+
+.overall {
+  display: flex;
+}
+
+.reload {
+  display: none;
+  padding: 0 4px;
+}
+
+.btn2{
+	display: flex;
+	align-items: center;
+}
+@media screen and (min-width: 480px){
+  .reload {
+    display: block;
+  }
+}
+
+#deleteBtn,
+#downloadBtn {
+  margin-left: 0.6em;
+}
+#deleteBtn i {
+  color: white;
+}
+#open-delete {
+  display: inline-flex;
+}
+.custom-file-input,
+.sort-btn {
+  cursor: pointer;
+}
+
+#notification-box {
+  overflow-y: scroll;
+  max-height: 40em;
+}
+
+/* Tooltip container */
+.tooltipCustom {
+  position: relative;
+  display: inline-block;
+  /* border-bottom: 1px dotted black; If you want dots under the hoverable text */
+}
+
+/* Tooltip text */
+.tooltipCustom .tooltiptextCustom {
+  visibility: hidden;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  padding: 5px 0;
+  border-radius: 6px;
+
+  /* Position the tooltip text */
+  position: absolute;
+  z-index: 100;
+  width: 200px;
+  bottom: 100%;
+  left: 50%;
+  margin-left: -100px; /* Use half of the width (120/2 = 60), to center the tooltip */
+}
+
+/* Show the tooltip text when you mouse over the tooltip container */
+.tooltipCustom:hover .tooltiptextCustom {
+  visibility: visible;
+  z-index: 1000;
+}
+
+.notification-box {
+  padding: 10px 0px;
+  color: black;
+}
+
+#tabs,
+#content {
+  width: 100%;
+}
+
+.bg-gray {
+  background-color: #eee;
+}
+@media (max-width: 640px) {
+  #dropNot {
+    top: 50px;
+    left: -16px;
+    width: 290px;
+  }
+  .nav {
+    display: block;
+  }
+  .nav .nav-item,
+  .nav .nav-item a {
+    padding-left: 0px;
+  }
+  .message {
+    font-size: 13px;
+  }
+}
+#dropNot {
+  top: 60px;
+  left: 0px;
+  right: unset;
+  width: 460px;
+  box-shadow: 0px 5px 7px -1px #c1c1c1;
+  padding-bottom: 0px;
+  padding: 0px;
+}
+.dropdown-menu:before {
+  content: "";
+  position: absolute;
+  top: -20px;
+  left: 12px;
+  border: 10px solid #343a40;
+  border-color: transparent transparent #343a40 transparent;
+}
+
+.has-search .form-control {
+  padding-left: 2.375rem;
+}
+
+.has-search .form-control-feedback {
+  position: absolute;
+  z-index: 2;
+  display: block;
+  width: 2.375rem;
+  height: 2.375rem;
+  line-height: 2.375rem;
+  text-align: center;
+  pointer-events: none;
+  color: #aaa;
+}
+
+/* .nav-tabs {
+	display: flex;
+} */
+
+.collapse.in {
+  display: inline !important;
+}
+.p {
+  margin-bottom: 0;
+}
+
+.icon-center {
+  text-align: center!important
+}
+/* .main-container {
+  max-height: calc(100% - 199px);
+  overflow-x: hidden;
+  overflow-y: auto;
+} */
+
+.loader {
+  -webkit-animation: spin 2s linear infinite;
+  animation: spin 2s linear infinite;
+}
+
+@-webkit-keyframes spin {
+  0% { -webkit-transform: rotate(0deg); }
+  100% { -webkit-transform: rotate(360deg); }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}

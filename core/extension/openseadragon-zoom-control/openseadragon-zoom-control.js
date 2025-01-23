@@ -257,14 +257,14 @@
         this.zoomIn.classList.add('material-icons');
         this.zoomIn.classList.add('md-24');
         this.zoomIn.classList.add('zoom');
-        this.zoomIn.textContent = 'add';
+        this.zoomIn.textContent = 'zoom_in';
 
         // zoom out
         this.zoomOut = document.createElement( 'div' );
         this.zoomOut.classList.add('material-icons');
         this.zoomOut.classList.add('md-24');
         this.zoomOut.classList.add('zoom');
-        this.zoomOut.textContent = 'remove';
+        this.zoomOut.textContent = 'zoom_out';
 
         // indicator
         this.idx = document.createElement( 'div' );
@@ -277,6 +277,7 @@
         this.ip = document.createElement('input');
         this.ip.type='text';
         this.ip.classList.add('ip');
+        this.ip.setAttribute('aria-label', 'Zoom level');
         this.idx.addEventListener('click', function(e){
             // set image zoom value to input
             let value = this.txt.textContent;
@@ -306,6 +307,7 @@
         // range
         this.range = $.makeNeutralElement( 'input' );
         this.range.type = 'range';
+        this.range.setAttribute('aria-label', 'Zoom level range');
 
         this.element.appendChild(this.zoomIn);
         this.element.appendChild(this.range);

@@ -265,7 +265,10 @@
                 if($.isArray(layer.data)){
                     for(let j = 0;j < layer.data.length;j++){
                         const path = layer.data[j].geometry.path;
-                        const style = layer.data[j].properties.style;
+                        let style = layer.data[j].properties.style;
+                        if (style == undefined || style == null){
+                            style = {"color": "#FF6296"};
+                        }
                         const pathData = layer.data[j];
                         if(layer.hoverable&&path.contains(img_point.x,img_point.y)){
                             this.resize();
@@ -365,6 +368,10 @@
         drawEditPoints: function(ctx, pathData, style) {
             if (!pathData) return;
 
+            if (style == undefined || style == null){
+                style = {"color": "#FF6296"};
+            }
+
             this.editPointPathList = [];
             pathData = pathData.geometry.coordinates;
             ctx.lineJoin = 'round';
@@ -383,6 +390,12 @@
                 pointPath.closePath();
                 pointPath.strokeAndFill(ctx);
                 this.editPointPathList.push(pointPath);
+            } else if (this.editPathData.geometry.type === 'Circle') {
+                // TODO editor
+                console.log('drawEditPoints Circle');
+            } else if (this.editPathData.geometry.type === 'Ellipse') {
+                // TODO editor
+                console.log('drawEditPoints Ellipse');
             } else {
                 pathData[0].map((point) => {
                     const pointPath = new Path();
@@ -497,6 +510,12 @@
                 pointPath.closePath();
                 pointPath.strokeAndFill(this._edit_tool_ctx_);
                 this.editPointPathList.push(pointPath);
+            } else if (this.editPathData.geometry.type === 'Circle') {
+                // TODO editor
+                console.log('onEditPointMouseMove Circle');
+            } else if (this.editPathData.geometry.type === 'Ellipse') {
+                // TODO editor
+                console.log('onEditPointMouseMove Ellipse');
             } else {
                 // brush
                 this.editPathData.geometry.coordinates[0][this.onEditIndex] = [img_point.x, img_point.y];
@@ -679,6 +698,9 @@
          * @param  {Object} style  the style of drawing
          */
         drawOnHover:function(ctx,div,path,style){
+            if (style == undefined || style == null){
+                style = {"color": "#FF6296"};
+            }
             div.style.cursor = 'point';
             ctx.lineJoin = 'round';
             ctx.lineCap = 'round';

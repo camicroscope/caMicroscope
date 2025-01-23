@@ -22,23 +22,22 @@
     <h3 class="h">Info</h3>
   <br>
     <div class="slide" >
-      <input type="text"  name="slide_id" placeholder="Slide Id:"><br>
+      <input type="text"  name="slide_id" id="slide_id" placeholder="Slide Id:"><br>
     </div>
     <br>
     <div class="slide">
-      <input type="text" name="annot_name" placeholder="Annotation Name:"><br>
+      <input type="text" name="annot_name" id="annot_name" placeholder="Annotation Name:"><br>
     </div>
     <h3 class="h2">File Contents</h3>
     <div class="slide">
-      <textarea name="input" class="slide" rows="5" cols="75" placeholder="Input Here"></textarea><br>
+      <textarea name="input" class="slide" id="xml_in" rows="5" cols="75" placeholder="Input Here"></textarea><br>
     </div>
     <br>
     <div class="btns">
       <button id="convert_btn btn1" class="buttons" onclick="xml2geo()" type="button">Convert from XML</button>
-      <button id="prepare_btn btn2" class="buttons" onclick="prepareAnnot()" type="button">Prepare JSON</button>
     </div>
     <br>
-      <textarea name="input" class="slide" rows="5" cols="75" placeholder="Output:"></textarea><br>
+      <textarea name="input" class="slide" id="output" rows="5" cols="75" placeholder="Output:"></textarea><br>
       <button id="post_btn" class="buttons btnn" onclick="saveAnnot()" type="button">Post</button>
   </div>
 </body>

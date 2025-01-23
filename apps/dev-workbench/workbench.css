@@ -22,7 +22,7 @@
   display: flex;
   flex-direction: row;
 }
-.navbar-brand{
+.navbar-brand {
   margin-right: 10rem !important;
 }
 /* All display none */
@@ -40,8 +40,7 @@
   display: none;
 }
 
-
-#goBack{
+#goBack {
   display: flex;
   margin: 0 1rem;
 }
@@ -49,13 +48,39 @@
   nav {
     flex-direction: column;
   }
-  
+
   nav ul {
     flex-direction: column;
   }
-  
+
   nav ul li {
     margin: 10px 0;
   }
 }
 
+.dropdown-menu {
+  margin-left: -5em !important;
+}
+
+@media (max-width: 425px) {
+  .dropdown-menu {
+    margin-left: 0 !important;
+  }
+}
+.navbar .nav-item .options-button {
+  color: #000;
+  border: none;
+}
+
+.focus-visible:focus-visible {
+  outline: 3px solid #000;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 5px rgb(23, 162, 184);
+}
+
+/* For browsers that don't support :focus-visible */
+.focus-visible:focus {
+  outline: 3px solid #000;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 5px rgb(23, 162, 184);
+}
