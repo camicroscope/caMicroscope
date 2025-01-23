@@ -10,7 +10,7 @@ There are 3 steps involved in creating a model:
 ## 1. Creating/selecting dataset
 Since we're working with tensorflow.js, a preferred type of datasets are `spritesheets` (like MNIST [sprite](https://storage.googleapis.com/learnjs-data/model-builder/mnist_images.png) in [this](https://codelabs.developers.google.com/codelabs/tfjs-training-classfication/index.html#2) example). 
 
-[Step-1](https://i.ibb.co/C5VJY8t/Deepin-Screenshot-select-area-20200810034956.png)
+![Step-1](./images/Deepin-Screenshot-select-area-20200810034956.png)
 
 The workbench accepts only a *zip file* as dataset input which **must contain** three files: ***spritesheet*** (data.jpg), a ***binary labels*** (labels.bin) and the ***classes*** (labelnames.csv) with the filenames as specified. 
 If user has the above specified format of dataset than it can be browsed directly and they can skip to Step 2 - Customising/training the model.
@@ -43,7 +43,7 @@ Some features are:
 ### Complete Layer Customisation
 User can add/remove/modify the CNN layers accordingly to get the desired output. 
 
-[layer customisation](https://i.ibb.co/XYZBG1B/out-1.gif)
+![layer customisation](./images/out-1.gif)
 
 [model.compile()](https://js.tensorflow.org/api/latest/#tf.LayersModel.compile) and [model.fit()](https://js.tensorflow.org/api/latest/#tf.LayersModel.fit) functions and their parameters can also be modified accordingly by the user.
 
@@ -52,7 +52,7 @@ User can add/remove/modify the CNN layers accordingly to get the desired output.
 - Export can be done just after step-1 (dataset selection) or anytime during layers customisation.
 - A zip file will be exported which can be imported anytime by using the import option.
 
-[options](https://i.ibb.co/5F7x8CY/Deepin-Screenshot-select-area-20200810043400.png)
+![options](./images/Deepin-Screenshot-select-area-20200810043400.png)
 
 ### Basic/advanced Mode
 The user can toggle the **_advanced mode_** from the options. This mode is targeted towards more advanced users who might want to customize their models in more detailed fashion.
@@ -68,7 +68,7 @@ Though server-side training does not work with visualization using  [tfjs-vis](h
 ### Training visualisation
 After the user clicks on ‘train’ the training process will start and visualization will be shown using [TFjs-vis](https://github.com/tensorflow/tfjs/tree/master/tfjs-vis). (Only in browser-training mode)
 
-[training visualisation](https://i.ibb.co/NLZrGKX/1-X4y-Q8xws-KRS1f-GFc-J3-C3-A.png)
+![training visualisation](./images/1-X4y-Q8xws-KRS1f-GFc-J3-C3-A.png)
 
 ### Parameters and valid values
 | Name | Value |
