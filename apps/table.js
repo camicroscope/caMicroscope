@@ -718,16 +718,17 @@ function fileNameChange() {
   let fileExtension = fileParts.length > 1 ? fileParts.reverse()[0].toLowerCase() : null;
   if (!fileExtension) {
     fileNameInput.addClass('is-invalid');
-    let fDiv = document.createElement('div');
-    fDiv.classList.add('invalid-feedback');
-    fDiv.id = 'filename-feedback0';
-    fDiv.textContent = 'The file name you provided is incompatible. File names should follow this format "filename.ext"';
-    if (fileNameInput.parent().children().length === 1) {
-      fileNameInput.parent().append(fDiv);
-    } else {
-      document.getElementById('filename-feedback0').innerHTML = '';
-      document.getElementById('filename-feedback0').append(fDiv);
+    let fDiv = document.getElementById('filename-feedback0');
+
+    if (!fDiv) {
+        fileNameInput.addClass('is-invalid');
+        let fDiv = document.createElement('div');
+        fDiv.classList.add('invalid-feedback');
+        fDiv.id = 'filename-feedback0';
+        fDiv.textContent = 'The file name you provided is incompatible. File names should follow this format "filename.ext"';
+        fileNameInput.parent().append(fDiv);
     }
+
   } else if (!allowedExtensions.includes(fileExtension)) {
     fileNameInput.addClass('is-invalid');
     let fDiv = document.createElement('div');
