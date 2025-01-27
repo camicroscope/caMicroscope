@@ -82,6 +82,8 @@ caDrawHelper.prototype.drawMultiline = function(ctx,array){
         this.drawLine(ctx,array[i-1],array[i]);
     }
 }
+
+// NOTE:: circle is for a circle object, drawCircle is for the joining circles
 caDrawHelper.prototype.circle = function(ctx, point, radius, isPoint=true){
 
     
@@ -100,6 +102,27 @@ caDrawHelper.prototype.circle = function(ctx, point, radius, isPoint=true){
     // return points and path
     return path;
 }
+
+/**
+ * draw a circle
+ * @param  {CanvasRenderingContext2D}  ctx
+ *         is used for drawing rectangles, text, images and other objects onto the canvas element
+ * @param  {Number}  cx
+ *         The x-coordinate of the center of the circle
+ * @param  {Number}  xy
+ *         The x-coordinate of the center of the circle
+ * @param  {Number}  r
+ *         The radius of the circle   
+ */
+caDrawHelper.prototype.drawCircle = function(ctx, cx, cy, r){
+    // draw line
+    ctx.beginPath();
+    ctx.arc(cx, cy, r, 0, 2 * Math.PI);
+    ctx.stroke();
+    ctx.closePath();
+    
+}
+
 
 // rotation in radians
 caDrawHelper.prototype.ellipse = function(ctx, point, radius, rotation){
