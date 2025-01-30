@@ -13,7 +13,7 @@ const annotationType = {
   '#0000FF': 'lymphocytes',
   '#00FFFF': 'plasma',
 };
-$CAMIC = null;
+let $CAMIC = null;
 // for all instances of UI components
 const $UI = {};
 
@@ -209,7 +209,7 @@ function initCore() {
   }
 
   try {
-    slideQuery = {};
+    let slideQuery = {};
     slideQuery.id = $D.params.slideId;
     slideQuery.name = $D.params.slide;
     slideQuery.location = $D.params.location;
@@ -473,7 +473,7 @@ async function saveAnnotation(annotation) {
   const {x, y} = $CAMIC.viewer.viewport.getContainerSize();
   annotation.viewer_size = {width: x, height: y};
   annotation.viewer_mag = $CAMIC.viewer.viewport.viewportToImageZoom($CAMIC.viewer.viewport.getZoom());
-  nowTime = new Date;
+  let nowTime = new Date;
   annotation.create_date = nowTime.toISOString();
   $CAMIC.viewer.cazoomctrlInstance.base;
   const rs = await $CAMIC.store.addLabelingAnnotation(annotation).then( (d) => d );
@@ -651,7 +651,7 @@ async function loadingData() {
   const labelData = await $CAMIC.store.findLabeling({_id: labelId}).then((d)=>d[0]);
 
 
-  sublabels = [];
+  let sublabels = [];
   if (labelData.subrois&&Array.isArray(labelData.subrois)) {
     sublabels =[]; // await $CAMIC.store.findLabelByIds(labelData.subrois).then((d)=>d);
   }
@@ -960,14 +960,14 @@ function addROIFormEvent() {
 // override labeling code
 
 // holding place for annotations
-labelsToSave = [];
+let labelsToSave = [];
 
 // deps
 function convertToNormalized(points, size, viewer) {
     //const height = Math.round(viewer.imagingHelper.imgHeight);
     //const width = Math.round(viewer.imagingHelper.imgWidth);
-    width = 0.001;
-    height = 0.001;
+    let width = 0.001;
+    let height = 0.001;
     // convert
     const normalizedPoints = points.map((p) => [p[0] / width, p[1] / height]);
     const normalizedSize = [size[0] / width, size[0] / height];
@@ -1025,12 +1025,12 @@ async function storePresetLabel(labelData) {
     notes: labelData.type,
   };
 
-  for (i=0; i< $CAMIC.viewer.canvasDrawInstance.getImageFeatureCollection()
+  for (let i=0; i< $CAMIC.viewer.canvasDrawInstance.getImageFeatureCollection()
     .features.length; i++){
-    feature = $CAMIC.viewer.canvasDrawInstance.getImageFeatureCollection()
+    let feature = $CAMIC.viewer.canvasDrawInstance.getImageFeatureCollection()
         .features[i];
-    collectionName = (await $CAMIC.store.getCollection($CAMIC.slideData.collections[0]))[0].name
-    annotJson = {
+    let collectionName = (await $CAMIC.store.getCollection($CAMIC.slideData.collections[0]))[0].name
+    let annotJson = {
         creator: getUserId(),
         created_date: new Date(),
         collectionId: $CAMIC.slideData['collections'][0],
@@ -1079,17 +1079,18 @@ async function storePresetLabel(labelData) {
     }
 }
 
-camicOverrides = x=>{
+let camicOverrides = x=>{
   // bypass spen and mttool, otherwise in ../../common/smartpen/autoalign.js
   $CAMIC.viewer.canvasDrawInstance.removeHandler('stop-drawing', addAnnotaiton);
-  spen = {}
+  let spen = {}
   spen.initcanvas = console.log
   spen.alignR = x=>x
-  mtool = {}
+  let mtool = {}
   mtool.hash = x=>x
   mtool.populate = x=>x
   mtool.distance = x=>x
-  prevLabel = false
+  let prevLabel = false
+}
 
   function startLabeling(l) { 
     // each time switching label, store prev if applicable.
@@ -1131,7 +1132,7 @@ camicOverrides = x=>{
       }
   }
 
-  meowlabel = {
+  let meowlabel = {
       "id": "999",
       "type":"Meowing",
       "mode": "free",
@@ -1140,21 +1141,21 @@ camicOverrides = x=>{
     }
 
 
-  lymphLabel =  {
+  let lymphLabel =  {
       "id": "903",
       "type":"Lymphocyte",
       "mode": "point",
       "color": "#67a9cf"
     }
 
-  stromaLabel =  {
+  let stromaLabel =  {
       "id": "902",
       "type":"Stroma",
       "mode": "free",
       "color": "#f1a340"
     }
 
-    tumorLabel =  {
+    let tumorLabel =  {
       "id": "901",
       "type":"Tumor_Cluster",
       "mode": "free",
@@ -1208,8 +1209,8 @@ camicOverrides = x=>{
   function multiAnnotationRender(ctx, data) {
       const imagingHelper = this.viewer.imagingHelper;
       const lineWidth = (imagingHelper.physicalToDataX(2) - imagingHelper.physicalToDataX(0))>> 0;
-      for (index=0; index<data.geometries.features.length; index++){
-          polygon =  data.geometries.features[index];
+      for (let index=0; index<data.geometries.features.length; index++){
+          let polygon =  data.geometries.features[index];
           const type = polygon.geometry.type;
           const color = polygon.properties.style.color;
       
@@ -1271,13 +1272,11 @@ camicOverrides = x=>{
 
 
   async function renderPrevAnnots(){
-      data = await $CAMIC.store.findMark($D.params.slideId);
-      for (d in data){
+      let data = await $CAMIC.store.findMark($D.params.slideId);
+      for (let d in data){
           // check if creator is the same, only show if so.
           if (getUserId() == d.creator){
               showAnnotation(d)
           }
       }
   }
-
-}
