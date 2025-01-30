@@ -309,8 +309,8 @@
     const url = new URL(window.location.href);
     $D.params = getUrlVars();
     $D.pages = {};
-    $D.pages.home = `./labelingSimpleAnnotationViewer.html?collectionId=${$D.params.collectionId}`;
-    $D.pages.table = `./labelingSimpleAnnotationViewer.html?collectionId=${$D.params.collectionId}`;
+    $D.pages.home = `./roiMarkingTable.html?collectionId=${$D.params.collectionId}`;
+    $D.pages.table = `./roiMarkingTable.html?collectionId=${$D.params.collectionId}`;
     // no slide Id error
     if ($D.params && $D.params.slideId && $D.params.labelId) {
       // normal initialization starts
