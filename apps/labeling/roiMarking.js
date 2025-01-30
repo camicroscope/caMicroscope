@@ -1090,6 +1090,7 @@ let camicOverrides = x=>{
   mtool.hash = x=>x
   mtool.populate = x=>x
   mtool.distance = x=>x
+  renderPrevAnnots()
 }
 let prevLabel = false
 
@@ -1274,7 +1275,8 @@ let prevLabel = false
 
   async function renderPrevAnnots(){
       let data = await $CAMIC.store.findMark($D.params.slideId);
-      for (let d in data){
+      for (let i in data){
+          d = data[i];
           // check if creator is the same, only show if so.
           if (getUserId() == d.creator){
               showAnnotation(d)
