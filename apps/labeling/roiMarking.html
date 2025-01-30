@@ -259,44 +259,38 @@
     <div id="modalbox"></div>
     <!-- annotation list -->
     <div id="side_annotation" style="z-index: 600"></div>
-    <div id="main_viewer" class="main" style="display: flex">
-        <div id="left_menu" class="left_menu">
-            <div class="side_content flex-container">
-                <div class="item_head">Annotations</div>
-                <div id="roi_form" class="operations item_body" style="padding: 0.5rem">
-                    <div class="item_content" style="
-                color: #365f9c;
-                font-size: 1.3rem;
-                border: 2px solid #ccc;
-                padding: 0.5rem;
-              ">
-                        <div style="font-weight: bold; padding-bottom: 0.5rem">
-                            Mark first, then (optional) comments, then save and next when done with this ROI.
-                        </div>
-                        <div style="padding: 0 0 0.5rem 0.3rem">
-                            <label><textarea
-                    id="comments"
-                    cols="50"
-                    rows="10"
-                  ></textarea>
-                  Comments</label
-                >
+    <div id="main_viewer" class="main" style="display: flex;">
+      <!-- Left Menu Section -->
+      <div id="left_menu" class="left_menu" style="flex: 0 0 300px; /* Fixed width for left menu */">
+        <div class="side_content flex-container">
+          <div class="item_head">Annotations</div>
+          <div id="roi_form" class="operations item_body" style="padding: 0.5rem;">
+            <div class="item_content" style="color: #365f9c; font-size: 1.3rem; border: 2px solid #ccc; padding: 0.5rem;">
+              <div style="font-weight: bold; padding-bottom: 0.5rem;">
+                Mark first, then (optional) comments, then save and next when done with this ROI.
               </div>
-          <div class="foot" style="margin: 0.5rem">
-            <button
-              id="save"
-              class="action disabled"
-              style="float: right; font-weight: bold; font-size: 1.2rem"
-            >
-              Save & Next
-            </button>
+              <div style="padding: 0 0 0.5rem 0.3rem;">
+                <label>
+                  <textarea id="comments" cols="50" rows="10"></textarea>
+                  Comments
+                </label>
+              </div>
+              <div class="foot" style="margin: 0.5rem;">
+                <button id="save" class="action disabled" style="float: right; font-weight: bold; font-size: 1.2rem;">
+                  Save & Next
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
-      <div id="right_viewer" class="right_viewer"></div>
+    
+      <!-- Right Viewer Section -->
+      <div id="right_viewer" class="right_viewer" style="flex: 1; /* Takes remaining space */">
+        <!-- Content for the right viewer goes here -->
+      </div>
     </div>
     
-    </div>
   </body>
   <script type="text/javascript" src="./roiMarking.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-p34f1UUtsS3wqzfto5wAAmdvj+osOnFyQFpp4Ua3gs/ZVWx6oOypYoCJhGGScy+8" crossorigin="anonymous"></script>
