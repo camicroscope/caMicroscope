@@ -181,6 +181,7 @@ async function initialize() {
           // show ROI and subROIs
           showLabelData();
           Loading.close();
+          camicOverrides();
         }
       }, 500);
     }
@@ -404,7 +405,7 @@ function initCore() {
 
     {
       id: 'label_stroma',
-      icon: 'draw',
+      icon: 'edit',
       title: 'Stroma',
       type: 'btn',
       value: 'label_stroma',
@@ -1078,202 +1079,205 @@ async function storePresetLabel(labelData) {
     }
 }
 
-// bypass spen and mttool, otherwise in ../../common/smartpen/autoalign.js
-$CAMIC.viewer.canvasDrawInstance.removeHandler('stop-drawing', addAnnotaiton);
-let spen = {}
-spen.initcanvas = console.log
-spen.alignR = x=>x
-let mtool = {}
-mtool.hash = x=>x
-mtool.populate = x=>x
-mtool.distance = x=>x
-let prevLabel = false
+let camicOverrides = ()=>{
+  // bypass spen and mttool, otherwise in ../../common/smartpen/autoalign.js
+  $CAMIC.viewer.canvasDrawInstance.removeHandler('stop-drawing', addAnnotaiton);
+  let spen = {}
+  spen.initcanvas = console.log
+  spen.alignR = x=>x
+  let mtool = {}
+  mtool.hash = x=>x
+  mtool.populate = x=>x
+  mtool.distance = x=>x
+  let prevLabel = false
 
-function startLabeling(l) { 
-  // each time switching label, store prev if applicable.
-  if (prevLabel){
-    switchLabel(prevLabel)
+  function startLabeling(l) { 
+    // each time switching label, store prev if applicable.
+    if (prevLabel){
+      switchLabel(prevLabel)
+    }
+    prevLabel = l
+    $CAMIC.viewer.canvasDrawInstance.stop = false; // important!
+    const canvasDraw = $CAMIC.viewer.canvasDrawInstance;
+    if (!l) {
+      l = {
+          "id": "999",
+          "type":"Meowing",
+          "mode": "grid",
+          "size": "200",
+          "color": "#0000FF"
+        }
+    }
+    //$UI.labelsViewer.setting.onSelected(l)
+    // open menu
+    //toolsOff();  // Turn off all tools
+    //mlAsisstantOn(false);  // Deactivate the assistant 
+    canvasDraw.drawMode = l.mode;
+    if (l.mode == 'grid') {
+      canvasDraw.size = [parseInt(l.size), parseInt(l.size)];
+    }
+    canvasDraw.style.color = l.color;
+    canvasDraw.drawOn();
+    $CAMIC.status = 'label';
   }
-  prevLabel = l
-  $CAMIC.viewer.canvasDrawInstance.stop = false; // important!
-  const canvasDraw = $CAMIC.viewer.canvasDrawInstance;
-  if (!l) {
-    l = {
-        "id": "999",
-        "type":"Meowing",
-        "mode": "grid",
-        "size": "200",
-        "color": "#0000FF"
+
+
+  function stopLabeling(){
+      if (prevLabel){
+          switchLabel(prevLabel)
+          $CAMIC.viewer.canvasDrawInstance.drawOff();
+          $CAMIC.status = null;
+          prevLabel = null;
       }
   }
-  //$UI.labelsViewer.setting.onSelected(l)
-  // open menu
-  //toolsOff();  // Turn off all tools
-  //mlAsisstantOn(false);  // Deactivate the assistant 
-  canvasDraw.drawMode = l.mode;
-  if (l.mode == 'grid') {
-    canvasDraw.size = [parseInt(l.size), parseInt(l.size)];
-  }
-  canvasDraw.style.color = l.color;
-  canvasDraw.drawOn();
-  $CAMIC.status = 'label';
-}
 
-
-function stopLabeling(){
-    if (prevLabel){
-        switchLabel(prevLabel)
-        $CAMIC.viewer.canvasDrawInstance.drawOff();
-        $CAMIC.status = null;
-        prevLabel = null;
+  let meowlabel = {
+      "id": "999",
+      "type":"Meowing",
+      "mode": "free",
+      "size": "200",
+      "color": "#0000FF"
     }
-}
-
-let meowlabel = {
-    "id": "999",
-    "type":"Meowing",
-    "mode": "free",
-    "size": "200",
-    "color": "#0000FF"
-  }
 
 
-let lymphLabel =  {
-    "id": "903",
-    "type":"Lymphocyte",
-    "mode": "point",
-    "color": "#67a9cf"
-  }
-
-let stromaLabel =  {
-    "id": "902",
-    "type":"Stroma",
-    "mode": "free",
-    "color": "#f1a340"
-  }
-
-  let tumorLabel =  {
-    "id": "901",
-    "type":"Tumor_Cluster",
-    "mode": "free",
-    "color": "#FF0000"
-  }
-
-function labelTumor(){
-  startLabeling(tumorLabel)
-}
-
-function labelStroma(){
-  startLabeling(stromaLabel)
-}
-
-function labelLymph(){
-  startLabeling(lymphLabel)
-}
-
-// at any point, data is in 
-
-
-function switchLabel(prevLabelData){
-    if ($CAMIC.viewer.canvasDrawInstance.getImageFeatureCollection()
-    .features.length > 0){
-        storePresetLabel(prevLabelData).then(()=>{
-            $CAMIC.viewer.canvasDrawInstance.clearStatus();
-        })
+  let lymphLabel =  {
+      "id": "903",
+      "type":"Lymphocyte",
+      "mode": "point",
+      "color": "#67a9cf"
     }
-    saveLabels();
+
+  let stromaLabel =  {
+      "id": "902",
+      "type":"Stroma",
+      "mode": "free",
+      "color": "#f1a340"
+    }
+
+    let tumorLabel =  {
+      "id": "901",
+      "type":"Tumor_Cluster",
+      "mode": "free",
+      "color": "#FF0000"
+    }
+
+  function labelTumor(){
+    startLabeling(tumorLabel)
+  }
+
+  function labelStroma(){
+    startLabeling(stromaLabel)
+  }
+
+  function labelLymph(){
+    startLabeling(lymphLabel)
+  }
+
+  // at any point, data is in 
+
+
+  function switchLabel(prevLabelData){
+      if ($CAMIC.viewer.canvasDrawInstance.getImageFeatureCollection()
+      .features.length > 0){
+          storePresetLabel(prevLabelData).then(()=>{
+              $CAMIC.viewer.canvasDrawInstance.clearStatus();
+          })
+      }
+      saveLabels();
+      
+  }
+
+
+  async function saveLabels() {
+    while (labelsToSave.length > 0) {
+      const toAdd = labelsToSave.pop();  // Get the last label
+      await $CAMIC.store.addMark(toAdd); // Assuming addMark is async
+    }
+    console.log('All labels have been saved!');
+  }
+
+
+  function clearLabels(){
+      // clear labelsToSave
+      labelsToSave = []
+      // refresh this page
+      window.removeEventListener('beforeunload', beforeUnloadHandler);
+      window.location = window.location;
+  }
+
+  function multiAnnotationRender(ctx, data) {
+      const imagingHelper = this.viewer.imagingHelper;
+      const lineWidth = (imagingHelper.physicalToDataX(2) - imagingHelper.physicalToDataX(0))>> 0;
+      for (let index=0; index<data.geometries.features.length; index++){
+          let polygon =  data.geometries.features[index];
+          const type = polygon.geometry.type;
+          const color = polygon.properties.style.color;
+      
+          ctx.lineWidth = lineWidth<3?3:lineWidth;
+          // console.log(lineWidth);
+          ctx.strokeStyle = color;
+          switch (type) {
+              case 'Polygon':
+                  // polygon
+                  const points = polygon.geometry.coordinates[0];
+                  ctx.fillStyle = hexToRgbA(color, 0.2);
+                  const path = new Path();
+          
+                  // starting draw drawPolygon
+                  path.moveTo(points[0][0], points[0][1]);
+                  for (var i = 1; i < points.length-1; i++) {
+                  path.lineTo(points[i][0], points[i][1]);
+                  }
+          
+                  // close path and set style
+                  path.closePath();
+                  path.fill(ctx);
+                  path.stroke(ctx);
+                  break;
+              case 'Point':
+                  // point
+                  const point = polygon.geometry.coordinates;
+                  ctx.lineWidth = lineWidth<6?6:lineWidth;
+                  ctx.fillStyle = color;
+                  const path1 = new Path();
+                  path1.arc(point[0], point[1], lineWidth>2?lineWidth:2, 0, 2 * Math.PI);
+                  path1.closePath();
+                  path1.fill(ctx);
+                  path1.stroke(ctx);
+                  break;
+              default:
+                  console.log('No type in annotation');
+                  break;
+          }
+      }
+    }
+
+  function showAnnotation(annotation) {
+      const type = annotation.properties.type;
+      // add to data
+      $D.annotations.push(annotation);
+      // add to overlay
+      const item = {};
+      item.id = annotation._id;
+      item.data = annotation;
+      item.render = multiAnnotationRender;
+      item.clickable = false;
+      item.hoverable = false;
+      $CAMIC.viewer.omanager.addOverlay(item);
+      $CAMIC.viewer.omanager.updateView();
     
-}
-
-
-async function saveLabels() {
-  while (labelsToSave.length > 0) {
-    const toAdd = labelsToSave.pop();  // Get the last label
-    await $CAMIC.store.addMark(toAdd); // Assuming addMark is async
-  }
-  console.log('All labels have been saved!');
-}
-
-
-function clearLabels(){
-    // clear labelsToSave
-    labelsToSave = []
-    // refresh this page
-    window.removeEventListener('beforeunload', beforeUnloadHandler);
-    window.location = window.location;
-}
-
-function multiAnnotationRender(ctx, data) {
-    const imagingHelper = this.viewer.imagingHelper;
-    const lineWidth = (imagingHelper.physicalToDataX(2) - imagingHelper.physicalToDataX(0))>> 0;
-    for (let index=0; index<data.geometries.features.length; index++){
-        let polygon =  data.geometries.features[index];
-        const type = polygon.geometry.type;
-        const color = polygon.properties.style.color;
-    
-        ctx.lineWidth = lineWidth<3?3:lineWidth;
-        // console.log(lineWidth);
-        ctx.strokeStyle = color;
-        switch (type) {
-            case 'Polygon':
-                // polygon
-                const points = polygon.geometry.coordinates[0];
-                ctx.fillStyle = hexToRgbA(color, 0.2);
-                const path = new Path();
-        
-                // starting draw drawPolygon
-                path.moveTo(points[0][0], points[0][1]);
-                for (var i = 1; i < points.length-1; i++) {
-                path.lineTo(points[i][0], points[i][1]);
-                }
-        
-                // close path and set style
-                path.closePath();
-                path.fill(ctx);
-                path.stroke(ctx);
-                break;
-            case 'Point':
-                // point
-                const point = polygon.geometry.coordinates;
-                ctx.lineWidth = lineWidth<6?6:lineWidth;
-                ctx.fillStyle = color;
-                const path1 = new Path();
-                path1.arc(point[0], point[1], lineWidth>2?lineWidth:2, 0, 2 * Math.PI);
-                path1.closePath();
-                path1.fill(ctx);
-                path1.stroke(ctx);
-                break;
-            default:
-                console.log('No type in annotation');
-                break;
-        }
+      $UI.labelAnnotationsPanel.__refresh();
     }
+
+
+  async function renderPrevAnnots(){
+      let data = await $CAMIC.store.findMark($D.params.slideId);
+      for (let d in data){
+          // check if creator is the same, only show if so.
+          if (getUserId() == d.creator){
+              showAnnotation(d)
+          }
+      }
   }
 
-function showAnnotation(annotation) {
-    const type = annotation.properties.type;
-    // add to data
-    $D.annotations.push(annotation);
-    // add to overlay
-    const item = {};
-    item.id = annotation._id;
-    item.data = annotation;
-    item.render = multiAnnotationRender;
-    item.clickable = false;
-    item.hoverable = false;
-    $CAMIC.viewer.omanager.addOverlay(item);
-    $CAMIC.viewer.omanager.updateView();
-  
-    $UI.labelAnnotationsPanel.__refresh();
-  }
-
-
-async function renderPrevAnnots(){
-    let data = await $CAMIC.store.findMark($D.params.slideId);
-    for (let d in data){
-        // check if creator is the same, only show if so.
-        if (getUserId() == d.creator){
-            showAnnotation(d)
-        }
-    }
 }
