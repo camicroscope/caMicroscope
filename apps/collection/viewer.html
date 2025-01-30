@@ -154,6 +154,10 @@
       .download{
         background-color: #00cc99 !important;
       }
+
+      .marking{
+        background-color: #cc0092 !important;
+      }
     </style>
   </head>
   <body>
@@ -246,6 +250,12 @@
           workflow_title = "Download";
           workflow_url = `../labeling/downloadTable.html?collectionId=${d._id.$oid}`
           card.classList.add("download");
+        }
+
+        if (d.task == "marking"){
+          workflow_title = "Marking";
+          workflow_url = `../labeling/roiMarkingTable.html?collectionId=${d._id.$oid}`
+          card.classList.add("marking");
         }
         if (d.task == "proficiency"){
           workflow_title = "Proficency";

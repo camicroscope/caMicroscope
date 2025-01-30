@@ -484,7 +484,7 @@ async function saveAnnotation(annotation) {
     //    .then((d)=>d);
     // remove listener
     window.removeEventListener('beforeunload', beforeUnloadHandler);
-    window.location.href = `./roi_pick.html?slideId=${$D.params.slideId}&collectionId=${$D.params.collectionId}`;
+    window.location.href = `./mark_roi_pick.html?slideId=${$D.params.slideId}&collectionId=${$D.params.collectionId}`;
     Loading.close();
   } else {
     alert(JSON.stringify(rs));
@@ -530,7 +530,7 @@ function enableFeedbackForm() {
   const feedback = document.getElementById('feedback');
   const next = document.getElementById('next');
   next.addEventListener('click', ()=>{
-    window.location.href = `./roi_pick.html?slideId=${$D.params.slideId}&collectionId=${$D.params.collectionId}`;
+    window.location.href = `./mark_roi_pick.html?slideId=${$D.params.slideId}&collectionId=${$D.params.collectionId}`;
   });
   feedback.style.display = 'block';
   next.style.display = 'block';
@@ -644,7 +644,7 @@ async function loadingData() {
     if (x.length>0){
       alert("You've already done this label.")
       window.removeEventListener('beforeunload', beforeUnloadHandler);
-      window.location.href = `./roi_pick.html?slideId=${$D.params.slideId}&collectionId=${$D.params.collectionId}`;
+      window.location.href = `./mark_roi_pick.html?slideId=${$D.params.slideId}&collectionId=${$D.params.collectionId}`;
     } 
   });
   //

@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="keywords" content="camicroscope, quip" />
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>caMicroscope</title>
+    <!-- google material icons css sheet -->
+    <link
+      rel="stylesheet"
+      type="text/css"
+      media="all"
+      href="../../iconfont/material-icons.css"
+    />
+    <!-- css sheet -->
+    <link
+      rel="stylesheet"
+      type="text/css"
+      media="all"
+      href="../../css/style.css"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      media="all"
+      href="../../components/loading/loading.css"
+    />
+    <script
+      type="text/javascript"
+      src="../../components/loading/loading.js"
+    ></script>
+    <script type="text/javascript" src="../../common/ajv.js"></script>
+    <script type="text/javascript" src="../../common/SHA256.js"></script>
+    <script type="text/javascript" src="../../common/util.js"></script>
+    <script type="text/javascript" src="../../core/Validation.js"></script>
+    <script type="text/javascript" src="../../core/Store.js"></script>
+    <style type="text/css">
+      .modalbox-footer button {
+        font-weight: bold;
+        border: none;
+        background-color: #ffffff;
+        outline: none;
+        cursor: pointer;
+        padding: 5px 10px;
+        margin: 5px 0;
+        color: #365f9c;
+      }
+
+      .modalbox-footer button:disabled {
+        border: 1px solid #7f7f7f;
+        background-color: #bfbfbf;
+      }
+    </style>
+  </head>
+  <body>
+    <h1 id="message" style="color: black">Loading...</h1>
+  </body>
+  <script type="text/javascript">
+
+    function shuffleArray(array) {
+        for (var i = array.length - 1; i > 0; i--) {
+            var j = Math.floor(Math.random() * (i + 1));
+            var temp = array[i];
+            array[i] = array[j];
+            array[j] = temp;
+        }
+    }
+
+    const params = getUrlVars();
+    const slideId = params.slideId;
+    const cid = params.collectionId;
+    async function initialize() {
+      const store = new Store("../../data/");
+      const creator = getUserId();
+      const rois = await store.findLabeling({
+        "provenance.image.slide": slideId,
+        "provenance.analysis.computation": "label",
+      });
+      let vtas = await store.findLabelingAnnotation({
+        "provenance.image.slide": slideId,
+        "provenance.analysis.computation": "annotation",
+        "provenance.analysis.type": "simple",
+        creator,
+      });
+      done_rois = vtas.map(x => x.parent);
+      all_rois = rois.map(x=>x._id.$oid);
+      todo_rois = all_rois.filter(x=>done_rois.indexOf(x)==-1 )
+      console.log(done_rois, all_rois, todo_rois)
+
+      if (todo_rois.length == 0){
+        // All Done
+        redirect(
+          `./roiMakingTable.html?collectionId=${cid}`,
+          "Redirecting...",
+          0
+        );
+      } else {
+        shuffleArray(todo_rois)
+        console.log(todo_rois)
+        r = todo_rois[0]
+        console.log(`label ID :${r}`);
+        window.location.href = `./roiMarking.html?labelId=${r}&slideId=${slideId}&collectionId=${cid}`;
+        return;
+      }
+
+
+      //window.location.href = `../collection/viewer.html?collectionId=${cid}`;
+    }
+    document.addEventListener("DOMContentLoaded", initialize);
+  </script>
+</html>
