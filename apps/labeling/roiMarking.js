@@ -1078,19 +1078,20 @@ async function storePresetLabel(labelData) {
     showAnnotation(annotJson)
     }
 }
-
+let spen = {}
+let mtool = {}
 let camicOverrides = x=>{
   // bypass spen and mttool, otherwise in ../../common/smartpen/autoalign.js
   $CAMIC.viewer.canvasDrawInstance.removeHandler('stop-drawing', addAnnotaiton);
-  let spen = {}
+  
   spen.initcanvas = console.log
   spen.alignR = x=>x
-  let mtool = {}
+  
   mtool.hash = x=>x
   mtool.populate = x=>x
   mtool.distance = x=>x
-  let prevLabel = false
 }
+let prevLabel = false
 
   function startLabeling(l) { 
     // each time switching label, store prev if applicable.
