@@ -1185,9 +1185,9 @@ let prevLabel = false
       .features.length > 0){
           storePresetLabel(prevLabelData).then(()=>{
               $CAMIC.viewer.canvasDrawInstance.clearStatus();
+              saveLabels()
           })
       }
-      saveLabels();
       
   }
 
