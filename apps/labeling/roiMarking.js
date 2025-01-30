@@ -1132,6 +1132,7 @@ let prevLabel = false
           $CAMIC.status = null;
           prevLabel = null;
       }
+      saveLabels()
   }
 
   let meowlabel = {
