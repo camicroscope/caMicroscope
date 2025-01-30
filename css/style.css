@@ -257,8 +257,8 @@ opacity: 0.3 !important;
   }
 
   ul.tools>li{
-    height: 2vw !important;
-    width: 2vw !important;
+    height: 36px !important;
+    width: 36px !important;
     min-height: 25px;
     min-width: 25px;
   }
@@ -274,11 +274,11 @@ opacity: 0.3 !important;
   }
 
   ul.tools{
-    height: 2vw !important;
+    height: 36px !important;
   }
 
   .material-icons.md-24 {
-    font-size: 2vw !important;
+    font-size: 36px !important;
     min-width: 25px;
     min-height: 25px;
   }
