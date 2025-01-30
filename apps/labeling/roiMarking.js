@@ -456,6 +456,7 @@ function clickSavebtnHandler() {
 }
 
 async function saveAnnotation(annotation) {
+  stopLabeling()
   Loading.open(document.body, 'Saving Annotations...');
   // user and date time
   // const creator = getUserId();
@@ -638,7 +639,8 @@ async function loadingData() {
   const labelId = $D.params.labelId;
   const slideId = $D.params.slideId;
 
-  // redir user out if they've already done this
+  // (don't?) redir user out if they've already done this
+  /*
   $CAMIC.store.findLabelingAnnotation({"parent": labelId, "provenance.image.slide":slideId, "creator": getUserId() } ).then(x=>{
     console.log(x)
     if (x.length>0){
@@ -647,6 +649,7 @@ async function loadingData() {
       window.location.href = `./mark_roi_pick.html?slideId=${$D.params.slideId}&collectionId=${$D.params.collectionId}`;
     } 
   });
+  */
   //
   const labelData = await $CAMIC.store.findLabeling({_id: labelId}).then((d)=>d[0]);
 
