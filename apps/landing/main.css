@@ -7,6 +7,11 @@
 	License: pixelarity.com/license
 */
 
+/* h1 */
+.page-title {
+	font-size: 40px !important;
+}
+
 /* Reset */
 
 /* addind loader animation */
@@ -2716,7 +2721,7 @@
 /* Wrapper */
 
 	.wrapper {
-		padding: 6.5em 0 4.5em 0 ;
+		padding: 3em 0 3em 0 ;
 		position: relative;
 	}
 
@@ -3815,10 +3820,6 @@
 		}
 
 /* Header */
-
-	body {
-		padding-top: 3.5em;
-	}
 
 		body.landing {
 			padding-top: 0;

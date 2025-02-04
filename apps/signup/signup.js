@@ -2,6 +2,18 @@ var userSignupUrl = "../../data/User/post";
 var protoTokenUrl = "../../auth/Token/proto";
 var permissions;
 const store = new Store('../../data/');
+var emailError = document.getElementById("emailError");
+var filtersError = document.getElementById("filtersError");
+
+// Validation function for email
+function validateEmail(email) {
+  return /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email);
+}
+
+// Validation function for filters
+function validateFilters(filters) {
+  return filters.trim() !== ''; // Basic validation: ensuring it's not empty
+}
 
 function addUser(){
   var email = document.getElementById("mail").value
@@ -10,11 +22,20 @@ function addUser(){
   var attrEle = document.getElementById("attr");
   var attr = attrEle.options[attrEle.selectedIndex].value;
   var emailErr = document.getElementById('emailerror');
+  // Clear previous error messages
+  emailError.style.display = "none";
+  filtersError.style.display = "none";
 
-  if (email === '') {
-    emailErr.textContent = 'Please enter your email';
-  } else if (!(/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(email))) {
-    emailErr.textContent = 'Please enter a valid email';
+  if (!validateEmail(email)) {
+    emailError.style.display = "block";
+    emailError.innerHTML = "Please enter a valid email address.";
+    return;
+  }
+
+  if (!validateFilters(filters)) {
+    filtersError.style.display = "block";
+    filtersError.innerHTML = "Please enter atleast one filter.";
+    return;
   }
 
 
@@ -88,7 +109,14 @@ function addUser(){
             }
             x.json()
           }).then(x=>{
-            window.alert("User registered successfully");
+             // Show success popup
+            document.getElementById("successPopup").style.display = "block";
+            document.getElementById('mail').value = '';
+            document.getElementById('filters').value = '';
+
+            setTimeout(function(){
+              document.getElementById("successPopup").style.display = "none";
+            }, 3000)
           }).catch(e=>{
             // window.alert("error!")
             console.error(e)
@@ -99,7 +127,6 @@ function addUser(){
     }
   });
 }
-
 $(window).on('load', function() {
   $('#sub').text('Sign up');
   $('#sub').removeAttr('disabled');

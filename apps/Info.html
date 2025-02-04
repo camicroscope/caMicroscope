@@ -14,7 +14,7 @@
 	<!-- Font Awesome -->
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
 
-	<title>CaMicroscope Data Table</title>
+	<title>caMicroscope - Information Dashboard</title>
 
 	<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"	integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"	crossorigin="anonymous"></script>
 		
@@ -38,9 +38,28 @@
 	<link rel="stylesheet" href="./table.css" />
   <link rel="stylesheet" href="./info.css" />
 	<link rel="shortcut icon" type="image/x-icon" href="/apps/landing/favicon.png">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+<style>
+    .skip-to-content {
+        position: absolute;
+        top: -40px;
+        left: 0;
+        background: #212529;
+        color: white;
+        padding: 8px;
+        z-index: 100;
+        transition: top 0.3s;
+    }
+    .skip-to-content:focus {
+        top: 0;
+    }
+</style>
+
 </head>
 
 <body>
+	<a href="#main-content" class="skip-to-content">Skip to main content</a>
 	<div class="page-container">
 	<div>
 		<nav class="navbar navbar-expand-lg navbar-dark fixed-top bg-dark" style="position: sticky; margin-top: -4em;">
@@ -70,12 +89,13 @@
 			</div>
 		</nav>
 
-	<div class="header text-center text-white bg-info p-4">
+	<main id="main-content">	
+	<div class="header text-center text-white bg-dark p-4">
 		<h1 class="h1">caMicroscope</h1>
 		<p style="font-weight: bold; font-size: 14pt;">Digital pathology image viewer with support for human/machine generated annotations and markups.</p>
 		<div style="align-content: center;">
 			<div class="btn-group" role="group">
-			<a href="./table.html">	<button style="border-color: white; border-radius: 5px 0 0 5px;" type="button" class="btn btn-secondary bg-info text-light" title="Slides Table"><i class="fas fa-list-alt"></i>  Slides</button> </a>
+			<a href="./table.html">	<button style="border-color: white; border-radius: 5px 0 0 5px;" type="button" class="btn btn-secondary bg-dark text-light" title="Slides Table"><i class="fas fa-list-alt"></i>  Slides</button> </a>
 			<button type="button" style="border-color: white;" class="btn btn-secondary bg-white text-dark" title="Information Dashboard"> <i class="fas fa-info-circle"></i> Info</button>
 			</div>
 		</div>
@@ -103,6 +123,7 @@
 							</div>
 						 </div>
 						</div>
+						
 						<div class="alert alert-info" role="alert">
 
 							<h4 style="text-align:center">Annotations</h4><hr class="mt-0">
@@ -151,6 +172,8 @@
 	</div>
 </div>
 </div>
+</main>
+
 
 <!-- footer -->
 <footer id="footer-layout"></footer>
@@ -207,11 +230,37 @@ function addbody(JSONdata){
 	else{
 		heatdisp="<i class='fas fa-check'  style='color:green;'></i>"
 	}
-	var button = `<td>	<button class=\"btn btn-primary\" data-id='${allSlides.length}' onclick='openDetails(this)'>Details</button></td>`
-	var markup = "<tr><td>"+JSONdata.id+"</td><td>"+JSONdata.name+"</td><td>"+annodisp+"</td><td>"+heatdisp+"</td>"+button+"</tr>"
+	var button = `<td>	<button class=\"btn btn-primary btn-sm\" data-id='${allSlides.length}' onclick='openDetails(this)'>Details</button></td>`
+	const visualization_button  = `<td>
+                <button class="btn btn-success btn-sm" data-id='${JSONdata.id}' onclick='openView(this)'>VisualGraph</span></button>
+                </button></td>`
+	var markup = "<tr><td>"+JSONdata.id+"</td><td>"+JSONdata.name+"</td><td>"+annodisp+"</td><td>"+heatdisp+"</td><td>"+button+visualization_button+"</td></tr>"
 	table.append(markup);
 }
 
+function openView(e) {
+const oid = e.dataset.id;
+console.log(oid);
+  if (oid) {
+	window.location.href = `./visualization-dashboard.html?slideId=${sanitize(oid)}`;
+  } else {
+    alert('No Data Id');
+  }
+}
+
+function sanitize(string) {
+  string = string || '';
+  const map = {
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    '\'': '&#x27;',
+    '/': '&#x2F;',
+  };
+  const reg = /[&<>"'/]/ig;
+  return string.replace(reg, (match) => (map[match]));
+}
 function openDetails(tag){
 	document.getElementById('detail-dialog').style.display = 'block';
 	document.getElementById('detail-dialog').style.opacity = '1';
@@ -229,9 +278,9 @@ function openDetails(tag){
 	table.append(content);
 	addAnnotations(allSlides[count].annotations);
 	addHeatmaps(allSlides[count].heatmap);
-	console.log(allSlides[count]);
+	console.log(allSlides[count],count);
 }
-
+ 
 function addAnnotations(content){
 	if(content.length===0){
 		return;
@@ -441,7 +490,7 @@ function initialize() {
 						addbody(JSONdata);
 					});
 				});
-						// console.log(JSONdata);
+					 // console.log(JSONdata);
 			}
 	});
 }

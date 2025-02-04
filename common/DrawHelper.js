@@ -82,6 +82,8 @@ caDrawHelper.prototype.drawMultiline = function(ctx,array){
         this.drawLine(ctx,array[i-1],array[i]);
     }
 }
+
+// NOTE:: circle is for a circle object, drawCircle is for the joining circles
 caDrawHelper.prototype.circle = function(ctx, point, radius, isPoint=true){
 
     
@@ -100,6 +102,27 @@ caDrawHelper.prototype.circle = function(ctx, point, radius, isPoint=true){
     // return points and path
     return path;
 }
+
+/**
+ * draw a circle
+ * @param  {CanvasRenderingContext2D}  ctx
+ *         is used for drawing rectangles, text, images and other objects onto the canvas element
+ * @param  {Number}  cx
+ *         The x-coordinate of the center of the circle
+ * @param  {Number}  xy
+ *         The x-coordinate of the center of the circle
+ * @param  {Number}  r
+ *         The radius of the circle   
+ */
+caDrawHelper.prototype.drawCircle = function(ctx, cx, cy, r){
+    // draw line
+    ctx.beginPath();
+    ctx.arc(cx, cy, r, 0, 2 * Math.PI);
+    ctx.stroke();
+    ctx.closePath();
+    
+}
+
 
 // rotation in radians
 caDrawHelper.prototype.ellipse = function(ctx, point, radius, rotation){
@@ -191,8 +214,14 @@ caDrawHelper.prototype.drawPolygon = function(ctx, paths){
 caDrawHelper.prototype.draw = function(ctx, image_data){
     for (let i = 0; i < image_data.length; i++) {
         const polygon = image_data[i];
-        const style = polygon.properties.style;
-
+        if (polygon.properties == undefined || polygon.properties == null){
+            polygon.properties = {};
+        }
+        let style = polygon.properties.style;
+        if (style == undefined || style == null){
+            style = {"color":"#FF6926"};
+        }
+    
         // if there is path using path to draw
         // if(polygon.geometry.path){
         //     ctx.fillStyle = hexToRgbA(style.color,0.5);
@@ -287,6 +316,9 @@ caDrawHelper.prototype.doesDraw = function(bbox, ctx){
 
 caDrawHelper.prototype.drawGrids = function(ctx, image_data){
     image_data.forEach(polygon =>{
+        if (polygon.properties == undefined || polygon.properties == null){
+            polygon.properties = {}
+        }
         const style = polygon.properties.style;
         const size = polygon.properties.size;
         //this.setStyle(ctx, style);
@@ -297,6 +329,9 @@ caDrawHelper.prototype.drawGrids = function(ctx, image_data){
     })
 }
 caDrawHelper.prototype.drawGrid = function(ctx, polygon){
+        if (polygon.properties == undefined || polygon.properties == null){
+            polygon.properties = {}
+        }
         const style = polygon.properties.style;
         const size = polygon.properties.size;
         //this.setStyle(ctx, style);
@@ -330,6 +365,14 @@ caDrawHelper.prototype.drawGrid = function(ctx, polygon){
  *        how the end points of every line are drawn. There are three possible values: 'butt', 'round' and 'square'
  */
 caDrawHelper.prototype.setStyle = function(ctx,style){
+    if (style == undefined || style == null){
+        style = {
+            "color":"#fccde5",
+            "lineJoin":"round",
+            "lineCap":"round",
+            "isFill":true
+        };
+    }
     ctx.strokeStyle = style.color;
     ctx.lineJoin = style.lineJoin;
     ctx.lineCap = style.lineCap;
@@ -350,6 +393,6 @@ caDrawHelper.prototype.clearCanvas = function(canvas){
 var DrawHelper = new caDrawHelper();
 //OpenSeadragon.DrawHelper = DrawHelper;
 
-
-module.exports = caDrawHelper;
-
+if (typeof process !== 'undefined' && process.versions && process.versions.node) {
+    module.exports = caDrawHelper;
+}

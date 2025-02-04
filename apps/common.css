@@ -12,12 +12,6 @@
   margin: 0;
 }
 
-#footer-layout hr {
-  border-bottom-color: #ffffff;
-  padding: 0;
-  margin: 0;
-}
-
 #footer-layout {
   color: whitesmoke;
   text-align: left;
@@ -29,17 +23,17 @@
   color: whitesmoke;
 }
 
-.company-name {
-  color: #e5c1ea;
-}
-
+.report-link a,
 .company-name a {
   color: #e5c1ea;
 }
 
-.company-name:hover {
-  color: #d5c1ea;
+.report-link a:hover,
+.company-name a:hover {
+  color: #e5c1ea;
+  text-decoration: none;
 }
+
 #footer-layout strong,
 #footer-layout b {
   color: #ffffff;

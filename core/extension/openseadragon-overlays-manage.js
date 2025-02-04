@@ -265,7 +265,10 @@
                 if($.isArray(layer.data)){
                     for(let j = 0;j < layer.data.length;j++){
                         const path = layer.data[j].geometry.path;
-                        const style = layer.data[j].properties.style;
+                        let style = layer.data[j].properties.style;
+                        if (style == undefined || style == null){
+                            style = {"color": "#FF6296"};
+                        }
                         const pathData = layer.data[j];
                         if(layer.hoverable&&path.contains(img_point.x,img_point.y)){
                             this.resize();
@@ -364,6 +367,10 @@
 
         drawEditPoints: function(ctx, pathData, style) {
             if (!pathData) return;
+
+            if (style == undefined || style == null){
+                style = {"color": "#FF6296"};
+            }
 
             this.editPointPathList = [];
             pathData = pathData.geometry.coordinates;
@@ -691,6 +698,9 @@
          * @param  {Object} style  the style of drawing
          */
         drawOnHover:function(ctx,div,path,style){
+            if (style == undefined || style == null){
+                style = {"color": "#FF6296"};
+            }
             div.style.cursor = 'point';
             ctx.lineJoin = 'round';
             ctx.lineCap = 'round';

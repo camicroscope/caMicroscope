@@ -1,6 +1,7 @@
 /* css style */
 html {
   font-size: 10px;
+  min-width: 320px;
 }
 
 html,
@@ -10,6 +11,7 @@ body {
   font-family: sans-serif;
   height: 100%;
   width: 100%;
+
 }
 
 body {
@@ -18,6 +20,7 @@ body {
   background-size: 2rem 2rem;
   background-position: 0 0, 5rem 0, 5rem -5rem, 0px 5rem;
   background-color: rgba(220, 220, 220, 1);
+  min-width: 400px;
 }
 
 /* osd main viewer */
@@ -261,10 +264,13 @@ opacity: 0.3 !important;
   }
 
   ul.tools>li{
-    height: 2vw !important;
-    width: 2vw !important;
+    height: 3vw !important;
+    width: 3vw !important;
     min-height: 25px;
     min-width: 25px;
+    max-height: 36px;
+    max-width: 36px;
+
   }
 
   ul.tools>li.handler {
@@ -278,7 +284,8 @@ opacity: 0.3 !important;
   }
 
   ul.tools{
-    height: 2vw !important;
+    height: 3vw !important;
+    max-height: 36px;
   }
 
   .material-icons.md-24 {
