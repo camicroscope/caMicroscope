@@ -388,8 +388,8 @@ function initCore() {
       title: 'Lymph',
       type: 'btn',
       value: 'label_lymph',
-      callback: ()=>{
-        labelLymph();
+      callback: (e)=>{
+        labelLymph(e);
       },
     },
     {
@@ -398,8 +398,8 @@ function initCore() {
       title: 'Tumor',
       type: 'btn',
       value: 'label_Tumor',
-      callback: ()=>{
-        labelTumor();
+      callback: (e)=>{
+        labelTumor(e);
       },
     },
 
@@ -409,8 +409,8 @@ function initCore() {
       title: 'Stroma',
       type: 'btn',
       value: 'label_stroma',
-      callback: ()=>{
-        labelStroma();
+      callback: (e)=>{
+        labelStroma(e);
       },
     },
     {
@@ -1170,15 +1170,22 @@ let prevLabel = false
       "color": "#FF0000"
     }
 
-  function labelTumor(){
+  function setActiveVisual(x){
+
+  }
+
+  function labelTumor(e){
+    console.log(e)
     startLabeling(tumorLabel)
   }
 
   function labelStroma(){
+    console.log(e)
     startLabeling(stromaLabel)
   }
 
   function labelLymph(){
+    console.log(e)
     startLabeling(lymphLabel)
   }
 
