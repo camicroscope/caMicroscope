@@ -1016,71 +1016,73 @@ function convertGeometries(features, data) {
     };
   }
 
-async function storePresetLabel(labelData) {
-  const execId = randomId();
-  const labelId = labelData.id;
-  const labelName = labelData.type;
-  // const parent = labelData.type;
-  const noteData = {
-    id: execId,
-    labelId: labelId,
-    name: labelName,
-    notes: labelData.type,
-  };
 
-  for (let i=0; i< $CAMIC.viewer.canvasDrawInstance.getImageFeatureCollection()
-    .features.length; i++){
-    let feature = $CAMIC.viewer.canvasDrawInstance.getImageFeatureCollection()
-        .features[i];
-    let collectionName = (await $CAMIC.store.getCollection($CAMIC.slideData.collections[0]))[0].name
-    let annotJson = {
-        creator: getUserId(),
-        created_date: new Date(),
-        collectionId: $CAMIC.slideData['collections'][0],
-        collectionName: collectionName,
-        parent: $D.params.labelId,
-        provenance: {
-            image: {
-                slide: $D.params.slideId,
-                name: $CAMIC.slideData['name'],
+  async function storePresetLabel(labelData) {
+    const execId = randomId();
+    const labelId = labelData.id;
+    const labelName = labelData.type;
+    // const parent = labelData.type;
+    const noteData = {
+        id: execId,
+        labelId: labelId,
+        name: labelName,
+        notes: labelData.type,
+    };
+
+    for (let i = 0; i < $CAMIC.viewer.canvasDrawInstance.getImageFeatureCollection()
+        .features.length; i++) {
+        let feature = $CAMIC.viewer.canvasDrawInstance.getImageFeatureCollection()
+            .features[i];
+        let collectionName = (await $CAMIC.store.getCollection($CAMIC.slideData.collections[0]))[0].name
+        var annotJson = {
+            creator: getUserId(),
+            created_date: new Date(),
+            collectionId: $CAMIC.slideData['collections'][0],
+            collectionName: collectionName,
+            parent: $D.params.labelId,
+            provenance: {
+                image: {
+                    slide: $D.params.slideId,
+                    name: $CAMIC.slideData['name'],
+                },
+                analysis: {
+                    coordinates: 'image',
+                    source: 'human',
+                    execution_id: execId, // randomId
+                    name: labelName, // labelName
+                    labelId: labelId,
+                    type: 'label',
+                },
             },
-            analysis: {
-                coordinates: 'image',
-                source: 'human',
-                execution_id: execId, // randomId
-                name: labelName, // labelName
-                labelId: labelId,
-                type: 'label',
+            properties: {
+                annotations: noteData,
             },
-        },
-        properties: {
-            annotations: noteData,
-        },
         };
-    if (labelData.mode == "grid") {
-        // brush
-        const values = getGrids(
-            feature.geometry.coordinates[0],
-            feature.properties.size,
-        );
-        const set = new Set();
-        values.map((i) => i.toString()).forEach((v) => set.add(v));
-        const points = Array.from(set).map((d) => d.split(','));
-        annotJson.geometries = convertGeometries(points, {
-            note: labelData.type,
-            size: feature.properties.size,
-            color: feature.properties.style.color,
-        })
-        annotJson.isGrid = true;
-    } else {
-        // point / polygon / stringLine
-        annotJson.geometries = $CAMIC.viewer.canvasDrawInstance.getImageFeatureCollection()
-    }
+        if (labelData.mode == "grid") {
+            // brush
+            const values = getGrids(
+                feature.geometry.coordinates[0],
+                feature.properties.size,
+            );
+            const set = new Set();
+            values.map((i) => i.toString()).forEach((v) => set.add(v));
+            const points = Array.from(set).map((d) => d.split(','));
+            annotJson.geometries = convertGeometries(points, {
+                note: labelData.type,
+                size: feature.properties.size,
+                color: feature.properties.style.color,
+            })
+            annotJson.isGrid = true;
+        } else {
+            // point / polygon / stringLine
+            annotJson.geometries = $CAMIC.viewer.canvasDrawInstance.getImageFeatureCollection()
+        }
     }
     labelsToSave.push(annotJson)
     annotJson._id = Date() + randomId();
     showAnnotation(annotJson)
 }
+
 let spen = {}
 let mtool = {}
 let camicOverrides = x=>{
