@@ -423,6 +423,14 @@ function initCore() {
         stopLabeling();
       },
     },
+    {
+      id: 'undo',
+      icon: 'undo',
+      title: 'undo',
+      type: 'btn',
+      value: 'undo',
+      callback: undoThisPen,
+    },
     // {
     //   id: 'slide_download',
     //   icon: 'file_download',
@@ -1201,6 +1209,10 @@ let prevLabel = false
   function labelLymph(){
     setActiveVisual("Lymph");
     startLabeling(lymphLabel)
+  }
+
+  function undoThisPen(){
+    $CAMIC.viewer.canvasDrawInstance.clear();
   }
 
   // at any point, data is in 
