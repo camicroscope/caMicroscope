@@ -851,3 +851,82 @@ function getLabelInfo(e) {
     });
   }
 }
+
+// things for mark view
+
+function multiAnnotationRender(ctx, data) {
+  const imagingHelper = this.viewer.imagingHelper;
+  const lineWidth = (imagingHelper.physicalToDataX(2) - imagingHelper.physicalToDataX(0))>> 0;
+  for (let index=0; index<data.geometries.features.length; index++){
+      let polygon =  data.geometries.features[index];
+      const type = polygon.geometry.type;
+      const color = polygon.properties.style.color;
+  
+      ctx.lineWidth = lineWidth<3?3:lineWidth;
+      // console.log(lineWidth);
+      ctx.strokeStyle = color;
+      switch (type) {
+          case 'Polygon':
+              // polygon
+              const points = polygon.geometry.coordinates[0];
+              ctx.fillStyle = hexToRgbA(color, 0.2);
+              const path = new Path();
+      
+              // starting draw drawPolygon
+              path.moveTo(points[0][0], points[0][1]);
+              for (var i = 1; i < points.length-1; i++) {
+              path.lineTo(points[i][0], points[i][1]);
+              }
+      
+              // close path and set style
+              path.closePath();
+              path.fill(ctx);
+              path.stroke(ctx);
+              break;
+          case 'Point':
+              // point
+              const point = polygon.geometry.coordinates;
+              ctx.lineWidth = lineWidth<6?6:lineWidth;
+              ctx.fillStyle = color;
+              const path1 = new Path();
+              path1.arc(point[0], point[1], lineWidth>2?lineWidth:2, 0, 2 * Math.PI);
+              path1.closePath();
+              path1.fill(ctx);
+              path1.stroke(ctx);
+              break;
+          default:
+              console.log('No type in annotation');
+              break;
+      }
+  }
+}
+
+function showAnnotation(annotation) {
+  const type = annotation.properties.type;
+  // add to data
+  $D.annotations.push(annotation);
+  // add to overlay
+  const item = {};
+  item.id = annotation._id;
+  item.data = annotation;
+  item.render = multiAnnotationRender;
+  item.clickable = false;
+  item.hoverable = false;
+  $CAMIC.viewer.omanager.addOverlay(item);
+  $CAMIC.viewer.omanager.updateView();
+
+  $UI.labelAnnotationsPanel.__refresh();
+}
+
+async function renderPrevAnnots(){
+  let data = await $CAMIC.store.findMark($D.params.slideId);
+  for (let i in data){
+      d = data[i];
+      // check if creator is the same, only show if so.
+      if (getUserId() == d.creator){
+          showAnnotation(d)
+      }
+  }
+}
+
+renderPrevAnnots()
