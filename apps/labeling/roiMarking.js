@@ -1170,22 +1170,32 @@ let prevLabel = false
       "color": "#FF0000"
     }
 
-  function setActiveVisual(x){
+  function setActiveVisual(title){
+    // unselect any which may be active
+    const oldSelection = document.getElementsByClassName("selected_button");
+    for (let x of oldSelection){
+      x.classList.remove("selected_button")
+    }
+    // select the correct one
+    const newSelection = document.querySelectorAll('[title="' + title + '"]');
+    for (let x of newSelection){
+      x.parentElement.classList.add("selected_button")
+    }
 
   }
 
   function labelTumor(e){
-    console.log(e)
+    setActiveVisual("Tumor");
     startLabeling(tumorLabel)
   }
 
   function labelStroma(){
-    console.log(e)
+    setActiveVisual("Stroma");
     startLabeling(stromaLabel)
   }
 
   function labelLymph(){
-    console.log(e)
+    setActiveVisual("Lymph");
     startLabeling(lymphLabel)
   }
 
