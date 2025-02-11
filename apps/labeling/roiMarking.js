@@ -1131,13 +1131,17 @@ let prevLabel = false
 
 
   function stopLabeling(){
-      if (prevLabel){
-          switchLabel(prevLabel)
-          $CAMIC.viewer.canvasDrawInstance.drawOff();
-          $CAMIC.status = null;
-          prevLabel = null;
-      }
-      saveLabels()
+    const oldSelection = document.getElementsByClassName("selected_button");
+    for (let x of oldSelection){
+      x.classList.remove("selected_button")
+    }
+    if (prevLabel){
+      switchLabel(prevLabel)
+      $CAMIC.viewer.canvasDrawInstance.drawOff();
+      $CAMIC.status = null;
+      prevLabel = null;
+    }
+    saveLabels()
   }
 
   let meowlabel = {
