@@ -1076,10 +1076,10 @@ async function storePresetLabel(labelData) {
         // point / polygon / stringLine
         annotJson.geometries = $CAMIC.viewer.canvasDrawInstance.getImageFeatureCollection()
     }
+    }
     labelsToSave.push(annotJson)
     annotJson._id = Date() + randomId();
     showAnnotation(annotJson)
-    }
 }
 let spen = {}
 let mtool = {}
