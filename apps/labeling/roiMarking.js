@@ -1196,6 +1196,11 @@ let prevLabel = false
 
   }
 
+  // set up text labels
+  document.querySelector("[title='Tumor']").parentElement.innerHTML = "<span title='Tumor' class='bigtext'>T</span>";
+  document.querySelector("[title='Stroma']").parentElement.innerHTML = "<span title='Stroma' class='bigtext'>S</span>";
+  document.querySelector("[title='Lymph']").parentElement.innerHTML = "<span title='Lymph' class='bigtext'>L</span>";
+
   function labelTumor(e){
     setActiveVisual("Tumor");
     startLabeling(tumorLabel)
