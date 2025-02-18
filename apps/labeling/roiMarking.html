@@ -87,7 +87,17 @@
     <!-- <script src='./js/dataloaders.js'></script> -->
     <script type="text/javascript" src="../../common/dynamicLoadScript.js"></script>
     <style type="text/css">
-
+        
+        .bigtext{
+          font-size:25px;
+          align-content: center;
+          margin: 10px;
+        }
+        @media (max-width: 1200px) { /* less than 1200 px, boxes are smaller */
+          .bigtext {
+            font-size: 18px;
+          }
+        }
         .selected_button {
             background-color: #365f9c !important;
             color: #fff !important;
