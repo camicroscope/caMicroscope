@@ -723,7 +723,7 @@ function addAnnotaiton(e) {
 
 function annotationRender(ctx, data) {
   const imagingHelper = this.viewer.imagingHelper;
-  const lineWidth = (imagingHelper.physicalToDataX(2) - imagingHelper.physicalToDataX(0))>> 0;
+  const lineWidth = (imagingHelper.physicalToDataX(4) - imagingHelper.physicalToDataX(0))>> 0;
   const polygon = data.geometries.features[0];
   const type = polygon.geometry.type;
   const color = polygon.properties.style.color;
