@@ -253,8 +253,8 @@
             // get global variable for renderer
             const imagingHelper = this._viewer.imagingHelper;
             this._display_ctx_._lw = (imagingHelper.physicalToDataX(1) - imagingHelper.physicalToDataX(0)) >> 0;
-            this._display_ctx_.radius = (imagingHelper.physicalToDataX(6) - imagingHelper.physicalToDataX(0)) >> 0;
-            this._display_ctx_.lineWidth = (imagingHelper.physicalToDataX(2) - imagingHelper.physicalToDataX(0)) >> 0;;       
+            this._display_ctx_.radius = (imagingHelper.physicalToDataX(3) - imagingHelper.physicalToDataX(0)) >> 0;
+            this._display_ctx_.lineWidth = (imagingHelper.physicalToDataX(1) - imagingHelper.physicalToDataX(0)) >> 0;;       
             this._display_ctx_.viewBoundBoxInData = this.getViewBoundBoxInData()
             this._display_ctx_.imagingHelper = imagingHelper;
             // 
