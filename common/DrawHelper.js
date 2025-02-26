@@ -87,7 +87,7 @@ caDrawHelper.prototype.circle = function(ctx, point, radius){
     path.arc(
         point[0],
         point[1], 
-        radius, 0, 2 * Math.PI
+        2* radius, 0, 2 * Math.PI
     );
     path.closePath();
     path.strokeAndFill(ctx);
@@ -139,7 +139,7 @@ caDrawHelper.prototype.drawLine = function(ctx, start, end){
 caDrawHelper.prototype.drawCircle = function(ctx, cx, cy, r){
     // draw line
     ctx.beginPath();
-    ctx.arc(cx, cy, 2*r, 0, 2 * Math.PI);
+    ctx.arc(cx, cy, r, 0, 2 * Math.PI);
     ctx.stroke();
     ctx.closePath()
     
