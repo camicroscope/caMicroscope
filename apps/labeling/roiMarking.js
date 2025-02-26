@@ -1170,7 +1170,7 @@ let prevLabel = false
       "id": "903",
       "type":"Lymphocyte",
       "mode": "point",
-      "color": "#67a9cf"
+      "color": "#1dddff"
     }
 
   let stromaLabel =  {
