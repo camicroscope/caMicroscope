@@ -139,7 +139,7 @@ caDrawHelper.prototype.drawLine = function(ctx, start, end){
 caDrawHelper.prototype.drawCircle = function(ctx, cx, cy, r){
     // draw line
     ctx.beginPath();
-    ctx.arc(cx, cy, r, 0, 2 * Math.PI);
+    ctx.arc(cx, cy, 2*r, 0, 2 * Math.PI);
     ctx.stroke();
     ctx.closePath()
     
@@ -221,7 +221,7 @@ caDrawHelper.prototype.draw = function(ctx, image_data){
                 && !this.isPointInBBox(ctx.viewBoundBoxInData, {x:point[0],y:point[1]})) continue;
             
             ctx.fillStyle = (ctx.isFill ==undefined || ctx.isFill)?hexToRgbA(style.color,1):style.color;
-            polygon.geometry.path = this.circle(ctx, polygon.geometry.coordinates, 2*ctx.radius);
+            polygon.geometry.path = this.circle(ctx, polygon.geometry.coordinates, ctx.radius);
         }else if(false){
 
         }else{
