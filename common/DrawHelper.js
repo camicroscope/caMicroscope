@@ -221,7 +221,7 @@ caDrawHelper.prototype.draw = function(ctx, image_data){
                 && !this.isPointInBBox(ctx.viewBoundBoxInData, {x:point[0],y:point[1]})) continue;
             
             ctx.fillStyle = (ctx.isFill ==undefined || ctx.isFill)?hexToRgbA(style.color,1):style.color;
-            polygon.geometry.path = this.circle(ctx, polygon.geometry.coordinates, ctx.radius);
+            polygon.geometry.path = this.circle(ctx, polygon.geometry.coordinates, 2*ctx.radius);
         }else if(false){
 
         }else{
