@@ -755,7 +755,7 @@ function annotationRender(ctx, data) {
       ctx.lineWidth = lineWidth<6?6:lineWidth;
       ctx.fillStyle = color;
       const path1 = new Path();
-      path1.arc(point[0], point[1], lineWidth>2?lineWidth:2, 0, 2 * Math.PI);
+      path1.arc(point[0], point[1], lineWidth>4?lineWidth:4, 0, 2 * Math.PI);
       path1.closePath();
       path1.fill(ctx);
       path1.stroke(ctx);
