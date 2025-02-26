@@ -752,10 +752,10 @@ function annotationRender(ctx, data) {
     case 'Point':
       // point
       const point = polygon.geometry.coordinates;
-      ctx.lineWidth = lineWidth<6?6:lineWidth;
+      ctx.lineWidth = lineWidth<8?8:lineWidth;
       ctx.fillStyle = color;
       const path1 = new Path();
-      path1.arc(point[0], point[1], lineWidth>4?lineWidth:4, 0, 2 * Math.PI);
+      path1.arc(point[0], point[1], lineWidth>8?lineWidth:8, 0, 2 * Math.PI);
       path1.closePath();
       path1.fill(ctx);
       path1.stroke(ctx);
