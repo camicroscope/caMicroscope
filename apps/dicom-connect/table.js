@@ -4,7 +4,7 @@
 
 const sources = [{
   'name':'j4care',
-  'url':'https://development.j4care.com:11443/dcm4chee-arc/aets/DCM4CHEE/rs'
+  'url':'https://ihe.j4care.com:18443/dcm4chee-arc/aets/DCM4CHEE/rs'
   
 },{
   'name': 'google',
@@ -31,7 +31,7 @@ const page_states = {
   sources: {
     data: [{
       'name':'j4care',
-      'url':'https://development.j4care.com:11443/dcm4chee-arc/aets/DCM4CHEE/rs'
+      'url':'https://ihe.j4care.com:18443/dcm4chee-arc/aets/DCM4CHEE/rs'
       
     },{
       'name': 'google',
@@ -68,7 +68,10 @@ function getInstances(baseUrl, studyId, seriesId) {
   return fetch(url).then(resp=>resp.json());
 }
 
-
+function previewSeries(base_url, study, series){
+  base_url_encoded = encodeURIComponent(base_url)
+  window.location = `../viewer/viewer.html?mode=dcmweb&study=${study}&series=${series}&slideId=preview&source=${base_url_encoded}`
+}
 
 
 
@@ -194,7 +197,7 @@ function initialize() {
               // return btn
               const seriesId = row['0020000E']['Value'][0];
               const modality = row['00080060']['Value'][0];
-              return `<div class="icon-center"><button onClick="syncSeries('${row.url}', '${row.studyId}', '${seriesId}', '${modality}')" class="btn btn-sm btn-primary" title="Sync Series"><i class="fas fa-cloud-download-alt"></i></button></div>`; //<i class="fas fa-cloud-download-alt"></i>
+              return `<div class="icon-center"><button onClick="syncSeries('${row.url}', '${row.studyId}', '${seriesId}', '${modality}')" class="btn btn-sm btn-primary" title="Sync Series"><i class="fas fa-cloud-download-alt"></i></button><button onClick="previewSeries('${row.url}', '${row.studyId}', '${seriesId}')" class="btn btn-sm btn-primary" title="Preview"><i class="fas fa-eye"></i></button></div>`; //<i class="fas fa-cloud-download-alt"></i>
             case 'loading':
               // return downloading
               // return '<div class="icon-center"><i class="fas fa-pen"></i></div>';
