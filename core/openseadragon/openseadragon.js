@@ -20667,10 +20667,12 @@ function updateTile( tiledImage, haveDrawn, drawLevel, x, y, level, levelOpacity
         if (tile.context2D) {
             setTileLoaded(tiledImage, tile);
         } else {
-            var imageRecord = tiledImage._tileCache.getImageRecord(tile.cacheKey);
-            if (imageRecord) {
-                var image = imageRecord.getImage();
-                setTileLoaded(tiledImage, tile, image);
+            if (tile.cacheKey){
+                var imageRecord = tiledImage._tileCache.getImageRecord(tile.cacheKey);
+                if (imageRecord) {
+                    var image = imageRecord.getImage();
+                    setTileLoaded(tiledImage, tile, image);
+                }
             }
         }
     }
@@ -20804,19 +20806,21 @@ function getTile(
  */
 function loadTile( tiledImage, tile, time ) {
     tile.loading = true;
-    tiledImage._imageLoader.addJob({
-        src: tile.url,
-        loadWithAjax: tile.loadWithAjax,
-        ajaxHeaders: tile.ajaxHeaders,
-        crossOriginPolicy: tiledImage.crossOriginPolicy,
-        ajaxWithCredentials: tiledImage.ajaxWithCredentials,
-        callback: function( image, errorMsg, tileRequest ){
-            onTileLoad( tiledImage, tile, time, image, errorMsg, tileRequest );
-        },
-        abort: function() {
-            tile.loading = false;
-        }
-    });
+    if (tile.url){
+        tiledImage._imageLoader.addJob({
+            src: tile.url,
+            loadWithAjax: tile.loadWithAjax,
+            ajaxHeaders: tile.ajaxHeaders,
+            crossOriginPolicy: tiledImage.crossOriginPolicy,
+            ajaxWithCredentials: tiledImage.ajaxWithCredentials,
+            callback: function( image, errorMsg, tileRequest ){
+                onTileLoad( tiledImage, tile, time, image, errorMsg, tileRequest );
+            },
+            abort: function() {
+                tile.loading = false;
+            }
+        });
+    }
 }
 
 /**

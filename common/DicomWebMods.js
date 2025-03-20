@@ -91,6 +91,8 @@ function DicomWebMods() {
                         if (level == x['order']){
                             var frameIndex = y_pos * Math.ceil(x['width'] / x['tile_size']) + x_pos;
                             return `${x["url"]}/frames/${frameIndex + 1}/rendered`;
+                        } else {
+                            return null;
                         }
                     }
                 }
@@ -106,6 +108,15 @@ function DicomWebMods() {
     Store.prototype.findSlide = function(slide, specimen, study, location, q, collection) {
     }
     CaMic.prototype.loadImg = function(func) {
+        // override for multi image as single viewport image simulation
+        this.viewer.viewport.viewportToImageCoordinates = function(x,y){
+            let i = this.viewer.world._items.length - 1
+            return this.viewer.world.getItemAt(i).viewportToImageCoordinates(x,y)
+        }
+        this.viewer.viewport.viewportToImageZoom = function(z){
+            let i = this.viewer.world._items.length - 1
+            return this.viewer.world.getItemAt(i).viewportToImageZoom(z)
+        }
         var urlParams = new URLSearchParams(window.location.search);
         let encodedUrl = urlParams.get('source') || "https%3A%2F%2Fihe.j4care.com%3A18443%2Fdcm4chee-arc%2Faets%2FDCM4CHEE%2Frs";
         let base_url = decodeURIComponent(encodedUrl);
@@ -127,7 +138,7 @@ function DicomWebMods() {
             x.mpp_x = this.mpp_x;
             x.mpp_y = this.mpp_y;
             x.location = img_id;
-            x.url = "";
+            x.url = tilesources;
             if (func && typeof func === 'function'){
                 func.call(null, x);
               }

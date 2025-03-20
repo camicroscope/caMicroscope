@@ -439,7 +439,7 @@ async function initUIcomponents() {
 
   const subToolsOpt = [];
   // home
-  if (ImgloaderMode == 'iip') {
+  if (ImgloaderMode == 'iip' || $D.params.mode == 'dcmweb') {
     subToolsOpt.push({
       name: 'home',
       icon: 'home', // material icons' name
@@ -450,6 +450,7 @@ async function initUIcomponents() {
       callback: goHome,
     });
   }
+
   // pen
   subToolsOpt.push({
     name: 'annotation',
@@ -469,6 +470,7 @@ async function initUIcomponents() {
     ariaLabel: 'Preset labels',
     callback: drawLabel,
   });
+
 
   // magnifier
   subToolsOpt.push({
@@ -522,55 +524,57 @@ async function initUIcomponents() {
       callback: toggleMeasurement,
     });
   }
-  // donwload selection
-  subToolsOpt.push({
-    name: 'download_selection',
-    icon: 'get_app', // material icons' name
-    title: 'Download Selection',
-    type: 'check',
-    value: 'download',
-    ariaLabel: 'Download selection',
-    callback: toggleDownloadSelection,
-  });
-  // enhance
-  subToolsOpt.push({
-    name: 'Enhance',
-    icon: 'invert_colors',
-    title: 'Enhance',
-    type: 'dropdown',
-    value: 'Enhance',
-    ariaLabel: 'Enhance',
-    dropdownList: [
-      {
-        value: 'Histogram Eq',
-        title: 'Histogram Equalization',
-        icon: 'leaderboard',
-        ariaLabel: 'Histogram equalization',
-        checked: true,
-      },
-      {
-        value: 'Edge',
-        title: 'Edge',
-        icon: 'show_chart',
-        ariaLabel: 'Edge',
-      },
-      {
-        value: 'Sharpen',
-        title: 'Sharpen',
-        icon: 'change_history',
-        ariaLabel: 'Sharpen',
-      },
-      {
-        value: 'Custom',
-        title: 'Custom',
-        icon: 'api',
-        ariaLabel: 'Custom',
-      },
-    ],
-    callback: enhance,
-  });
+  if ($D.params.mode != 'dcmweb'){
+    // donwload selection
+    subToolsOpt.push({
+      name: 'download_selection',
+      icon: 'get_app', // material icons' name
+      title: 'Download Selection',
+      type: 'check',
+      value: 'download',
+      ariaLabel: 'Download selection',
+      callback: toggleDownloadSelection,
+    });
+    // enhance
+    subToolsOpt.push({
+      name: 'Enhance',
+      icon: 'invert_colors',
+      title: 'Enhance',
+      type: 'dropdown',
+      value: 'Enhance',
+      ariaLabel: 'Enhance',
+      dropdownList: [
+        {
+          value: 'Histogram Eq',
+          title: 'Histogram Equalization',
+          icon: 'leaderboard',
+          ariaLabel: 'Histogram equalization',
+          checked: true,
+        },
+        {
+          value: 'Edge',
+          title: 'Edge',
+          icon: 'show_chart',
+          ariaLabel: 'Edge',
+        },
+        {
+          value: 'Sharpen',
+          title: 'Sharpen',
+          icon: 'change_history',
+          ariaLabel: 'Sharpen',
+        },
+        {
+          value: 'Custom',
+          title: 'Custom',
+          icon: 'api',
+          ariaLabel: 'Custom',
+        },
+      ],
+      callback: enhance,
+    });
+  }
   // share
-  if (ImgloaderMode == 'iip') {
+  if (ImgloaderMode == 'iip' || $D.params.mode == 'dcmweb') {
     subToolsOpt.push({
       name: 'share',
       icon: 'share',
@@ -591,58 +595,61 @@ async function initUIcomponents() {
     ariaLabel: 'Side by side viewer',
     callback: toggleViewerMode,
   });
-  // heatmap
-  subToolsOpt.push({
-    name: 'heatmap',
-    icon: 'satellite',
-    title: 'Heat Map',
-    value: 'heatmap',
-    type: 'btn',
-    ariaLabel: 'Heat map',
-    callback: openHeatmap,
-  });
-  subToolsOpt.push({
-    name: 'labeling',
-    icon: 'label',
-    title: 'Labeling',
-    value: 'labeling',
-    type: 'btn',
-    ariaLabel: 'Labeling',
-    callback: function() {
-      window.location.href = `../labeling/labeling.html${window.location.search}`;
-    },
-  });
-  subToolsOpt.push({
-    name: 'segment',
-    icon: 'timeline',
-    type: 'btn',
-    value: 'rect',
-    title: 'Segment',
-    ariaLabel: 'Segment',
-    callback: function() {
-      if (window.location.search.length > 0) {
-        window.location.href =
-          '../segment/segment.html' + window.location.search;
-      } else {
-        window.location.href = '../segment/segment.html';
-      }
-    },
-  });
-  subToolsOpt.push({
-    name: 'model',
-    icon: 'aspect_ratio',
-    type: 'btn',
-    value: 'rect',
-    title: 'Predict',
-    ariaLabel: 'Predict',
-    callback: function() {
-      if (window.location.search.length > 0) {
-        window.location.href = '../model/model.html' + window.location.search;
-      } else {
-        window.location.href = '../model/model.html';
-      }
-    },
-  });
+
+  if ($D.params.mode != 'dcmweb'){
+    // heatmap
+    subToolsOpt.push({
+      name: 'heatmap',
+      icon: 'satellite',
+      title: 'Heat Map',
+      value: 'heatmap',
+      type: 'btn',
+      ariaLabel: 'Heat map',
+      callback: openHeatmap,
+    });
+    subToolsOpt.push({
+      name: 'labeling',
+      icon: 'label',
+      title: 'Labeling',
+      value: 'labeling',
+      type: 'btn',
+      ariaLabel: 'Labeling',
+      callback: function() {
+        window.location.href = `../labeling/labeling.html${window.location.search}`;
+      },
+    });
+    subToolsOpt.push({
+      name: 'segment',
+      icon: 'timeline',
+      type: 'btn',
+      value: 'rect',
+      title: 'Segment',
+      ariaLabel: 'Segment',
+      callback: function() {
+        if (window.location.search.length > 0) {
+          window.location.href =
+            '../segment/segment.html' + window.location.search;
+        } else {
+          window.location.href = '../segment/segment.html';
+        }
+      },
+    });
+    subToolsOpt.push({
+      name: 'model',
+      icon: 'aspect_ratio',
+      type: 'btn',
+      value: 'rect',
+      title: 'Predict',
+      ariaLabel: 'Predict',
+      callback: function() {
+        if (window.location.search.length > 0) {
+          window.location.href = '../model/model.html' + window.location.search;
+        } else {
+          window.location.href = '../model/model.html';
+        }
+      },
+    });
+  }
 
   // -- For Nano borb Start -- //
   if (ImgloaderMode == 'imgbox') {
@@ -665,7 +672,6 @@ async function initUIcomponents() {
       ariaLabel: 'Load marks',
       callback: Store.prototype.LoadMarksFromFile,
     });
-  }
   // -- For Nano borb End -- //
 
   // -- view btn START -- //
@@ -680,16 +686,19 @@ async function initUIcomponents() {
       callback: updateSlideView,
     });
   }
-  // screenshot
-  subToolsOpt.push({
-    name: 'slideCapture',
-    icon: 'camera_enhance',
-    title: 'Slide Capture',
-    type: 'btn',
-    value: 'slCap',
-    ariaLabel: 'Slide capture',
-    callback: captureSlide,
-  });
+
+  if ($D.params.mode != 'dcmweb'){
+    // screenshot
+    subToolsOpt.push({
+      name: 'slideCapture',
+      icon: 'camera_enhance',
+      title: 'Slide Capture',
+      type: 'btn',
+      value: 'slCap',
+      ariaLabel: 'Slide capture',
+      callback: captureSlide,
+    });
+  }
 
   // visualization panel
   subToolsOpt.push({
@@ -713,6 +722,7 @@ async function initUIcomponents() {
       tour.start(true);
     },
   });
+}
 
   // Additional Links handler
   function additionalLinksHandler(url, openInNewTab, appendSlide) {
