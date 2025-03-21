@@ -524,7 +524,7 @@ async function initUIcomponents() {
       callback: toggleMeasurement,
     });
   }
-  if ($D.params.mode != 'dcmweb'){
+  if ($D.params.mode != 'dcmweb') {
     // donwload selection
     subToolsOpt.push({
       name: 'download_selection',
@@ -596,7 +596,7 @@ async function initUIcomponents() {
     callback: toggleViewerMode,
   });
 
-  if ($D.params.mode != 'dcmweb'){
+  if ($D.params.mode != 'dcmweb') {
     // heatmap
     subToolsOpt.push({
       name: 'heatmap',
@@ -672,57 +672,57 @@ async function initUIcomponents() {
       ariaLabel: 'Load marks',
       callback: Store.prototype.LoadMarksFromFile,
     });
-  // -- For Nano borb End -- //
+    // -- For Nano borb End -- //
 
-  // -- view btn START -- //
-  if (!($D.params.data.hasOwnProperty('review') && $D.params.data['review']=='true')) {
-    subToolsOpt.push({
-      name: 'review',
-      icon: 'playlist_add_check',
-      title: 'has reviewed',
-      type: 'btn',
-      value: 'review',
-      ariaLabel: 'Has reviewed',
-      callback: updateSlideView,
-    });
-  }
+    // -- view btn START -- //
+    if (!($D.params.data.hasOwnProperty('review') && $D.params.data['review']=='true')) {
+      subToolsOpt.push({
+        name: 'review',
+        icon: 'playlist_add_check',
+        title: 'has reviewed',
+        type: 'btn',
+        value: 'review',
+        ariaLabel: 'Has reviewed',
+        callback: updateSlideView,
+      });
+    }
 
-  if ($D.params.mode != 'dcmweb'){
+    if ($D.params.mode != 'dcmweb') {
     // screenshot
+      subToolsOpt.push({
+        name: 'slideCapture',
+        icon: 'camera_enhance',
+        title: 'Slide Capture',
+        type: 'btn',
+        value: 'slCap',
+        ariaLabel: 'Slide capture',
+        callback: captureSlide,
+      });
+    }
+
+    // visualization panel
     subToolsOpt.push({
-      name: 'slideCapture',
-      icon: 'camera_enhance',
-      title: 'Slide Capture',
+      name: 'visualization',
+      icon: 'auto_graph', // material icons' name
+      title: 'visualization',
+      value: 'visualization',
       type: 'btn',
-      value: 'slCap',
-      ariaLabel: 'Slide capture',
-      callback: captureSlide,
+      callback: visualization,
+    });
+
+    subToolsOpt.push({
+      name: 'tutorial',
+      icon: 'help',
+      title: 'Tutorial',
+      value: 'tutorial',
+      type: 'btn',
+      ariaLabel: 'Tutorial',
+      callback: function() {
+        tour.init();
+        tour.start(true);
+      },
     });
   }
-
-  // visualization panel
-  subToolsOpt.push({
-    name: 'visualization',
-    icon: 'auto_graph', // material icons' name
-    title: 'visualization',
-    value: 'visualization',
-    type: 'btn',
-    callback: visualization,
-  });
-
-  subToolsOpt.push({
-    name: 'tutorial',
-    icon: 'help',
-    title: 'Tutorial',
-    value: 'tutorial',
-    type: 'btn',
-    ariaLabel: 'Tutorial',
-    callback: function() {
-      tour.init();
-      tour.start(true);
-    },
-  });
-}
 
   // Additional Links handler
   function additionalLinksHandler(url, openInNewTab, appendSlide) {
