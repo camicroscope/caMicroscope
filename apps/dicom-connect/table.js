@@ -21,8 +21,8 @@ isAllSeriesSynced = false;
 const datatableConfig = {
   scrollX: true,
   lengthMenu: [
-    [10, 25, 50, -1],
-    [10, 25, 50, 'All']
+    [15, 25, 50, -1],
+    [15, 25, 50, 'All']
   ]
 }
 
@@ -68,9 +68,14 @@ function getInstances(baseUrl, studyId, seriesId) {
   return fetch(url).then(resp=>resp.json());
 }
 
-function previewSeries(base_url, study, series){
+function previewSeries(base_url, study, series, modality){
+  if (modality=="SM"){
   base_url_encoded = encodeURIComponent(base_url)
   window.location = `../viewer/viewer.html?mode=dcmweb&study=${study}&series=${series}&slideId=preview&source=${base_url_encoded}`
+  }
+  else{
+    alert("Cannot preview annotations yet.");
+  }
 }
 
 
@@ -189,23 +194,36 @@ function initialize() {
           // return `<a href="../dicom-connect/table.html?status=instances&source=${row.source}&studyId=${params.studyId}&seriesId=${seriesId}">${seriesId}</a>`;
         }
         function generateStatus (data, type, row) {
+          const seriesId = row['0020000E']['Value'][0];
+          const modality = row['00080060']['Value'][0];
+          let previewBtn = `<button onClick="previewSeries('${row.url}', '${row.studyId}', '${seriesId}', '${modality}')" class="btn btn-sm btn-primary" title="Preview"><i class="fas fa-eye"></i></button>`;
           switch (row.status) {
             case 'searching':
               // return spin
-              return '<div class="icon-center" title="Loading..."><i class="fas fa-spinner fa-spin"></i></div>';   
+              return '<span class="icon-center" title="Loading..."><i class="fas fa-spinner fa-spin"></i></span>';   
             case 'unsync':
               // return btn
-              const seriesId = row['0020000E']['Value'][0];
-              const modality = row['00080060']['Value'][0];
-              return `<div class="icon-center"><button onClick="syncSeries('${row.url}', '${row.studyId}', '${seriesId}', '${modality}')" class="btn btn-sm btn-primary" title="Sync Series"><i class="fas fa-cloud-download-alt"></i></button><button onClick="previewSeries('${row.url}', '${row.studyId}', '${seriesId}')" class="btn btn-sm btn-primary" title="Preview"><i class="fas fa-eye"></i></button></div>`; //<i class="fas fa-cloud-download-alt"></i>
+              let syncBtn = `<button onClick="syncSeries('${row.url}', '${row.studyId}', '${seriesId}', '${modality}')" class="btn btn-sm btn-primary" title="Sync Series"><i class="fas fa-cloud-download-alt"></i></button>`;
+              if (modality=='SM'){
+                return `<div class="icon-center">` + previewBtn + syncBtn + `</div>`;
+              } else {
+                return `<div class="icon-center">` + syncBtn + `</div>`;
+              }
+              
             case 'loading':
               // return downloading
               // return '<div class="icon-center"><i class="fas fa-pen"></i></div>';
-                  return  `<div title="Syncing..." class="progress"><div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%"></div></div>`
+              let progressIcon = `<div title="Syncing..." class="progress"><div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%"></div>`
+              if (modality=='SM'){
+                return `<div class="icon-center">` + previewBtn + progressIcon + `</div>`;
+              } else {
+                return `<div class="icon-center">` + progressIcon + `</div>`;
+              }
+
               case 'done':
               // return url
 
-              return '<div class="icon-center text-success" title="View"><i class="fas fa-check"></i></div>';
+              return '<div class="icon-center text-success" title="View"><i class="fas fa-check"></i>' + previewBtn  + `</div>`;
                                     
             default:
 
