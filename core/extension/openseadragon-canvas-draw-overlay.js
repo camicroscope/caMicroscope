@@ -230,6 +230,7 @@
      * @return {[type]}         [description]
      */
     drawOnCanvas: function(ctx, drawFuc) {
+      console.log("drawOnCanvas", ctx, this, drawFuc)
       var viewportZoom = this._viewer.viewport.getZoom(true);
       var zoom = this._viewer.viewport.viewportToImageZoom(viewportZoom);
       var x =
@@ -291,7 +292,9 @@
       this._viewportWidth = boundsRect.width;
       this._viewportHeight = boundsRect.height * this.imgAspectRatio;
 
-      var image1 = this._viewer.world.getItemAt(0);
+
+      let i = this._viewer.world._items.length - 1
+      var image1 = this._viewer.world.getItemAt(i);
 
       this.imgWidth = image1.source.dimensions.x;
       this.imgHeight = image1.source.dimensions.y;
@@ -460,13 +463,16 @@
       // ml tools
       try {
         mltools.initcanvas(this._viewer.drawer.canvas);
-      } catch (error) {}
+      } catch (error) {
+        console.error("ml err, ignored", error)
+      }
       if (
         0 > img_point.x ||
         this.imgWidth < img_point.x ||
         0 > img_point.y ||
         this.imgHeight < img_point.y
       ) {
+        console.error("drawing not within image")
         return;
       }
 

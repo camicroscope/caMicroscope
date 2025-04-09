@@ -109,13 +109,21 @@ function DicomWebMods() {
     }
     CaMic.prototype.loadImg = function(func) {
         // override for multi image as single viewport image simulation
-        this.viewer.viewport.viewportToImageCoordinates = function(x,y){
+        OpenSeadragon.Viewport.prototype.viewportToImageCoordinates = function(x,y){
             let i = this.viewer.world._items.length - 1
             return this.viewer.world.getItemAt(i).viewportToImageCoordinates(x,y)
         }
-        this.viewer.viewport.viewportToImageZoom = function(z){
+        OpenSeadragon.Viewport.prototype.viewportToImageZoom = function(z){
             let i = this.viewer.world._items.length - 1
             return this.viewer.world.getItemAt(i).viewportToImageZoom(z)
+        }
+        OpenSeadragon.Viewport.prototype.imageToViewportZoom = function(z){
+            let i = this.viewer.world._items.length - 1
+            return this.viewer.world.getItemAt(i).imageToViewportZoom(z)
+        }
+        OpenSeadragon.Viewport.prototype.imageToViewportCoordinates = function(x,y){
+            let i = this.viewer.world._items.length - 1
+            return this.viewer.world.getItemAt(i).imageToViewportCoordinates(x,y)
         }
         var urlParams = new URLSearchParams(window.location.search);
         let encodedUrl = urlParams.get('source') || "https%3A%2F%2Fihe.j4care.com%3A18443%2Fdcm4chee-arc%2Faets%2FDCM4CHEE%2Frs";
