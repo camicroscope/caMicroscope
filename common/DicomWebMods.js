@@ -59,16 +59,31 @@ function DicomWebMods() {
             const instance_results = instance_data.map(x => {
                 try {
                     return {
-                        height: x["00480007"]["Value"][0],
-                        width: x["00480006"]["Value"][0],
-                        tile_size: x["00280010"]["Value"][0], // Assuming square tiles
-                        url: x["url"].split("/metadata")[0]
+                        height: x["00480007"]?.["Value"]?.[0] ?? null, 
+                        width: x["00480006"]?.["Value"]?.[0] ?? null,
+                        tile_size: x["00280010"]?.["Value"]?.[0] ?? null,
+                        url: x["url"]?.split("/metadata")[0] ?? "",
+                        type: x["00080008"]?.["Value"] ?? [], 
                     };
                 } catch (error) {
                     console.error("Error processing instance metadata:", error);
                     return null;
                 }
-            }).filter(item => item !== null);
+            }).filter(x=>{
+                if (x == null){
+                    return false;
+                }
+                let types = x['type']
+                for (let i=0; i< types.length; i++){
+                    let v = types[i].toUpperCase();
+                    if (v.indexOf("LABEL") !== -1 || 
+                        v.indexOf("THUMBNAIL") !== -1 || 
+                        v.indexOf("OVERVIEW") !== -1) {
+                        return false;
+                    }
+                }
+                return true;
+            });
     
             // Sort instance_results by width in ascending order
             instance_results.sort((a, b) => a.width - b.width);
