@@ -320,7 +320,8 @@
      */
     _updateCanvas: function() {
       var viewportZoom = this._viewer.viewport.getZoom(true);
-      var image1 = this._viewer.world.getItemAt(0);
+      var zoomidx = $CAMIC?.viewer?.world?._items?.length || 1;
+      var image1 = this._viewer.world.getItemAt(zoomidx - 1);
       var zoom = image1.viewportToImageZoom(viewportZoom);
 
       var x =
