@@ -58,12 +58,19 @@ function DicomWebMods() {
             // Transform result into OpenSeadragon-compatible format
             const instance_results = instance_data.map(x => {
                 try {
+                    let tile_order = 1; // default
+                    if (x["00480102"]?.Value &&
+                        Array.isArray(x["00480102"].Value) &&
+                        x["00480102"].Value.length > 4) {
+                        tile_order = x["00480102"].Value[4];
+                    }
                     return {
                         height: x["00480007"]?.["Value"]?.[0] ?? null, 
                         width: x["00480006"]?.["Value"]?.[0] ?? null,
                         tile_size: x["00280010"]?.["Value"]?.[0] ?? null,
                         url: x["url"]?.split("/metadata")[0] ?? "",
                         type: x["00080008"]?.["Value"] ?? [], 
+                        tile_order: tile_order,
                     };
                 } catch (error) {
                     console.error("Error processing instance metadata:", error);
@@ -105,6 +112,9 @@ function DicomWebMods() {
                     getTileUrl: function(level, x_pos, y_pos) {
                         if (level == x['order']){
                             var frameIndex = y_pos * Math.ceil(x['width'] / x['tile_size']) + x_pos;
+                            if (x['tile_order'] == -1){
+                                frameIndex = x_pos * Math.ceil(x['height'] / x['tile_size']) + y_pos;
+                            }
                             return `${x["url"]}/frames/${frameIndex + 1}/rendered`;
                         } else {
                             return null;
