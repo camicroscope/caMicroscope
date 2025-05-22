@@ -16,7 +16,6 @@ function DicomWebMods() {
             if (!Array.isArray(series_overview)) {
                 throw new Error("Unexpected series metadata format");
             }
-    
             // Extract instance IDs
             const instance_ids = series_overview
                 .map(item => item?.["00080018"]?.["Value"]?.[0])
@@ -54,15 +53,38 @@ function DicomWebMods() {
             if (instance_data.length === 0) {
                 throw new Error("No valid instance metadata retrieved");
             }
-    
+            console.log(instance_data)
             // Transform result into OpenSeadragon-compatible format
             const instance_results = instance_data.map(x => {
                 try {
-                    let tile_order = 1; // default
+                    let tile_order = "r++"; // default
                     if (x["00480102"]?.Value &&
                         Array.isArray(x["00480102"].Value) &&
-                        x["00480102"].Value.length > 4) {
-                        tile_order = x["00480102"].Value[4];
+                        x["00480102"].Value.length == 6) {
+                        let [X1, Y1, Z1, X2, Y2, Z2] = x["00480102"].Value;
+                        isRowMajor = Math.abs(X1) < Math.abs(X2);
+                        isColReverse = X1 < 0 || X2 < 0;
+                        isRowReverse = Y1 < 0 || Y2 < 0;
+                        tile_order_proposed = `${isRowMajor ? 'r' : 'c'}${isRowReverse ? '-' : '+'}${isColReverse ? '-' : '+'}`;
+
+                        //isColReverse = false;
+                        isRowReverse = !isRowReverse;
+                        //isRowMajor = false;
+                        //isRowMajor = !isRowMajor;
+                        //isColReverse = !isColReverse;
+                        //isRowReverse = !isRowReverse;
+                        let doReverse = true;
+                        doReverse = false;
+                        if (doReverse && !isRowMajor){
+                            let tmp = isRowReverse;
+                            isRowReverse = isColReverse;
+                            isColReverse = tmp;
+                        }
+                        
+                        tile_order = `${isRowMajor ? 'r' : 'c'}${isRowReverse ? '-' : '+'}${isColReverse ? '-' : '+'}`;
+                        //tile_order = "r++"
+                        console.info(x["00480102"]?.Value, tile_order, tile_order_proposed)
+                        
                     }
                     return {
                         height: x["00480007"]?.["Value"]?.[0] ?? null, 
@@ -77,7 +99,7 @@ function DicomWebMods() {
                     return null;
                 }
             }).filter(x=>{
-                if (x == null){
+                if (x == null || x.height == null || x.width == null){
                     return false;
                 }
                 let types = x['type']
@@ -85,12 +107,18 @@ function DicomWebMods() {
                     let v = types[i].toUpperCase();
                     if (v.indexOf("LABEL") !== -1 || 
                         v.indexOf("THUMBNAIL") !== -1 || 
+                        v.indexOf("MACRO") !==-1 ||
                         v.indexOf("OVERVIEW") !== -1) {
                         return false;
                     }
                 }
                 return true;
             });
+            console.log(instance_results)
+            if (instance_results.length == 0){
+                alert("didn't find anything!! Labels only maybe?")
+                history.back()
+            }
     
             // Sort instance_results by width in ascending order
             instance_results.sort((a, b) => a.width - b.width);
@@ -111,10 +139,28 @@ function DicomWebMods() {
                     maxLevel: x['order'],
                     getTileUrl: function(level, x_pos, y_pos) {
                         if (level == x['order']){
-                            var frameIndex = y_pos * Math.ceil(x['width'] / x['tile_size']) + x_pos;
-                            if (x['tile_order'] == -1){
-                                frameIndex = x_pos * Math.ceil(x['height'] / x['tile_size']) + y_pos;
+                            const numRows = Math.ceil(x['height'] / x['tile_size']);
+                            const numCols = Math.ceil(x['width'] / x['tile_size']);
+                            let a = x_pos;
+                            let b = y_pos;
+
+                            if (x['tile_order'][1] == "-") {
+                                a = numRows - 1 - a;
                             }
+
+                            if (x['tile_order'][2] == "-") {
+                                b = numCols - 1 - b;
+                            }
+
+                            if (x['tile_order'][0] == "c") {
+                                let tmp = b;
+                                b = a;
+                                a = tmp;
+                            }
+
+                            let frameIndex = b * numCols + a;
+                  
+
                             return `${x["url"]}/frames/${frameIndex + 1}/rendered`;
                         } else {
                             return null;
