@@ -833,6 +833,7 @@ class Store {
       method: 'POST',
       credentials: 'include',
       mode: 'cors',
+      keepalive: true,
       headers: {
         'Content-Type': 'application/json; charset=utf-8',
         // "Content-Type": "application/x-www-form-urlencoded",
@@ -849,9 +850,8 @@ class Store {
     const suffix = 'Log/find';
     const url = this.base + suffix;
     const query = {
-      '_id': '65f564d7dd62a90013124d3e',
+      '_id': id,
     };
-
     return fetch(url + '?' + objToParamStr(query), {
       credentials: 'include',
       mode: 'cors',
