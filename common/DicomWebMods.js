@@ -1,5 +1,7 @@
-
 // overwrites loadImg function to handle dicom sources.
+
+// special: for 'sparse' tiles, show a debug overlay on render.
+showDebugTiles = false;
 function DicomWebMods() {
   async function openSeries(baseUrl, studyId, seriesId) {
     try {
@@ -55,11 +57,12 @@ function DicomWebMods() {
       }
       console.log(instanceData);
       // Transform result into OpenSeadragon-compatible format
-      const instanceResults = instanceData.map((x) => {
+      var instanceResults = instanceData.map((x) => {
         try {
           let instanceHeight = x['00480007']?.['Value']?.[0] ?? null;
           let instanceWidth = x['00480006']?.['Value']?.[0] ?? null;
           let tileSize = x['00280010']?.['Value']?.[0] ?? null;
+          console.info('x, y', x['00280010']?.['Value']?.[0], x['00280011']?.['Value']?.[0]);
           // instanceWidth = tileSize*Math.ceil(instanceWidth/tileSize)
           instanceHeight = tileSize*Math.ceil(instanceHeight/tileSize);
           let tileMap = {};
@@ -73,10 +76,12 @@ function DicomWebMods() {
               const item = frame['0048021A']?.Value?.[0];
               const col = item?.['0048021E']?.Value?.[0];
               const row = item?.['0048021F']?.Value?.[0];
+              const physRow = item?.['0040072A']?.Value?.[0];
+              const physCol = item?.['0040073A']?.Value?.[0];
               if (col !== undefined && row !== undefined && tileSize) {
-                const tileX = Math.floor(col / tileSize);
-                const tileY = Math.floor(row / tileSize);
-                tileMap[`${tileX}_${tileY}`] = i + 1;
+                const tileX = Math.floor((col-1) / tileSize);
+                const tileY = Math.floor((row-1) / tileSize);
+                tileMap[`${tileX}_${tileY}`] = {'idx': i + 1, 'col': col-1, 'row': row-1, 'physRow': physRow, 'physCol': physCol};
                 // console.log(row, col, tileX, tileY, i+1)
               }
             }
@@ -125,6 +130,20 @@ function DicomWebMods() {
         item.order = index;
       });
 
+      if (showDebugTiles) {
+        let newInstanceResults = [];
+
+        for (let item of instanceResults) {
+          // let item = instanceResults[x];
+          newInstanceResults.push(item);
+          let item2 = JSON.parse(JSON.stringify(item));
+          item2.debug = true;
+          newInstanceResults.push(item2);
+        }
+
+        instanceResults = newInstanceResults;
+      }
+
       // prep result for openseadragon
       let tilesources = instanceResults.map((x)=>{
         return {
@@ -153,20 +172,46 @@ function DicomWebMods() {
             );
           },
           getTileUrl: function(level, xPos, yPos) {
-            if (level == x['order']) {
+            const debugTile = x['debug'] || false; // Toggle this to enable/disable debug mode
+
+            if (level == x['order']== 1) {
               const numRows = Math.ceil(x['height'] / x['tileSize']);
               const numCols = Math.ceil(x['width'] / x['tileSize']);
-              let numDir = numCols;
-              let a = xPos;
-              let b = yPos;
 
               if (!x['tileMap'] || Object.keys(x['tileMap']).length === 0) {
-                let frameIndex = b * numCols + a;
+                let frameIndex = yPos * numCols + xPos;
                 return `${x['url']}/frames/${frameIndex + 1}/rendered`;
-              } else {
-                let tileIdx = x['tileMap'][`${xPos}_${yPos}`];
+              } else if (x['tileMap'].hasOwnProperty(`${xPos}_${yPos}`)) {
+                let tileIdx = x['tileMap'][`${xPos}_${yPos}`]['idx'];
+                let tileRow = x['tileMap'][`${xPos}_${yPos}`]['row'];
+                let tileCol = x['tileMap'][`${xPos}_${yPos}`]['col'];
+                let physRow = x['tileMap'][`${xPos}_${yPos}`]['physRow'];
+                let physCol = x['tileMap'][`${xPos}_${yPos}`]['physCol'];
                 if (tileIdx !== undefined) {
-                  return `${x['url']}/frames/${tileIdx}/rendered`;
+                  let tileUrl = `${x['url']}/frames/${tileIdx}/rendered`;
+                  let lgFont = 50 * (x['tileSize']/1024);
+                  let smFont = 30 * (x['tileSize']/1024);
+                  if (debugTile) {
+                    const svg = `
+                          <svg xmlns="http://www.w3.org/2000/svg" width="${x['tileSize']}" height="${x['tileSize']}">
+                            <rect width="100%" height="100%" fill-opacity="0.5" fill="#ccc" stroke="#000" stroke-width="4"/>
+                            <text x="50%" y="20%" font-size="${lgFont}" text-anchor="middle" fill="#000">idx: ${tileIdx}</text>
+                            <text x="50%" y="30%" font-size="${smFont}" text-anchor="middle" fill="#000">dcm R: ${tileRow}</text>
+                            <text x="50%" y="35%" font-size="${smFont}" text-anchor="middle" fill="#000">dcm C: ${tileCol}</text>
+                            <text x="50%" y="40%" font-size="${smFont}" text-anchor="middle" fill="#000">phys R: ${physRow}</text>
+                            <text x="50%" y="45%" font-size="${smFont}" text-anchor="middle" fill="#000">phys C: ${physCol}</text>
+                            <text x="50%" y="60%" font-size="${smFont}" text-anchor="middle" fill="#000">L: ${level}</text>
+                            <text x="50%" y="65%" font-size="${smFont}" text-anchor="middle" fill="#000">X: ${xPos}</text>
+                            <text x="50%" y="70%" font-size="${smFont}" text-anchor="middle" fill="#000">Y: ${yPos}</text>
+                          </svg>
+                        `;
+                    const encoded = encodeURIComponent(svg)
+                        .replace(/'/g, '%27')
+                        .replace(/"/g, '%22');
+                    return `data:image/svg+xml;charset=UTF-8,${encoded}`;
+                  } else {
+                    return tileUrl;
+                  }
                 } else {
                   return null;
                 }
@@ -175,9 +220,10 @@ function DicomWebMods() {
               return null;
             }
           },
+
         };
       });
-
+      console.log(tilesources);
       return tilesources;
     } catch (error) {
       console.error('Error in openSeries:', error);
