@@ -8,7 +8,7 @@ const sources = [{
 
 }, {
   'name': 'google',
-  'url': 'https://dicomwebproxy-bqmq3usc3a-uc.a.run.app/dicomWeb',
+  'url': 'https://dicomwebproxy.app/dicomWeb',
 }];
 // const j4careStudiesUrl = 'https://development.j4care.com:11443/dcm4chee-arc/aets/DCM4CHEE/rs'
 // const dicomWebStudiesUrl = 'https://dicomwebproxy-bqmq3usc3a-uc.a.run.app/dicomWeb'
