@@ -1,5 +1,9 @@
 parser = new DOMParser();
 
+function generateRandomId(length = 6) {
+  return Math.random().toString(36).substr(2, length);
+}
+
 var template = {
   'provenance': {
     'image': {
@@ -20,39 +24,50 @@ var template = {
   },
   'geometries': {
     'type': 'FeatureCollection',
+    'features': [],
   },
 };
 
 var aperioMap = {
   '0': 'Polygon',
   '1': 'Polygon',
-  '2': 'Polygon', // rectangle but should work?? haven't seen one yet
+  '2': 'Polygon',
   '4': 'Polyline',
 };
 
 function xml2geo() {
-  let features = [];
   let input = document.getElementById('xml_in').value;
   xmlDoc = parser.parseFromString(input, 'text/xml');
-  let annotations = xmlDoc.getElementsByTagName('Annotation'); // Assuming regions are inside 'Annotation' elements
+  let annotations = xmlDoc.getElementsByTagName('Annotation');
+  let slideId = document.getElementById('slide_id').value;
+  let annotName = document.getElementById('annot_name').value;
+
+  // Store objects per unique color
+  let outputMap = {};
 
   for (let annotation of annotations) {
-    let annotationType = annotation.getAttribute('Type') || '0'; // Default to '0' if Type is not provided
-    let annotationLineColor = annotation.getAttribute('LineColor'); // Get LineColor from the parent annotation
+    let annotationType = annotation.getAttribute('Type') || '0';
+    let annotationLineColor = annotation.getAttribute('LineColor') || '0';
     let annotationId = annotation.getAttribute('Id');
 
-    console.log('Processing Annotation ID:', annotationId, 'with Type:', annotationType);
+    let hexColor = `#${parseInt(annotationLineColor).toString(16).padStart(6, '0')}`;
+    if (!outputMap[hexColor]) {
+      let randomId = generateRandomId();
+      outputMap[hexColor] = JSON.parse(JSON.stringify(template));
+      outputMap[hexColor]['provenance']['image']['slide'] = slideId;
+      outputMap[hexColor]['provenance']['analysis']['execution_id'] = randomId;
+      outputMap[hexColor]['provenance']['analysis']['name'] = `${annotName}_${hexColor}`;
+      outputMap[hexColor]['properties']['annotations']['name'] = `${annotName}_${hexColor}`;
+    }
 
-    let regions = annotation.getElementsByTagName('Region'); // Get regions within this annotation
+    let regions = annotation.getElementsByTagName('Region');
     for (let region of regions) {
       let regionId = region.getAttribute('Id');
-      regionType = annotationType || region.getAttribute('Type'); // parent annotation type if present, else own (odd?)
-      regionType = aperioMap[regionType];
-      console.log('Processing Region ID:', regionId, 'as', regionType);
+      let regionType = aperioMap[annotationType || region.getAttribute('Type')] || 'Polygon';
 
       let vertices = region.getElementsByTagName('Vertex');
       let coordinates = [];
-      let minX = 99e99; let maxX = 0; let minY = 99e99; let maxY = 0;
+      let minX = 99e99, maxX = 0, minY = 99e99, maxY = 0;
 
       for (let vertex of vertices) {
         let x = parseFloat(vertex.getAttribute('X'));
@@ -63,17 +78,14 @@ function xml2geo() {
         maxY = Math.max(maxY, y);
         coordinates.push([x, y]);
       }
+
       let isFill = false;
-      // **Detect Polygon vs. Polyline**
       if (regionType === 'Polygon') {
-        coordinates.push(coordinates[0]); // Close the polygon by repeating the first point
+        coordinates.push(coordinates[0]);
         isFill = true;
       }
 
       let boundRect = [[minX, minY], [minX, maxY], [maxX, maxY], [maxX, minY], [minX, minY]];
-
-      // **Detect Color**
-      let hexColor = annotationLineColor ? `#${parseInt(annotationLineColor).toString(16).padStart(6, '0')}` : '#000000';
 
       let feature = {
         'type': 'Feature',
@@ -96,17 +108,11 @@ function xml2geo() {
         },
       };
 
-      features.push(feature);
+      outputMap[hexColor]['geometries']['features'].push(feature);
     }
   }
 
-  let output = Object.assign({}, template);
-  output['geometries']['features'] = features;
-  output['provenance']['image']['slide'] = document.getElementById('slide_id').value;
-  output['provenance']['analysis']['execution'] = document.getElementById('annot_name').value;
-  output['properties']['annotations']['name'] = document.getElementById('annot_name').value;
-  output['provenance']['analysis']['name'] = document.getElementById('annot_name').value;
-  output['provenance']['analysis']['execution_id'] = document.getElementById('annot_name').value;
-
-  document.getElementById('output').textContent = JSON.stringify(output);
+  // Show all color-specific outputs
+  let finalOutput = Object.values(outputMap);
+  document.getElementById('output').textContent = JSON.stringify(finalOutput, null, 2);
 }
