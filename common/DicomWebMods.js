@@ -2,7 +2,7 @@
 
 // special: for 'sparse' tiles, show a debug overlay on render.
 showDebugTiles = false;
-// special: for z index multi-plane/focal images, pick only one z. 
+// special: for z index multi-plane/focal images, pick only one z.
 whichZ = 1; // -1 means all no matter what.
 function DicomWebMods() {
   async function openSeries(baseUrl, studyId, seriesId) {
@@ -90,7 +90,7 @@ function DicomWebMods() {
               }
             }
             console.log(tileMap);
-            uniquePhysZ = [...new Set(Object.values(tileMap).map(tile => tile.physZ))].sort((a, b) => a - b);
+            uniquePhysZ = [...new Set(Object.values(tileMap).map((tile) => tile.physZ))].sort((a, b) => a - b);
           }
 
           return {
@@ -137,15 +137,15 @@ function DicomWebMods() {
       });
       // get a true list of possible z values
       const globalUniquePhysZ = [
-        ...new Set(instanceResults.flatMap(inst => inst.uniquePhysZ))
+        ...new Set(instanceResults.flatMap((inst) => inst.uniquePhysZ)),
       ].sort((a, b) => a - b);
 
       // picking a z slice
-      if (whichZ == -1 || globalUniquePhysZ.length == 0){
+      if (whichZ == -1 || globalUniquePhysZ.length == 0) {
         whichZ = false; // sinal no slices to filter between
       } else {
-        whichZ = Math.min(Math.max(whichZ, 0), globalUniquePhysZ.length)
-        instanceResults = instanceResults.filter(inst => inst.uniquePhysZ.includes(globalUniquePhysZ[whichZ]))
+        whichZ = Math.min(Math.max(whichZ, 0), globalUniquePhysZ.length);
+        instanceResults = instanceResults.filter((inst) => inst.uniquePhysZ.includes(globalUniquePhysZ[whichZ]));
       }
 
       if (showDebugTiles) {

@@ -9,9 +9,9 @@ const sources = [{
 }, {
   'name': 'google',
   'url': 'https://dicomwebproxy.app/dicomWeb',
-},{
-  'name':'BMD',
-  'url': 'https://dicom-wg26.bmd-software.com/ext/dicom-web'
+}, {
+  'name': 'BMD',
+  'url': 'https://dicom-wg26.bmd-software.com/ext/dicom-web',
 }];
 // const j4careStudiesUrl = 'https://development.j4care.com:11443/dcm4chee-arc/aets/DCM4CHEE/rs'
 // const dicomWebStudiesUrl = 'https://dicomwebproxy-bqmq3usc3a-uc.a.run.app/dicomWeb'
@@ -39,9 +39,9 @@ const pageStates = {
     }, {
       'name': 'google',
       'url': 'https://dicomwebproxy-bqmq3usc3a-uc.a.run.app/dicomWeb',
-    },{
-      'name':'BMD',
-      'url': 'https://dicom-wg26.bmd-software.com/ext/dicom-web'
+    }, {
+      'name': 'BMD',
+      'url': 'https://dicom-wg26.bmd-software.com/ext/dicom-web',
     }],
   },
   studies: {
@@ -158,25 +158,24 @@ function initialize() {
             {
               data: null,
               title: 'Study Id',
-              render: function (data, type, row) {
+              render: function(data, type, row) {
                 const value = row?.['0020000D']?.Value?.[0] ?? '';
                 return generateLink(value, type, row);
-              }
+              },
             },
             {
               data: null,
               title: 'Name',
-              render: function (data, type, row) {
+              render: function(data, type, row) {
                 return row?.['00100020']?.Value?.[0] ?? '';
-              }
+              },
             },
             {
               data: 'source',
-              title: 'Source'
-            }
-          ]
+              title: 'Source',
+            },
+          ],
         });
-        
       });
 
       break;
