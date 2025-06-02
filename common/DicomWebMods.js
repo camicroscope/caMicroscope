@@ -2,6 +2,8 @@
 
 // special: for 'sparse' tiles, show a debug overlay on render.
 showDebugTiles = false;
+// special: for z index multi-plane/focal images, pick only one z. 
+whichZ = 1; // -1 means all no matter what.
 function DicomWebMods() {
   async function openSeries(baseUrl, studyId, seriesId) {
     try {
@@ -66,6 +68,7 @@ function DicomWebMods() {
           // instanceWidth = tileSize*Math.ceil(instanceWidth/tileSize)
           instanceHeight = tileSize*Math.ceil(instanceHeight/tileSize);
           let tileMap = {};
+          let uniquePhysZ = [];
           if (x['52009230']?.Value &&
                             Array.isArray(x['52009230'].Value) &&
                             x['52009230'].Value.length > 0) {
@@ -78,14 +81,16 @@ function DicomWebMods() {
               const row = item?.['0048021F']?.Value?.[0];
               const physRow = item?.['0040072A']?.Value?.[0];
               const physCol = item?.['0040073A']?.Value?.[0];
+              const physZ = item?.['0040074A']?.Value?.[0];
               if (col !== undefined && row !== undefined && tileSize) {
                 const tileX = Math.floor((col-1) / tileSize);
                 const tileY = Math.floor((row-1) / tileSize);
-                tileMap[`${tileX}_${tileY}`] = {'idx': i + 1, 'col': col-1, 'row': row-1, 'physRow': physRow, 'physCol': physCol};
+                tileMap[`${tileX}_${tileY}`] = {'idx': i + 1, 'col': col-1, 'row': row-1, 'physRow': physRow, 'physCol': physCol, 'physZ': physZ};
                 // console.log(row, col, tileX, tileY, i+1)
               }
             }
             console.log(tileMap);
+            uniquePhysZ = [...new Set(Object.values(tileMap).map(tile => tile.physZ))].sort((a, b) => a - b);
           }
 
           return {
@@ -95,20 +100,21 @@ function DicomWebMods() {
             url: x['url']?.split('/metadata')[0] ?? '',
             type: x['00080008']?.['Value'] ?? [],
             tileMap: tileMap,
+            uniquePhysZ: uniquePhysZ,
           };
         } catch (error) {
           console.error('Error processing instance metadata:', error);
           return null;
         }
       }).filter((x)=>{
-        if (x == null || x.height == null || x.width == null || x.height < x.tileSize || x.width < x.tileSize) {
+        if (x == null || x.height == null || x.width == null) {
           return false;
         }
         let types = x['type'];
         for (let i=0; i< types.length; i++) {
           let v = types[i].toUpperCase();
           if (v.indexOf('LABEL') !== -1 ||
-                        v.indexOf('THUMBNAIL') !== -1 ||
+                        v.indexOf('THUMBNAIL') !==-1 ||
                         v.indexOf('MACRO') !==-1 ||
                         v.indexOf('OVERVIEW') !== -1) {
             return false;
@@ -129,6 +135,18 @@ function DicomWebMods() {
       instanceResults.forEach((item, index) => {
         item.order = index;
       });
+      // get a true list of possible z values
+      const globalUniquePhysZ = [
+        ...new Set(instanceResults.flatMap(inst => inst.uniquePhysZ))
+      ].sort((a, b) => a - b);
+
+      // picking a z slice
+      if (whichZ == -1 || globalUniquePhysZ.length == 0){
+        whichZ = false; // sinal no slices to filter between
+      } else {
+        whichZ = Math.min(Math.max(whichZ, 0), globalUniquePhysZ.length)
+        instanceResults = instanceResults.filter(inst => inst.uniquePhysZ.includes(globalUniquePhysZ[whichZ]))
+      }
 
       if (showDebugTiles) {
         let newInstanceResults = [];
@@ -187,7 +205,9 @@ function DicomWebMods() {
                 let tileCol = x['tileMap'][`${xPos}_${yPos}`]['col'];
                 let physRow = x['tileMap'][`${xPos}_${yPos}`]['physRow'];
                 let physCol = x['tileMap'][`${xPos}_${yPos}`]['physCol'];
-                if (tileIdx !== undefined) {
+                let physZ = x['tileMap'][`${xPos}_${yPos}`]['physZ'];
+
+                if (tileIdx !== undefined && (whichZ === false || physZ == globalUniquePhysZ[whichZ])) {
                   let tileUrl = `${x['url']}/frames/${tileIdx}/rendered`;
                   let lgFont = 50 * (x['tileSize']/1024);
                   let smFont = 30 * (x['tileSize']/1024);
@@ -200,9 +220,10 @@ function DicomWebMods() {
                             <text x="50%" y="35%" font-size="${smFont}" text-anchor="middle" fill="#000">dcm C: ${tileCol}</text>
                             <text x="50%" y="40%" font-size="${smFont}" text-anchor="middle" fill="#000">phys R: ${physRow}</text>
                             <text x="50%" y="45%" font-size="${smFont}" text-anchor="middle" fill="#000">phys C: ${physCol}</text>
-                            <text x="50%" y="60%" font-size="${smFont}" text-anchor="middle" fill="#000">L: ${level}</text>
-                            <text x="50%" y="65%" font-size="${smFont}" text-anchor="middle" fill="#000">X: ${xPos}</text>
-                            <text x="50%" y="70%" font-size="${smFont}" text-anchor="middle" fill="#000">Y: ${yPos}</text>
+                            <text x="50%" y="55%" font-size="${smFont}" text-anchor="middle" fill="#000">phys Z: ${physZ}</text>
+                            <text x="50%" y="65%" font-size="${smFont}" text-anchor="middle" fill="#000">L: ${level}</text>
+                            <text x="50%" y="70%" font-size="${smFont}" text-anchor="middle" fill="#000">X: ${xPos}</text>
+                            <text x="50%" y="75%" font-size="${smFont}" text-anchor="middle" fill="#000">Y: ${yPos}</text>
                           </svg>
                         `;
                     const encoded = encodeURIComponent(svg)

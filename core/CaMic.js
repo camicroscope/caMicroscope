@@ -44,6 +44,7 @@ class CaMic {
       hasMeasurementTool: true,
       hasPatchManager: true,
       hasHeatmap: false,
+      crossOriginPolicy: 'Anonymous',
     };
     extend(this.setting, options);
 
