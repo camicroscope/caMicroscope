@@ -1089,55 +1089,90 @@ function getBounds(points) {
 }
 
 class Tracker {
-  constructor(camic, slide, userId, period = 1) {
+  constructor(camic, slide, userId, period = 1, batchSize = 10) {
     this.__camic = camic;
     this.__viewer = camic.viewer;
     this.__period = period;
     this.__userId = userId;
     this.__slide = slide;
     this.__viewId = this.generateViewId();
+    this.__buffer = [];
+    this.__batchSize = batchSize;
+    this.__lastSaved = null;
+
+    // Save buffer when user leaves page
+    window.addEventListener('beforeunload', this.handleUnload.bind(this));
   }
 
   generateViewId() {
     return crypto.randomUUID();
   }
+
   start() {
     if (!this.__time) {
       this.__time = setInterval(this.record.bind(this), this.__period * 1000);
     }
   }
+
   stop() {
     if (this.__time) clearInterval(this.__time);
+    this.__time = null;
   }
 
   record() {
     const viewer = this.__viewer;
     const center = viewer.viewport.getCenter();
-    const {x, y} = viewer.viewport.viewportToImageCoordinates(
-        center.x,
-        center.y,
-    );
-    const image_zoom = viewer.viewport.viewportToImageZoom(
-        viewer.viewport.getZoom(true),
-    );
+    const { x, y } = viewer.viewport.viewportToImageCoordinates(center.x, center.y);
+    const z = viewer.viewport.viewportToImageZoom(viewer.viewport.getZoom(true));
+
+    const point = [Math.round(x), Math.round(y), z];
+
+    // Skip if the buffer is empty and this point equals the last saved
+    if (this.__buffer.length === 0 && this.__lastSaved && this.pointsEqual(this.__lastSaved, point)) {
+      return;
+    }
+
+    // Skip if point is the same as the last one in the buffer
+    const lastInBuffer = this.__buffer[this.__buffer.length - 1];
+    if (lastInBuffer && this.pointsEqual(lastInBuffer, point)) {
+      return;
+    }
+
+    this.__buffer.push(point);
+    //console.info("debug: tracker added new point")
+
+    if (this.__buffer.length >= this.__batchSize) {
+      this.flush();
+    }
+  }
+
+  flush() {
+    if (this.__buffer.length === 0) return;
 
     this.__camic.store.addLog({
       viewId: this.__viewId,
       slide: this.__slide,
       user: this.__userId,
-      x: Math.round(x),
-      y: Math.round(y),
-      z: image_zoom,
+      points: this.__buffer,
       time: new Date(),
     });
+    //console.info("sent log")
 
-    return {
-      x: Math.round(x),
-      y: Math.round(y),
-      z: image_zoom,
-    };
-  };
+    this.__lastSaved = this.__buffer[this.__buffer.length - 1];
+    this.__buffer = [];
+  }
+
+  handleUnload(event) {
+    // does NOT seem to reliably work.
+    //console.info("logger, unload case")
+    this.flush();
+  }
+
+  pointsEqual(a, b) {
+    return a[0] === b[0] && a[1] === b[1] && a[2] === b[2];
+  }
 }
+
 
 
 function showSuccessPopup(message) {

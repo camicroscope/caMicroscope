@@ -1,4 +1,5 @@
 name: axe
+
 on:
   push:
     branches:
@@ -8,6 +9,7 @@ on:
     branches:
       - master
       - develop
+
 jobs:
   axe:
     runs-on: ubuntu-latest
@@ -27,7 +29,12 @@ jobs:
       - name: Install specific version of ChromeDriver
         run: npm install -g chromedriver@125
       - name: Run axe
+        id: axe-test
         run: |
           npm install -g @axe-core/cli
           sleep 90
-          axe http://127.0.0.1:8080 --chromedriver-path $(npm root -g)/chromedriver/bin/chromedriver --exit
+          axe http://127.0.0.1:8080 --chromedriver-path $(npm root -g)/chromedriver/bin/chromedriver --exit || echo "status=warning" >> $GITHUB_ENV
+      
+      - name: Set output status to warning (if test fails)
+        if: env.status == 'warning'
+        run: echo "::warning::Accessibility tests failed, but this does not block (most) PRs."

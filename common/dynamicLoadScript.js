@@ -8,6 +8,11 @@ if (params.mode && params.mode==="pathdb"){
     ImgloaderMode = 'iip';
     PathDbMods().then(x=>{IsPackageLoading = true})
 }
+else if (params.mode && params.mode==="dcmweb"){
+    ImgloaderMode = 'dcm';
+    DicomWebMods()
+    IsPackageLoading = true;
+}
 else if(params.slideId&&params.id&&params.slideId==="local"&&params.id.includes('http://localhost:8888')){
     ImgloaderMode = 'imgbox';
     NanoBorbMods()
