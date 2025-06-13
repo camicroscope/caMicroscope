@@ -643,6 +643,7 @@
          * @return {[type]}         [description]
          */
         drawOnCanvas:function(drawFuc,args){
+            console.log("drawOnCanvas called")
             var viewportZoom = this._viewer.viewport.getZoom(true);
             var image1 = this._viewer.world.getItemAt(0);
             var zoom = image1.viewportToImageZoom(viewportZoom);
@@ -729,6 +730,7 @@
          * updateView update all canvas according to the current states of the osd'viewer
          */
         updateView:function(){
+            console.log("updateView", this)
             this.resize();
             if(this.hasShowOverlay()) {
                 this._div.style.display = 'block';
