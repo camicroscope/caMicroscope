@@ -109,12 +109,12 @@ function xml2geo() {
       let randomId = generateRandomId();
       outputMap[hexColor] = JSON.parse(JSON.stringify(template));
       outputMap[hexColor]['provenance']['image']['slide'] = slideId;
-      outputMap[hexColor]['provenance']['analysis']['execution_id'] = randomId;
-      outputMap[hexColor]['provenance']['analysis']['name'] = `${annotName}_${hexColor}`;
       let colorname = hexColor;
       if (apolloColors){
         colorname = classifyColor(hexColor)
       }
+      outputMap[hexColor]['provenance']['analysis']['execution_id'] = randomId;
+      outputMap[hexColor]['provenance']['analysis']['name'] = `${annotName}_${colorname}`;
       outputMap[hexColor]['properties']['annotations']['name'] = `${annotName}_${colorname}`;
     }
 
