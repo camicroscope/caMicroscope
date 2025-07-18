@@ -16,13 +16,26 @@ body{
 input {
     font-family: Roboto, Arial, sans-serif;
     font-size: 16px;
-    width: 60%;
     margin-left: 20%;
     height: 35px;
     border: none;
     border-bottom: 3px solid grey;
     transition: background-color 0.3s ease;
   }
+
+.text-input{
+  width: 60%;
+}
+
+.checkbox{
+  height:20px;
+  width: 20px;
+}
+
+.hidden{
+  display: none;
+}
+
 textarea{
     margin-left: 5%;
     font-family: Roboto, Arial, sans-serif;

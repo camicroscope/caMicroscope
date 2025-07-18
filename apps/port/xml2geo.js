@@ -35,12 +35,66 @@ var aperioMap = {
   '4': 'Polyline',
 };
 
+// apollo color things...
+
+// Define the known color categories and their hex values
+const colorCategories = {
+  "Tumor": "#00FF00",
+  "Normal_Benign": "#FF00FF",
+  "Stroma_fibrosis_inflammation": "#FFFF00",
+  "Necrosis": "#000000",
+  "Blood": "#FF0000"
+};
+
+// Convert hex to RGB
+function hexToRgb(hex) {
+  // Remove the "#" if it's present
+  hex = hex.replace("#", "");
+  
+  // Parse hex color to RGB components
+  let r = parseInt(hex.substring(0, 2), 16);
+  let g = parseInt(hex.substring(2, 4), 16);
+  let b = parseInt(hex.substring(4, 6), 16);
+  
+  return { r, g, b };
+}
+
+// Calculate Euclidean distance between two RGB colors
+function calculateColorDistance(rgb1, rgb2) {
+  const rDiff = rgb1.r - rgb2.r;
+  const gDiff = rgb1.g - rgb2.g;
+  const bDiff = rgb1.b - rgb2.b;
+  return Math.sqrt(rDiff * rDiff + gDiff * gDiff + bDiff * bDiff);
+}
+
+// Classify the input hex color into one of the categories
+function classifyColor(hex) {
+  const inputRgb = hexToRgb(hex);
+  let closestCategory = null;
+  let minDistance = Infinity;
+
+  // Loop through all categories and find the closest match
+  for (const [category, hexColor] of Object.entries(colorCategories)) {
+    const categoryRgb = hexToRgb(hexColor);
+    const distance = calculateColorDistance(inputRgb, categoryRgb);
+
+    if (distance < minDistance) {
+      minDistance = distance;
+      closestCategory = category;
+    }
+  }
+  return closestCategory;
+}
+
+
 function xml2geo() {
   let input = document.getElementById('xml_in').value;
   xmlDoc = parser.parseFromString(input, 'text/xml');
   let annotations = xmlDoc.getElementsByTagName('Annotation');
   let slideId = document.getElementById('slide_id').value;
   let annotName = document.getElementById('annot_name').value;
+
+  let apolloColors = document.getElementById('apollo_colors').checked;
 
   // Store objects per unique color
   let outputMap = {};
@@ -57,7 +111,11 @@ function xml2geo() {
       outputMap[hexColor]['provenance']['image']['slide'] = slideId;
       outputMap[hexColor]['provenance']['analysis']['execution_id'] = randomId;
       outputMap[hexColor]['provenance']['analysis']['name'] = `${annotName}_${hexColor}`;
-      outputMap[hexColor]['properties']['annotations']['name'] = `${annotName}_${hexColor}`;
+      let colorname = hexColor;
+      if (apolloColors){
+        colorname = classifyColor(hexColor)
+      }
+      outputMap[hexColor]['properties']['annotations']['name'] = `${annotName}_${colorname}`;
     }
 
     let regions = annotation.getElementsByTagName('Region');
