@@ -91,8 +91,8 @@ function xml2geo() {
   let input = document.getElementById('xml_in').value;
   xmlDoc = parser.parseFromString(input, 'text/xml');
   let annotations = xmlDoc.getElementsByTagName('Annotation');
-  let slideId = document.getElementById('slide_id').value;
-  let annotName = document.getElementById('annot_name').value;
+  let slideId = document.getElementById('slide_id').value.trim();
+  let annotName = document.getElementById('annot_name').value.trim();
 
   let apolloColors = document.getElementById('apollo_colors').checked;
 
