@@ -39,24 +39,26 @@ var aperioMap = {
 
 // Define the known color categories and their hex values
 const colorCategories = {
-  "Tumor": "#00FF00",
-  "Normal_Benign": "#FF00FF",
-  "Stroma_fibrosis_inflammation": "#FFFF00",
-  "Necrosis": "#000000",
-  "Blood": "#FF0000"
+  'Tumor': '#00FF00',
+  'Normal_Benign': '#FF00FF',
+  'Stroma_fibrosis_inflammation': '#FFFF00',
+  'Necrosis': '#000000',
+  'Blood': '#FF0000',
+  'In-situ/atypical': '#a52a2a',
+  'Lymphovascular': '#ffa500',
 };
 
 // Convert hex to RGB
 function hexToRgb(hex) {
   // Remove the "#" if it's present
-  hex = hex.replace("#", "");
-  
+  hex = hex.replace('#', '');
+
   // Parse hex color to RGB components
   let r = parseInt(hex.substring(0, 2), 16);
   let g = parseInt(hex.substring(2, 4), 16);
   let b = parseInt(hex.substring(4, 6), 16);
-  
-  return { r, g, b };
+
+  return {r, g, b};
 }
 
 // Calculate Euclidean distance between two RGB colors
@@ -105,17 +107,16 @@ function xml2geo() {
     let annotationId = annotation.getAttribute('Id');
 
     let hexColor = `#${parseInt(annotationLineColor).toString(16).padStart(6, '0')}`;
-    if (!outputMap[hexColor]) {
+
+    let colorKey = apolloColors ? classifyColor(hexColor) : hexColor;
+
+    if (!outputMap[colorKey]) {
       let randomId = generateRandomId();
-      outputMap[hexColor] = JSON.parse(JSON.stringify(template));
-      outputMap[hexColor]['provenance']['image']['slide'] = slideId;
-      let colorname = hexColor;
-      if (apolloColors){
-        colorname = classifyColor(hexColor)
-      }
-      outputMap[hexColor]['provenance']['analysis']['execution_id'] = randomId;
-      outputMap[hexColor]['provenance']['analysis']['name'] = `${annotName}_${colorname}`;
-      outputMap[hexColor]['properties']['annotations']['name'] = `${annotName}_${colorname}`;
+      outputMap[colorKey] = JSON.parse(JSON.stringify(template));
+      outputMap[colorKey]['provenance']['image']['slide'] = slideId;
+      outputMap[colorKey]['provenance']['analysis']['execution_id'] = randomId;
+      outputMap[colorKey]['provenance']['analysis']['name'] = `${colorKey}`;
+      outputMap[colorKey]['properties']['annotations']['name'] = `${colorKey}`;
     }
 
     let regions = annotation.getElementsByTagName('Region');
@@ -166,7 +167,7 @@ function xml2geo() {
         },
       };
 
-      outputMap[hexColor]['geometries']['features'].push(feature);
+      outputMap[colorKey]['geometries']['features'].push(feature);
     }
   }
 
