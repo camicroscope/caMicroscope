@@ -507,14 +507,14 @@ async function initUIcomponents() {
   // create two side menus for tools
   $UI.appsSideMenu = new SideMenu({
     id: 'side_apps',
-    width: 300,
+    width: 350,
     // , isOpen:true
     callback: toggleSideMenu,
   });
 
   $UI.layersSideMenu = new SideMenu({
     id: 'side_layers',
-    width: 250,
+    width: 350,
     contentPadding: 5,
     // , isOpen:true
     callback: toggleSideMenu,
