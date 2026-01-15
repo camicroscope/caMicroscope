@@ -46,6 +46,7 @@ const colorCategories = {
   'Blood': '#FF0000',
   'In-situ/atypical': '#a52a2a',
   'Lymphovascular': '#ffa500',
+  'Mucin': '#0000ff',
 };
 
 // Convert hex to RGB
