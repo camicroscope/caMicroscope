@@ -288,6 +288,7 @@
               href="../collection/viewer.html"
               >Collection List</a
             >
+            <span id="report_placeholder"></span>
             <a
               style="
                 float: right;
@@ -395,11 +396,11 @@
                 }
               });
               // display the open button normally.
-              let btn = `<button class="btn" data-id='${rs[0]}' onclick='openView(this)'>Annotate</button> &nbsp; <button class="btn" style="background-color:#008000" data-id='${rs[0]}' onclick='openGenericReview(this)'>Review</button>`;
+              let btn = `<button class="btn unfinished" data-id='${rs[0]}' onclick='openView(this)'>Annotate</button> &nbsp; <button class="btn" style="background-color:#008000" data-id='${rs[0]}' onclick='openGenericReview(this)'>Review</button>`;
               if (labelingAnnotationCount >= labelingCount){
                 if (collectionHasFeedback){
                   // if there's feedback, show a review button.
-                  btn = `<button class="btn" style="background-color:#008000" data-id='${rs[0]}' onclick='openReview(this)'>Review</button>`
+                  btn = `<button class="btn done" style="background-color:#008000" data-id='${rs[0]}' onclick='openReview(this)'>Review</button>`
                 } else {
                   // otherwise, just a check.
                   btn = `<div class='material-icons' style='width:48px;color:#008000;' title='Done'>check_circle</div> <button class="btn" style="background-color:#008000" data-id='${rs[0]}' onclick='openGenericReview(this)'>Review</button>`;
@@ -417,6 +418,34 @@
             perPageSelect: [25, 50, 100],
             data: { headings, data },
           });
+          // check if conditions met to show the report button
+          params2 = new URLSearchParams(window.location.search);
+          // for now, need to map collections
+          let collectionMap = {
+            '647f6169a717cc71e7aad9b2': 'Feedback Test 1',
+            '6570bc89465283ed7ec3af84': 'Feedback Test 2',
+            '647f6169a717cc71e7aad9b1': 'Proficiency Test 1',
+            '6570bc89465283ed7ec3af83': 'Proficiency Test 2',
+          }
+          collectionId = params2.get('collectionId');
+          if (
+            collectionId in collectionMap &&
+            document.querySelectorAll('button.unfinished').length === 0
+          ) {
+            console.log('Condition met', collectionMap[collectionId]);
+            const placeholder = document.getElementById("report_placeholder");
+            const link = document.createElement("a");
+            link.href = "#";
+            link.textContent = "Completion Report";
+            link.target = "_blank"; // open in new tab
+            link.style.color = "white";
+            link.style.textDecoration = "none";
+            link.style.fontWeight = "900";
+            link.style.letterSpacing = "0.05em";
+            link.style.textTransform = "uppercase";
+            link.style.fontSize = "0.9em";
+            placeholder.appendChild(link);
+          }
           document.querySelectorAll("#datatables > thead > tr > th").forEach(x=>{
                 if (tooltips[x.innerText]){
                   x.setAttribute('title', tooltips[x.innerText]);
