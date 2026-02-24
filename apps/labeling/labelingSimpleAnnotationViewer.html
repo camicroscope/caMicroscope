@@ -435,8 +435,8 @@
             console.log('Condition met', collectionMap[collectionId]);
             const placeholder = document.getElementById("report_placeholder");
             const link = document.createElement("a");
-            link.href = "#";
-            link.textContent = "Completion Report";
+            link.href = "../../reports/report?collectionName=" + collectionMap[collectionId];
+            link.textContent = "Study Performance Report";
             link.target = "_blank"; // open in new tab
             link.style.color = "white";
             link.style.textDecoration = "none";
@@ -444,6 +444,7 @@
             link.style.letterSpacing = "0.05em";
             link.style.textTransform = "uppercase";
             link.style.fontSize = "0.9em";
+            link.style.paddingLeft = "15px";
             placeholder.appendChild(link);
           }
           document.querySelectorAll("#datatables > thead > tr > th").forEach(x=>{
