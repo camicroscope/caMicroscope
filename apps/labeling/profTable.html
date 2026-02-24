@@ -288,6 +288,7 @@
               href="../collection/viewer.html"
               >Collection List</a
             >
+            <span id="report_placeholder"></span>
             <a
               style="
                 float: right;
@@ -412,7 +413,7 @@
             perPageSelect: [25, 50, 100],
             data: { headings, data },
           });
-                    // check if conditions met to show the report button
+          // check if conditions met to show the report button
           params2 = new URLSearchParams(window.location.search);
           // for now, need to map collections
           let collectionMap = {
