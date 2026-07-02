@@ -1,7 +1,7 @@
 parser = new DOMParser();
 
 function generateRandomId(length = 6) {
-  return Math.random().toString(36).substr(2, length);
+  return Array.from({length}, () => Math.floor(Math.random() * 36).toString(36)).join('');
 }
 
 var template = {
