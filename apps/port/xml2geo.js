@@ -172,7 +172,7 @@ function xml2geo() {
     }
   }
 
-  // Show all color-specific outputs
-  let finalOutput = Object.values(outputMap);
+  // Show all color-specific outputs, skipping colors with no actual regions
+  let finalOutput = Object.values(outputMap).filter((entry) => entry['geometries']['features'].length > 0);
   document.getElementById('output').textContent = JSON.stringify(finalOutput, null, 2);
 }
