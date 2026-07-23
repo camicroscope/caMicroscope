@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta name="keywords" content="camicroscope, quip, multichannel, multispectral, ome-tiff" />
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, minimum-scale=1.0, maximum-scale=2.0"
+    />
+    <link
+      rel="stylesheet"
+      href="https://use.fontawesome.com/releases/v5.8.2/css/all.css"
+    />
+
+    <script src="../../common/authChecker.js"></script>
+    <script>
+      __auth_check(2);
+    </script>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+      integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+      crossorigin="anonymous"
+    ></script>
+
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+      integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+      crossorigin="anonymous"
+    ></script>
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+      integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" href="../../common/stacktable.css" />
+    <link rel="stylesheet" href="../../css/popup.css" />
+
+    <script src="../../core/Store.js"></script>
+    <script src="../../common/util.js"></script>
+    <script src="../../common/stacktable.js"></script>
+
+    <title>Upload Multichannel Slide</title>
+  </head>
+  <body>
+    <div id="popup-container"></div>
+    <nav
+      class="navbar navbar-expand-md navbar-dark fixed-top bg-dark"
+      style="position: sticky;"
+    >
+      <a href="../table.html">
+        <i
+          class="fas fa-arrow-left text-light"
+          style="font-size: x-large; cursor: pointer;"
+        ></i
+      ></a>
+      <div
+        style="margin-left: 1em; font-size: x-large;"
+        class="navbar-brand"
+        href="#"
+      >
+        Upload Multichannel / OME-TIFF Slide
+      </div>
+    </nav>
+
+    <div style="align-content: center; padding-top: 2em; max-width: 60em; margin: 0 auto;">
+      <div class="alert alert-info" role="alert">
+        <h3>Steps for uploading.</h3>
+        <ol>
+          <li>Select a single-file OME-TIFF (or a .zip containing exactly one) with all channels embedded in one physical file.</li>
+          <li>Enter the desired filename and a slide name.</li>
+          <li>Click <b>Preview Slide</b> to check it, then <b>Finish Upload</b> to register it.</li>
+          <li>Once registered, a link to view it (already set up for multichannel viewing) will appear below.</li>
+        </ol>
+        <p class="mb-0">
+          <b>Not supported yet:</b> raw unstitched multi-panel acquisitions (need a stitching
+          pipeline like ASHLAR/MCMICRO first) and multi-file-per-channel datasets (e.g. one
+          physical file per channel) -- both are detected and flagged rather than silently
+          mis-registered.
+        </p>
+      </div>
+
+      <form id="upload-form" onsubmit="return false;">
+        <table class="table table-borderless" cellpadding="5" cellspacing="0">
+          <tr>
+            <td align="right"><b>File</b></td>
+            <td id="fileUploadInput">
+              <span class="input-group mb-3">
+                <span class="custom-file fileInputClass">
+                  <input
+                    type="file"
+                    class="custom-file-input"
+                    id="input"
+                    accept=".tif,.tiff,.zip"
+                    onchange="handleUpload(this.files)"
+                  />
+                  <label class="custom-file-label" for="input" style="overflow: hidden;">Choose file</label>
+                </span>
+              </span>
+              <div id="uploadLoading" style="display: none;">
+                <span>Uploading...</span>
+                <div class="spinner-grow text-primary" role="status" style="margin-left: 1.2em;">
+                  <span class="sr-only"></span>
+                </div>
+              </div>
+            </td>
+          </tr>
+          <tr id="filenameRow">
+            <td><b>Filename</b></td>
+          </tr>
+          <tr id="tokenRow">
+            <td><b>Token</b></td>
+          </tr>
+          <tr id="slidenameRow">
+            <td><b>Slidename</b></td>
+          </tr>
+          <tr id="filterRow">
+            <td><b>Filter (leave blank for public)</b></td>
+          </tr>
+        </table>
+        <div id="upload-progress-div" style="display: none; align-content: center;">
+          <div class="progress" style="width: 50%; margin: 0 auto">
+            <div
+              id="upload-progress"
+              class="progress-bar"
+              role="progressbar"
+              style="width: 0%;"
+              aria-valuenow="0"
+              aria-valuemin="0"
+              aria-valuemax="100"
+            ></div>
+          </div>
+          <br />
+        </div>
+        <div class="text-center" id="controlButtons">
+          <button
+            class="btn btn-primary"
+            type="button"
+            id="finish_btn"
+            style="display: none;"
+            onclick="validateForm(finishUpload)"
+          >
+            <i class="fas fa-arrow-right"></i>Preview Slide
+          </button>
+          <button
+            class="btn btn-success"
+            type="button"
+            id="post_btn"
+            style="display: none;"
+            onclick="validateForm(PostBtn)"
+          >
+            Finish Upload
+          </button>
+        </div>
+      </form>
+
+      <div class="text-center p-2">
+        <div id="load_status" class="p-1"></div>
+        <div id="warning_status" class="p-1 text-danger font-weight-bold"></div>
+        <div id="json_table"></div>
+        <div id="view_link" class="p-2"></div>
+      </div>
+    </div>
+
+    <script src="../loader/chunked_upload.js"></script>
+    <script src="./multichannelLoader.js"></script>
+  </body>
+</html>

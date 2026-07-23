@@ -28,7 +28,7 @@ const allowedExtensions = ['svs', 'tif', 'tiff', 'vms', 'vmu', 'ndpi', 'scn', 'm
   'qptiff', 'bin', 'env', 'spe', 'afm', 'sm2', 'sm3', 'spc', 'set', 'sdt', 'spi', 'xqd', 'xqf',
   'db', 'vws', 'pst', 'inf', 'tfr', 'ffr', 'zfr', 'zfp', '2fl', 'tga', 'pr3', 'dti', 'fdf', 'hdf',
   'xys', 'html', 'acff', 'wat', 'bmp', 'wpi', 'czi', 'lms', 'lsm', 'mdb', 'zvi', 'mrc', 'st',
-  'ali', 'map', 'mrcs', 'jpeg', 'gif', 'ptif'];
+  'ali', 'map', 'mrcs', 'jpeg', 'gif', 'ptif', 'zip'];
 function validateForm(callback) {
   let slide = document.getElementById('slidename0');
   // Check if input element is rendered or not
@@ -314,7 +314,7 @@ function initialize() {
                   // console.log('Done one iter');
 
                   const btn = `<div id='open-delete'>
-                <button class="btn btn-primary btn-sm" data-id='${sanitize(rs[0])}' onclick='openView(this)'>Open</button>
+                <button class="btn btn-primary btn-sm" data-id='${sanitize(rs[0])}' data-mode='${d.is_multichannel ? 'mctile' : ''}' onclick='openView(this)'>Open</button>
                 <button  aria-label="Download" type='button' class='btn btn-primary btn-sm DownloadButton' id='downloadBtn' data-id='${sanitize(rs[0])}' onclick='downloadSlide(this)'>
                 <i class='fas fa-download' ></i>
                 </button>
@@ -546,8 +546,10 @@ function getValues(d, keys) {
 
 function openView(e) {
   const oid = e.dataset.id;
+  const mode = e.dataset.mode;
   if (oid) {
-    window.location.href = `./viewer/viewer.html?slideId=${sanitize(oid)}`;
+    const modeParam = mode ? `&mode=${mode}` : '';
+    window.location.href = `./viewer/viewer.html?slideId=${sanitize(oid)}${modeParam}`;
   } else {
     alert('No Data Id');
   }

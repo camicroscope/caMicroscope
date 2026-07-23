@@ -596,6 +596,19 @@ async function initUIcomponents() {
     callback: toggleViewerMode,
   });
 
+  if (ImgloaderMode == 'multichannel') {
+    // channel control (multichannel/fluorescence slides only)
+    subToolsOpt.push({
+      name: 'channelcontrol',
+      icon: 'palette',
+      title: 'Channels',
+      value: 'channels',
+      type: 'check',
+      ariaLabel: 'Channel Control',
+      callback: toggleChannelControl,
+    });
+  }
+
   if ($D.params.mode != 'dcmweb') {
     // heatmap
     subToolsOpt.push({
@@ -785,6 +798,15 @@ async function initUIcomponents() {
   $UI.layersSideMenu.addContent(loading);
   // TODO add layer viewer
 
+  if (ImgloaderMode == 'multichannel') {
+    $UI.channelsSideMenu = new SideMenu({
+      id: 'side_channels',
+      width: 260,
+      contentPadding: 5,
+      callback: toggleSideMenu,
+    });
+  }
+
   $UI.visualizationSideMenu = new SideMenu({
     id: 'visualization_panel',
     width: 250,
@@ -830,6 +852,15 @@ async function initUIcomponents() {
 
   $D.labels = await $CAMIC.store.getConfigByName('preset_label').then((list)=>list.length==0?null:list[0]);
 
+  if (ImgloaderMode == 'multichannel') {
+    $D.channelPresets = await $CAMIC.store.getConfigByName('preset_channel_view').then((list)=>list.length==0?null:list[0]);
+    $D.channelFilter = {enabled: false, channels: []};
+
+    $UI.channelControl = createChannelControl('channelmanager', $CAMIC);
+    // $UI.channelControlMinor is created lazily in multSelectorAction
+    // (uicallbacks.js) once $minorCAMIC/its channelMeta actually exist --
+    // side-by-side comparison isn't engaged until the user opens it.
+  }
 
   // onAdd()
   // onRemove(labels)
@@ -1051,6 +1082,26 @@ async function initUIcomponents() {
       $UI.layersList.elt.parentNode.removeChild($UI.layersList.elt);
       closeMinorControlPanel();
       $UI.layersSideMenu.addContent($UI.layersList.elt);
+
+      if (ImgloaderMode == 'multichannel') {
+        // main/minor (left/right) channel control, same CollapsibleList
+        // pattern as $UI.layersList above -- the 'right' pane starts empty
+        // and is populated lazily once side-by-side is actually opened
+        // (multSelectorAction, uicallbacks.js), since $minorCAMIC/its
+        // channelMeta don't exist until then.
+        $UI.channelsList = new CollapsibleList({
+          id: 'channelslist',
+          list: [
+            {id: 'left', title: 'Left Viewer', content: 'No Template Loaded'},
+            {id: 'right', title: 'Right Viewer', content: 'No Template Loaded'},
+          ],
+          changeCallBack: function(e) {},
+        });
+        $UI.channelsList.clearContent('left');
+        $UI.channelsList.addContent('left', $UI.channelControl.elt);
+        $UI.channelsList.elt.parentNode.removeChild($UI.channelsList.elt);
+        $UI.channelsSideMenu.addContent($UI.channelsList.elt);
+      }
 
       // visualization
       $UI.visualizationList.clearContent('visualizationlist');
@@ -1426,6 +1477,43 @@ function createLayerViewer(id, viewerData, callback, rootCallback) {
   });
   layersViewer.elt.parentNode.removeChild(layersViewer.elt);
   return layersViewer;
+}
+
+/**
+ * lazily creates a ChannelControl bound to a given CaMic instance (main or
+ * minor, for side-by-side comparison) -- pure UI-panel component, no
+ * this.viewer.<pluginFn> coupling, so it's instantiated directly here
+ * rather than through CaMic's has-flag/create-method OSD-plugin mechanism,
+ * following the same precedent as createLayerViewer above.
+ * @param {string} id - the DOM id to mount into
+ * @param {CaMic} camic - the CaMic instance this panel controls
+ * @return {ChannelControl} the created (but not yet appended) component
+ */
+function createChannelControl(id, camic) {
+  const cc = new ChannelControl({
+    id: id,
+    channels: camic.channelMeta.channels,
+    style: camic.currentStyle,
+    presets: $D.channelPresets ? $D.channelPresets.configuration : [],
+    onChange: (style) => {
+      camic.setChannelStyle(style);
+      if ($D.channelFilter) {
+        $D.channelFilter.channels = style.bands.filter((b) => b.enabled).map((b) => b.band);
+        if ($D.channelFilter.enabled) camic.viewer.omanager.updateView();
+      }
+    },
+    onScopeToggle: (enabled) => {
+      if ($D.channelFilter) {
+        $D.channelFilter.enabled = enabled;
+        camic.viewer.omanager.updateView();
+      }
+    },
+    onSavePreset: saveChannelPresetHandler,
+    onLoadPreset: loadChannelPresetHandler,
+    onDeletePreset: deleteChannelPresetHandler,
+  });
+  cc.elt.parentNode.removeChild(cc.elt);
+  return cc;
 }
 
 function createVisualizationViewer(id, viewerData, callback, rootCallback) {

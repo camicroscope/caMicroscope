@@ -74,6 +74,22 @@
       media="all"
       href="../../components/layersviewer/layersviewer.css"
     />
+    <!-- range slider css (used by channelcontrol; previously only pulled in
+         by apps/heatmap/heatmap.html since HeatmapControl was the only
+         consumer -- channelcontrol.js needs it here on the main viewer too) -->
+    <link
+      rel="stylesheet"
+      type="text/css"
+      media="all"
+      href="../../common/rangeslider/rangeslider.css"
+    />
+    <!-- channel controller css -->
+    <link
+      rel="stylesheet"
+      type="text/css"
+      media="all"
+      href="../../components/channelcontrol/channelcontrol.css"
+    />
     <!-- machine learning assistant css -->
     <link
       rel="stylesheet"
@@ -259,6 +275,16 @@
       type="text/javascript"
       src="../../components/layersviewer/layersviewer.js"
     ></script>
+    <!-- range slider js (channelcontrol.js dependency -- see css include above) -->
+    <script
+      type="text/javascript"
+      src="../../common/rangeslider/rangeslider.js"
+    ></script>
+    <!-- channel controller js -->
+    <script
+      type="text/javascript"
+      src="../../components/channelcontrol/channelcontrol.js"
+    ></script>
     <!-- labels controller js -->
     <script
       type="text/javascript"
@@ -381,6 +407,7 @@
     <script type='text/javascript' src='../../common/LocalStore.js'></script>
     <script type='text/javascript' src='../../common/NanoBorbMods.js'></script>
     <script type='text/javascript' src='../../common/DicomWebMods.js'></script>
+    <script type='text/javascript' src='../../common/MultiChannelMods.js'></script>
     <script
       type="text/javascript"
       src="../../common/dynamicLoadScript.js"
@@ -420,6 +447,9 @@
     <!-- side menu for layers -->
     <div id="side_layers" style="z-index:600"></div>
 
+    <!-- side menu for channel controls (multichannel mode) -->
+    <div id="side_channels" style="z-index:600"></div>
+
     <!-- side menu for labels -->
     <div id="labels_layers" style="z-index:600"></div>
     <!-- side menu for labels -->
@@ -433,6 +463,8 @@
     <!-- collapsible list - main/minor (right/left) layers -->
     <div id="layerslist" style="z-index:600"></div>
     <div id="visualizationlist" style="z-index:600"></div>
+    <!-- collapsible list - main/minor (right/left) channel control (multichannel mode) -->
+    <div id="channelslist" style="z-index:600"></div>
     <!-- overlayer manager -->
     <div id="overlayers" style="z-index:600"></div>
 
@@ -444,6 +476,9 @@
 
     <!-- labels manager -->
     <div id="labelmanager" style="z-index:600"></div>
+    <!-- channel manager (multichannel mode) -->
+    <div id="channelmanager" style="z-index:600"></div>
+    <div id="channelmanagerMinor" style="z-index:600"></div>
     <!-- machine learning assistant -->
     <div id="ml_assistant" style="z-index:600"></div>
     <div id="popup-container"></div>

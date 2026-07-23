@@ -18,6 +18,11 @@ else if(params.slideId&&params.id&&params.slideId==="local"&&params.id.includes(
     NanoBorbMods()
     init_LocalStore()
     IsPackageLoading = true;
+}
+else if (params.mode && params.mode==="mctile"){
+    ImgloaderMode = 'multichannel';
+    MultiChannelMods()
+    IsPackageLoading = true;
 }else{
     ImgloaderMode = 'iip';
     IsPackageLoading = true;

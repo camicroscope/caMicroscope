@@ -7,6 +7,23 @@ var downloadURL = '../loader/getSlide/';
 var store = new Store('../data/');
 
 function changeStatus(step, text, reset=true) {
+  // A multi-file zip's response comes back from the FINISH-upload step
+  // (chunked_upload.js's finishUpload(), which calls changeStatus()
+  // unconditionally before deciding whether to proceed to the check step)
+  // -- not from handleCheck()/the metadata-check step. finishUpload()
+  // treats any error-bearing response (which this deliberately still
+  // carries, for safe degradation here) as a terminal failure and never
+  // calls validateForm(CheckBtn), so a check placed in handleCheck() would
+  // be unreachable dead code for this response shape -- this is the actual,
+  // correct interception point.
+  if (text && typeof text === 'object' && text.extracted && text.multi_file) {
+    document.getElementById('load_status').innerHTML =
+      `UPLOAD | ${text.error} Files are in "${text.folder}": ${text.files.join(', ')}. ` +
+      'Use the "Upload Multichannel/OME-TIFF" option from the upload dropdown to register ' +
+      'these individually or as channels of one image.';
+    $('#post_btn').hide();
+    return;
+  }
   // Reset the status bar
   console.log('Previous: ', document.getElementById('load_status').innerHTML);
   document.getElementById('load_status').innerHTML='';
@@ -173,6 +190,20 @@ function handleCheck(filename, reset, id, noRetry) {
       (response) => response.json(), // if the response is a JSON object
   ).then(
       (success) => {
+        // Note: the extracted/multi_file zip response is handled in
+        // changeStatus(), not here -- it comes back from the finish-upload
+        // step (chunked_upload.js's finishUpload()), which never reaches
+        // this check step at all for that response shape. This checkUrl
+        // endpoint (SlideLoader's per-file metadata check) can never itself
+        // return extracted/multi_file, only warning (below) or a plain error.
+        if (success.warning) {
+          // raw unstitched multi-panel acquisition -- see SlideLoader's
+          // detect_raw_panels(). Block registration rather than silently
+          // registering a wrong single-panel slide.
+          changeStatus('CHECK', {warning: success.warning}, reset);
+          $('#post_btn').hide();
+          return;
+        }
         // errors aren't always non-success, so need to check here too
         if (success.error) {
           console.error(success.error);

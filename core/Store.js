@@ -875,6 +875,26 @@ class Store {
       mode: 'cors',
     }).then(this.errorHandler);
   }
+
+  /**
+   * get normalized channel metadata for a multi-channel/fluorescence slide
+   * from the mctile tile server, proxied by Caracal at /img/MCT/meta/.
+   * Unlike other Store methods this hits that path directly rather than
+   * `this.base`, mirroring how CaMic.iipSrv hardcodes '../../img/IIP/raw/'
+   * rather than routing tile requests through the generic data API base.
+   * @param {string} location - the slide's location field
+   * @return {promise} - promise which resolves with {width, height,
+   *   tile_size, levels, mpp_x, mpp_y, channels, default_style, parse_note}
+   **/
+  getChannelMeta(location) {
+    const url = '../../img/MCT/meta/' + location;
+
+    return fetch(url, {
+      credentials: 'include',
+      mode: 'cors',
+    }).then(this.errorHandler);
+  }
+
   /**
    * post data
    * @param {string} type - the datatype to post
@@ -1063,6 +1083,31 @@ class Store {
       credentials: 'include',
       mode: 'cors',
       body: JSON.stringify(labels),
+    }).then(this.errorHandler);
+  }
+
+  /**
+   * update a saved channel-view presets Configuration document
+   * (config_name:'preset_channel_view'). Creating the first-ever document
+   * uses the generic `post('Configuration', {config_name, configuration})`
+   * instead -- this mirrors updatePresetLabels but targets the generic
+   * Configuration/update route directly rather than a bespoke Presetlabels
+   * route, since Configuration/find|post|update already exist and are
+   * Admin/Editor-gated.
+   * @param {string} id - the Configuration document's _id
+   * @param {Array} presets - array of {id, name, style} channel presets
+   * @return {promise} - promise which resolves with data
+   **/
+  updateChannelPresets(id, presets) {
+    const suffix = 'Configuration/update';
+    const url = this.base + suffix;
+    const query = {_id: id};
+
+    return fetch(url + '?' + objToParamStr(query), {
+      method: 'POST',
+      credentials: 'include',
+      mode: 'cors',
+      body: JSON.stringify({configuration: presets}),
     }).then(this.errorHandler);
   }
 

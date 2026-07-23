@@ -94,6 +94,27 @@ function multSelectorAction(size) {
       // image loaded
       if (e.hasError) {
         $UI.message.addError(e.message);
+        return;
+      }
+      // CaMic.prototype.loadImg is patched at the prototype level (see
+      // common/MultiChannelMods.js), so $minorCAMIC already independently
+      // fetched its own channelMeta/currentStyle by this point -- create its
+      // ChannelControl now that those exist, and mount it into the
+      // channelsList's 'right' pane (mirrors $UI.layersViewerMinor).
+      if (ImgloaderMode == 'multichannel') {
+        $UI.channelControlMinor = createChannelControl('channelmanagerMinor', $minorCAMIC);
+        $UI.channelsList.clearContent('right');
+        $UI.channelsList.addContent('right', $UI.channelControlMinor.elt);
+        // covers the case where the channels side menu is already open when
+        // side-by-side gets engaged -- toggleChannelControl's own resize()
+        // call already fired before this instance existed. Harmless no-op
+        // if the panel is still closed (just recomputes to zero again).
+        // Checking rendered width directly rather than the style property,
+        // since SideMenu.close() assigns the bare number 0 (not '0px') to
+        // style.width, which is unreliable to string-compare against.
+        if ($UI.channelsSideMenu && $UI.channelsSideMenu.elt.getBoundingClientRect().width > 0) {
+          $UI.channelControlMinor.resize();
+        }
       }
     });
     $minorCAMIC.viewer.addOnceHandler('tile-drawing', function() {
@@ -220,9 +241,122 @@ function closeSecondaryViewer() {
     $minorCAMIC = null;
   }
 
+  // $UI.channelControlMinor is bound to the now-destroyed $minorCAMIC;
+  // drop it so a fresh one is created next time side-by-side reopens.
+  if ($UI.channelControlMinor) {
+    $UI.channelsList.clearContent('right');
+    $UI.channelControlMinor = null;
+  }
+
   // hide on layersViewer TODO
   $UI.layersViewerMinor.toggleAllItems();
   $UI.layersViewerMinor.setting.data.forEach((d) => delete d.layer);
+}
+
+/**
+ * toggles the channel-control side panel (multichannel mode only) --
+ * modeled 1:1 on toggleViewerMode's open/close pattern, but $UI.channelControl
+ * is created eagerly at bootstrap (apps/viewer/init.js, alongside
+ * $UI.labelsViewer) rather than lazily here, since channelMeta/currentStyle
+ * are already available by then.
+ * @param {Object} opt
+ */
+function toggleChannelControl(opt) {
+  if (opt.checked) {
+    $UI.channelsSideMenu.open();
+    // ChannelControl's rangeSliders were built while this panel was still
+    // closed (width:0) -- recompute their geometry now that real width
+    // exists, or every drag reports the max value regardless of position
+    // (see ChannelControl.prototype.resize's doc comment for why).
+    //
+    // components/sidemenu/sidemenu.css sets `transition: 0.5s` on
+    // .side_menu, so the width change from .open() above animates over
+    // real time rather than applying instantly -- calling resize()
+    // synchronously right here would still read the pre-transition (~0)
+    // width. Wait for the transition to actually finish instead of
+    // guessing a fixed delay, so this doesn't silently break again if that
+    // duration ever changes.
+    const onTransitionEnd = (e) => {
+      if (e.target !== $UI.channelsSideMenu.elt || e.propertyName !== 'width') return;
+      $UI.channelsSideMenu.elt.removeEventListener('transitionend', onTransitionEnd);
+      if ($UI.channelControl) $UI.channelControl.resize();
+      if ($UI.channelControlMinor) $UI.channelControlMinor.resize();
+    };
+    $UI.channelsSideMenu.elt.addEventListener('transitionend', onTransitionEnd);
+  } else {
+    $UI.channelsSideMenu.close();
+  }
+}
+
+/**
+ * returns the provenance.image fragment for channel-scoping a new
+ * annotation: an optional `channels` array of currently-enabled channel
+ * indices, populated only when in multichannel mode and the user has opted
+ * in via ChannelControl's "scope new annotations to enabled channels"
+ * toggle. Absent/empty means "applies to all channels" (mirrors OMERO's
+ * theC convention on ROI Shapes) -- this is the default, so annotations
+ * never silently vanish for anyone not using this feature.
+ * @return {Object} {} or {channels: number[]}
+ */
+function getAnnotationChannelScope() {
+  if (ImgloaderMode == 'multichannel' && $UI.channelControl &&
+      $UI.channelControl.setting.scopeAnnotations) {
+    return {channels: $UI.channelControl.getEnabledChannelIndices()};
+  }
+  return {};
+}
+
+/**
+ * saves the current channel style as a new named preset. Creates the
+ * Configuration document on first save (config_name:'preset_channel_view'),
+ * or appends to it if one already exists -- mirrors addPresetLabels'
+ * create-if-absent convention.
+ * @param {string} name - the preset's display name
+ * @param {Object} style - the style object to save
+ */
+async function saveChannelPresetHandler(name, style) {
+  const preset = {id: randomId(), name: name, style: style};
+  if (!$D.channelPresets) {
+    // Configuration/post is the generic mongoAdd handler (insertMany under
+    // the hood, even for a single doc), whose raw result shape is
+    // {insertedIds: {'0': ObjectId}} -- not the {result:{insertedId}} shape
+    // some bespoke handlers (e.g. Presetlabels/update) use.
+    const result = await $CAMIC.store.post('Configuration', {
+      config_name: 'preset_channel_view',
+      configuration: [preset],
+    });
+    $D.channelPresets = {_id: result.insertedIds['0'], configuration: [preset]};
+  } else {
+    $D.channelPresets.configuration.push(preset);
+    await $CAMIC.store.updateChannelPresets(
+        $D.channelPresets._id, $D.channelPresets.configuration);
+  }
+  $UI.channelControl.setting.presets = $D.channelPresets.configuration;
+  $UI.channelControl.__refresh();
+}
+
+/**
+ * loads a saved channel preset's style onto the main viewer.
+ * @param {string} presetId - the preset's id (not the Configuration doc's _id)
+ */
+function loadChannelPresetHandler(presetId) {
+  const preset = $D.channelPresets.configuration.find((p) => p.id === presetId);
+  if (!preset) return;
+  $CAMIC.setChannelStyle(preset.style);
+  $UI.channelControl.setting.style = preset.style;
+  $UI.channelControl.__refresh();
+}
+
+/**
+ * deletes a saved channel preset.
+ * @param {string} presetId - the preset's id (not the Configuration doc's _id)
+ */
+async function deleteChannelPresetHandler(presetId) {
+  $D.channelPresets.configuration = $D.channelPresets.configuration.filter((p) => p.id !== presetId);
+  await $CAMIC.store.updateChannelPresets(
+      $D.channelPresets._id, $D.channelPresets.configuration);
+  $UI.channelControl.setting.presets = $D.channelPresets.configuration;
+  $UI.channelControl.__refresh();
 }
 
 /**
@@ -908,6 +1042,7 @@ function annoCallback(data) {
     provenance: {
       image: {
         slide: $D.params.slideId,
+        ...getAnnotationChannelScope(),
       },
       analysis: {
         source: 'human',
@@ -1280,6 +1415,13 @@ function openMinorControlPanel() {
   $UI.layersList.triggerContent('left', 'close');
   $UI.layersList.displayContent('right', true);
   $UI.layersList.triggerContent('right', 'open');
+
+  if ($UI.channelsList) {
+    $UI.channelsList.displayContent('left', true, 'head');
+    $UI.channelsList.triggerContent('left', 'close');
+    $UI.channelsList.displayContent('right', true);
+    $UI.channelsList.triggerContent('right', 'open');
+  }
 }
 
 function closeMinorControlPanel() {
@@ -1287,6 +1429,13 @@ function closeMinorControlPanel() {
   $UI.layersList.triggerContent('left', 'open');
   $UI.layersList.displayContent('right', false);
   $UI.layersList.triggerContent('right', 'close');
+
+  if ($UI.channelsList) {
+    $UI.channelsList.displayContent('left', false, 'head');
+    $UI.channelsList.triggerContent('left', 'open');
+    $UI.channelsList.displayContent('right', false);
+    $UI.channelsList.triggerContent('right', 'close');
+  }
 }
 
 function loadRulerById(camic, rulerData, callback) {
@@ -2113,6 +2262,7 @@ function savePresetLabel() {
       provenance: {
         image: {
           slide: $D.params.slideId,
+          ...getAnnotationChannelScope(),
         },
         analysis: {
           source: 'human',
@@ -2147,6 +2297,7 @@ function savePresetLabel() {
       provenance: {
         image: {
           slide: $D.params.slideId,
+          ...getAnnotationChannelScope(),
         },
         analysis: {
           source: 'human',
@@ -2174,6 +2325,7 @@ function savePresetLabel() {
       provenance: {
         image: {
           slide: $D.params.slideId,
+          ...getAnnotationChannelScope(),
         },
         analysis: {
           source: 'human',
@@ -2768,6 +2920,17 @@ function downloadSlideCapture(combiningCanvas) {
 /* --  -- */
 /* -- for render anno_data to canavs -- */
 function annoRender(ctx, data) {
+  if ($D.channelFilter && $D.channelFilter.enabled) {
+    const chans = data.provenance && data.provenance.image && data.provenance.image.channels;
+    if (Array.isArray(chans) && chans.length &&
+        !chans.some((c) => $D.channelFilter.channels.includes(c))) {
+      // scoped to channels none of which are currently enabled -- skip this
+      // frame. Marks with no `channels` field (the vast majority, and every
+      // Mark created before this feature existed) are unaffected and always
+      // render, matching the OMERO theC "absent means all channels" convention.
+      return;
+    }
+  }
   DrawHelper.draw(ctx, data.geometries.features);
 }
 function oldAnnoRender(ctx, data) {
