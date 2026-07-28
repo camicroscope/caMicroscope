@@ -1111,6 +1111,28 @@ class Store {
     }).then(this.errorHandler);
   }
 
+  /**
+   * update the saved DICOMweb sources Configuration document
+   * (config_name:'dicomweb_sources'). Creating the first-ever document
+   * uses the generic `post('Configuration', {config_name, configuration})`
+   * instead, mirroring updateChannelPresets.
+   * @param {string} id - the Configuration document's _id
+   * @param {Array} sources - array of {id, name, url} DICOMweb sources
+   * @return {promise} - promise which resolves with data
+   **/
+  updateDicomwebSources(id, sources) {
+    const suffix = 'Configuration/update';
+    const url = this.base + suffix;
+    const query = {_id: id};
+
+    return fetch(url + '?' + objToParamStr(query), {
+      method: 'POST',
+      credentials: 'include',
+      mode: 'cors',
+      body: JSON.stringify({configuration: sources}),
+    }).then(this.errorHandler);
+  }
+
   updateMarksLabel(id, name) {
     const suffix = 'Mark/updateMarksLabel';
     const url = this.base + suffix;
