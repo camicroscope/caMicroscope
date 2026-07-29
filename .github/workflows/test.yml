@@ -14,18 +14,21 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Set up Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: '16.x'  
+          node-version: '24.x'
 
-      - name: Install dependencies and ESLint
-        run: |
-          npm install
-          npm install eslint eslint-config-google
+      - name: Install dependencies
+        run: npm ci
 
-      - name: Run Jest tests and linting
+      - name: Start static file server
+        run: npx http-server -s . &
+
+      - name: Run linting and tests
         run: |
-          npm run lint && npm test
+          npm run lint
+          npm test
+          npm run test-mocha

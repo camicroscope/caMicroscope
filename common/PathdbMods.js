@@ -10,7 +10,7 @@ async function PathDbMods() {
            .then(x => x.json()).then(x => {
               console.log(x)
               if (x.hasOwnProperty('token') && x.token) {
-                document.cookie = "token=" + x.token + ";"
+                document.cookie = "token=" + x.token + ";SameSite=Strict;Secure;"
                 console.log("set cookie, is now:" , document.cookie)
               }
            })
