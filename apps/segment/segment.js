@@ -762,7 +762,7 @@ function uploadModel() {
             if (popups.childElementCount < 2) {
               let popupBox = document.createElement('div');
               popupBox.classList.add('popup-msg', 'slide-in');
-              popupBox.innerHTML = `<i class="small material-icons">info</i>` + _name.value + ` model uploaded sucessfully`;
+              popupBox.innerHTML = DOMPurify.sanitize(`<i class="small material-icons">info</i>` + _name.value + ` model uploaded sucessfully`);
               popups.insertBefore(popupBox, popups.childNodes[0]);
               setTimeout(function() {
                 popups.removeChild(popups.lastChild);
@@ -1284,7 +1284,7 @@ async function deleteModel(name) {
         if (popups.childElementCount < 2) {
           let popupBox = document.createElement('div');
           popupBox.classList.add('popup-msg', 'slide-in');
-          popupBox.innerHTML = `<i class="small material-icons">info</i>` + deletedmodelName + ` model deleted successfully`;
+          popupBox.innerHTML = DOMPurify.sanitize(`<i class="small material-icons">info</i>` + deletedmodelName + ` model deleted successfully`);
           popups.insertBefore(popupBox, popups.childNodes[0]);
           setTimeout(function() {
             popups.removeChild(popups.lastChild);

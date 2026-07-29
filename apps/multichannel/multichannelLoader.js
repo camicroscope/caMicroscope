@@ -137,7 +137,7 @@ function changeStatus(step, text, reset = true) {
       const tr = table.insertRow(-1);
       col.forEach((c) => {
         const th = document.createElement('th');
-        th.innerHTML = c;
+        th.innerHTML = DOMPurify.sanitize(c);
         tr.appendChild(th);
       });
     } else {
@@ -147,7 +147,7 @@ function changeStatus(step, text, reset = true) {
     const tr = table.insertRow(-1);
     col.forEach((c) => {
       const cell = tr.insertCell(-1);
-      cell.innerHTML = text[c];
+      cell.innerHTML = DOMPurify.sanitize(text[c]);
     });
     const divContainer = document.getElementById('json_table');
     divContainer.innerHTML = '';
@@ -155,7 +155,7 @@ function changeStatus(step, text, reset = true) {
     divContainer.appendChild(responsiveContainer);
     $('#statusTable').stacktable();
   } else {
-    document.getElementById('load_status').innerHTML = step + ' | ' + JSON.stringify(text);
+    document.getElementById('load_status').innerHTML = DOMPurify.sanitize(step + ' | ' + JSON.stringify(text));
   }
 }
 

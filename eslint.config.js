@@ -19,7 +19,6 @@ module.exports = [
       'apps/landing/skel.min.js',
       'apps/landing/util.js',
       'apps/landing/jquery.dropotron.min.js',
-      'apps/landing/jquery.min.js',
       'apps/landing/jquery.scrollex.min.js',
       'apps/segment/opencv.js',
       'common/bootstrap-tour-standalone/bootstrap-tour-standalone.min.js',

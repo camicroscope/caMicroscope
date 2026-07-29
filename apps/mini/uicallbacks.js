@@ -1141,6 +1141,7 @@ function loadRulerById(camic, rulerData, callback) {
         item.data.properties.innerHTML = item.data.properties.innerHTML.split('&lt;').join('<');
         item.data.properties.innerHTML = item.data.properties.innerHTML.split('&gt;').join('>');
         item.data.properties.innerHTML = item.data.properties.innerHTML.split('&nbsp;').join(' ');
+        item.data.properties.innerHTML = DOMPurify.sanitize(item.data.properties.innerHTML);
         let [xmin, ymin] = item.data.geometries.features[0].geometry.coordinates[0][0];
         let [xmax, ymax] = item.data.geometries.features[0].geometry.coordinates[0][2];
 
@@ -2197,6 +2198,7 @@ async function rootCallback({root, parent, parentName, items}) {
           d.properties.innerHTML = d.properties.innerHTML.split('&lt;').join('<');
           d.properties.innerHTML = d.properties.innerHTML.split('&gt;').join('>');
           d.properties.innerHTML = d.properties.innerHTML.split('&nbsp;').join(' ');
+          d.properties.innerHTML = DOMPurify.sanitize(d.properties.innerHTML);
         });
       } else {
         // covert the human data
