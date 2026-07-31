@@ -82,10 +82,10 @@ class mlTools {
     return [contours1];
   }
 
-  thresholdImgToForegroundImg(thresholdImg, erodeSize = 2, iteration = 1, kernel_size = 3) {
+  thresholdImgToForegroundImg(thresholdImg, erodeSize = 2, iteration = 1, kernelSize = 3) {
     // Perform morphological operations to enhance separation
     const kernel = new cv.Mat();
-    cv.Mat.ones(kernel_size, kernel_size, cv.CV_8U).copyTo(kernel);
+    cv.Mat.ones(kernelSize, kernelSize, cv.CV_8U).copyTo(kernel);
     const opening = new cv.Mat();
     cv.morphologyEx(thresholdImg, opening, cv.MORPH_OPEN, kernel);
     const morph = new cv.Mat();

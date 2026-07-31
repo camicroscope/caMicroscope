@@ -5,8 +5,9 @@ const page = parseInt(urlParams.get('p'), 10) || 0;
 const mode = urlParams.get('mode');
 const MAX_TILES = parseInt(urlParams.get('mt'), 10) || 16;
 const prefixUrl = 'https://cdn.jsdelivr.net/npm/openseadragon@2.3/build/openseadragon/images/';
-let query = JSON.parse(urlParams.get('q') || '{}');
-let list = JSON.parse(urlParams.get('l') || '[]');
+let query = safeParseJsonParam(urlParams.get('q'), {},
+    (v) => v !== null && typeof v === 'object' && !Array.isArray(v));
+let list = safeParseJsonParam(urlParams.get('l'), [], Array.isArray);
 
 let viewers = [];
 

@@ -940,10 +940,10 @@ function handleFilterChange(target) {
     selectedFilters.push(target.value);
     filterSlides();
   } else
-  if (!target.checked && index >= 0) {
-    selectedFilters.splice(index, 1);
-    filterSlides();
-  }
+    if (!target.checked && index >= 0) {
+      selectedFilters.splice(index, 1);
+      filterSlides();
+    }
 }
 
 function createCollectionPanel(data, cid) {

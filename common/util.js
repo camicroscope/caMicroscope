@@ -1060,7 +1060,8 @@ function getUserId() {
       uid = rid;
     } else {
       uid = randomId();
-      document.cookie = 'randomId=' + uid + ';';
+      document.cookie = 'randomId=' + uid + ';SameSite=Lax;' +
+        (location.protocol === 'https:' ? 'Secure;' : '');
     }
   }
   return uid;

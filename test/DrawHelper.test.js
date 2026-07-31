@@ -49,4 +49,39 @@ describe('caDrawHelper', () => {
       expect(mockContext.stroke).toHaveBeenCalled();
     });
   });
+
+  describe('drawMultiline', () => {
+    test('should draw a line between each consecutive pair of points', () => {
+      const points = [[0, 0], [10, 10], [20, 0]];
+      drawHelper.drawMultiline(mockContext, points);
+
+      expect(mockContext.moveTo).toHaveBeenCalledWith(0, 0);
+      expect(mockContext.lineTo).toHaveBeenCalledWith(10, 10);
+      expect(mockContext.moveTo).toHaveBeenCalledWith(10, 10);
+      expect(mockContext.lineTo).toHaveBeenCalledWith(20, 0);
+      expect(mockContext.stroke).toHaveBeenCalledTimes(2);
+    });
+  });
+
+  describe('setStyle', () => {
+    test('should apply the given style to the canvas context', () => {
+      const style = {color: '#000000', lineJoin: 'round', lineCap: 'round', lineWidth: 2, isFill: false};
+      const ctx = {};
+      drawHelper.setStyle(ctx, style);
+
+      expect(ctx.strokeStyle).toBe('#000000');
+      expect(ctx.lineJoin).toBe('round');
+      expect(ctx.lineCap).toBe('round');
+      expect(ctx.lineWidth).toBe(2);
+      expect(ctx.isFill).toBe(false);
+    });
+
+    test('should fall back to default style when none is given', () => {
+      const ctx = {};
+      drawHelper.setStyle(ctx, null);
+
+      expect(ctx.strokeStyle).toBe('#fccde5');
+      expect(ctx.isFill).toBe(true);
+    });
+  });
 });

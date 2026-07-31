@@ -1,0 +1,4 @@
+{
+  "require": "./test/config.js",
+  "spec": "test/ui/**/*.js"
+}
