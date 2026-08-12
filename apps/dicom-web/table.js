@@ -1,22 +1,4 @@
 /**
- * static variables
- */
-
-const sources = [{
-  'name': 'j4care',
-  'url': 'https://ihe.j4care.com:18443/dcm4chee-arc/aets/DCM4CHEE/rs',
-
-}, {
-  'name': 'google',
-  'url': 'https://dicomwebproxy.app/dicomWeb',
-}, {
-  'name': 'BMD',
-  'url': 'https://dicom-wg26.bmd-software.com/ext/dicom-web',
-}];
-// const j4careStudiesUrl = 'https://development.j4care.com:11443/dcm4chee-arc/aets/DCM4CHEE/rs'
-// const dicomWebStudiesUrl = 'https://dicomwebproxy-bqmq3usc3a-uc.a.run.app/dicomWeb'
-
-/**
  * global variables
  */
 isAllSeriesSynced = false;
@@ -29,20 +11,15 @@ const datatableConfig = {
   ],
 };
 
-
+// DICOMweb sources are persisted as a Configuration document
+// (config_name: 'dicomweb_sources', configuration: [{id, name, url}]),
+// the same pattern used for e.g. channel-view presets. `pageStates.sourcesDoc`
+// holds the loaded document (or null if none exists yet) so add/remove can
+// tell whether to create or update it.
 const pageStates = {
+  sourcesDoc: null,
   sources: {
-    data: [{
-      'name': 'j4care',
-      'url': 'https://ihe.j4care.com:18443/dcm4chee-arc/aets/DCM4CHEE/rs',
-
-    }, {
-      'name': 'google',
-      'url': 'https://dicomwebproxy-bqmq3usc3a-uc.a.run.app/dicomWeb',
-    }, {
-      'name': 'BMD',
-      'url': 'https://dicom-wg26.bmd-software.com/ext/dicom-web',
-    }],
+    data: [],
   },
   studies: {
     data: null,
@@ -56,6 +33,64 @@ const pageStates = {
   status: 'sources', // 'sources, studies, series, instsances'
 };
 var studies = [];
+var store;
+
+/**
+ * loads the dicomweb_sources Configuration document into pageStates.
+ * @return {promise} - resolves once pageStates.sourcesDoc/sources.data are populated
+ */
+function loadSources() {
+  return store.getConfigByName('dicomweb_sources').then((list) => {
+    const doc = (list && list.length) ? list[0] : null;
+    // Configuration/find returns _id as extended-JSON ({$oid: ...}), but
+    // Configuration/update expects a plain string; normalize it here.
+    if (doc && doc._id && doc._id.$oid) doc._id = doc._id.$oid;
+    pageStates.sourcesDoc = doc;
+    pageStates.sources.data = doc ? doc.configuration : [];
+  });
+}
+
+/**
+ * adds a new source (read from the Add Source dialog inputs), persists it,
+ * and refreshes the sources table.
+ */
+async function addSource() {
+  const name = document.getElementById('sourceNameInput').value.trim();
+  const url = document.getElementById('sourceUrlInput').value.trim();
+  if (!name || !/^https?:\/\//i.test(url)) {
+    alert('Please provide a name and a URL starting with http:// or https://');
+    return;
+  }
+  const source = {id: randomId(), name: name, url: url};
+  if (!pageStates.sourcesDoc) {
+    const result = await store.post('Configuration', {
+      config_name: 'dicomweb_sources',
+      configuration: [source],
+    });
+    pageStates.sourcesDoc = {_id: result.insertedIds['0'], configuration: [source]};
+  } else {
+    pageStates.sourcesDoc.configuration.push(source);
+    await store.updateDicomwebSources(
+        pageStates.sourcesDoc._id, pageStates.sourcesDoc.configuration);
+  }
+  pageStates.sources.data = pageStates.sourcesDoc.configuration;
+  document.getElementById('sourceNameInput').value = '';
+  document.getElementById('sourceUrlInput').value = '';
+  $('#add-source-dialog').modal('hide');
+  datatable.clear().rows.add(pageStates.sources.data).draw();
+}
+
+/**
+ * removes a source by id, persists the change, and refreshes the sources table.
+ * @param {string} id - the source's id (not the Configuration doc's _id)
+ */
+async function removeSource(id) {
+  pageStates.sourcesDoc.configuration = pageStates.sourcesDoc.configuration.filter((s) => s.id !== id);
+  await store.updateDicomwebSources(
+      pageStates.sourcesDoc._id, pageStates.sourcesDoc.configuration);
+  pageStates.sources.data = pageStates.sourcesDoc.configuration;
+  datatable.clear().rows.add(pageStates.sources.data).draw();
+}
 
 
 function getStudies(baseUrl) {
@@ -98,12 +133,13 @@ function sanitize(string) {
 }
 
 
-function initialize() {
+async function initialize() {
   const params = getUrlVars();
   console.log('params');
   console.log(params);
   // store
-  const store = new Store('../../data/');
+  store = new Store('../../data/');
+  await loadSources();
   if (params.status=='studies'&&params.source) {
     pageStates.status = params.status;
   } else if (params.status=='series'&&params.source&&params.studyId) { // series table
@@ -118,15 +154,20 @@ function initialize() {
   // <li class="breadcrumb-item active" aria-current="page">Instances</li>
   switch (pageStates.status) {
     case 'sources':
+      $('#addSourceBtn').show();
       $('#breadcrumb').append(`<li class="breadcrumb-item active" aria-current="page"><Strong>Sources</Strong></li>`);
       function generateLink(data, type, row) {
-        return `<a href="../dicom-web/table.html?source=${row.name}&status=studies">${row.name}</a>`;
+        return `<a href="../dicom-web/table.html?source=${encodeURIComponent(row.name)}&status=studies">${sanitize(row.name)}</a>`;
+      }
+      function generateRemove(data, type, row) {
+        return `<button onClick="removeSource('${row.id}')" class="btn btn-sm btn-danger" title="Remove"><i class="fas fa-trash"></i></button>`;
       }
       datatable = $('#datatable').DataTable({
         ...datatableConfig,
         'data': pageStates[pageStates.status].data,
         'columns': [
           {data: 'name', title: 'Name', render: generateLink},
+          {data: null, title: '', render: generateRemove},
         ],
       });
 
@@ -134,8 +175,8 @@ function initialize() {
     case 'studies':
 
       // get source info
-      var idx = sources.findIndex((elt)=>elt.name==params.source);
-      var src = sources[idx];
+      var idx = pageStates.sources.data.findIndex((elt)=>elt.name==decodeURIComponent(params.source));
+      var src = pageStates.sources.data[idx];
 
       // create breadcrumb for studies
       $('#breadcrumb').append(`<li class="breadcrumb-item" aria-current="page"><a href="../dicom-web/table.html"><Strong>Sources</Strong><a></li>`);
@@ -181,8 +222,8 @@ function initialize() {
       break;
     case 'series':
       // get source info
-      var idx = sources.findIndex((elt)=>elt.name==params.source);
-      var src = sources[idx];
+      var idx = pageStates.sources.data.findIndex((elt)=>elt.name==decodeURIComponent(params.source));
+      var src = pageStates.sources.data[idx];
 
       // create breadcrumb for series
       $('#breadcrumb').append(`<li class="breadcrumb-item" aria-current="page"><a href="../dicom-web/table.html"><Strong>Sources</Strong><a></li>`);
@@ -323,8 +364,8 @@ function initialize() {
       break;
     case 'instances':
       // get source info
-      var idx = sources.findIndex((elt)=>elt.name==params.source);
-      var src = sources[idx];
+      var idx = pageStates.sources.data.findIndex((elt)=>elt.name==decodeURIComponent(params.source));
+      var src = pageStates.sources.data[idx];
       // create breadcrumb for instances
       const backSeriesUrl = `../dicom-web/table.html?source=${params.source}&status=series&studyId=${params.studyId}`;
       $('#breadcrumb').append(`<li class="breadcrumb-item" aria-current="page"><a href="../dicom-web/table.html"><Strong>Sources</Strong><a></li>`);

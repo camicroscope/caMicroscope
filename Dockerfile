@@ -1,4 +1,4 @@
-FROM httpd:alpine
+FROM httpd:2.4-alpine
 EXPOSE 80
 ARG cacheoff
 COPY ./ /usr/local/apache2/htdocs/

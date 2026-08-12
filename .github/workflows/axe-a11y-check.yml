@@ -15,15 +15,15 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [20.x]
+        node-version: [24.x]
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
-      - run: npm install
-      - run: npm install -g http-server
+      - run: npm ci
+      - run: npm install -g http-server@14.1.1
       - run: npm run build --if-present
       - run: http-server -s &
       - name: Install specific version of ChromeDriver
@@ -31,10 +31,10 @@ jobs:
       - name: Run axe
         id: axe-test
         run: |
-          npm install -g @axe-core/cli
+          npm install -g @axe-core/cli@4.12.1
           sleep 90
           axe http://127.0.0.1:8080 --chromedriver-path $(npm root -g)/chromedriver/bin/chromedriver --exit || echo "status=warning" >> $GITHUB_ENV
-      
+
       - name: Set output status to warning (if test fails)
         if: env.status == 'warning'
         run: echo "::warning::Accessibility tests failed, but this does not block (most) PRs."

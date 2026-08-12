@@ -576,7 +576,7 @@ StyleContextMenu.prototype.getHandler = function( eventName ) {
   }
   events = events.length === 1 ?
         [events[0]] :
-        Array( ...events );
+        [...events];
   return function( source, args ) {
     let i;
     const length = events.length;
