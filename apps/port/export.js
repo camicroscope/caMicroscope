@@ -12,7 +12,8 @@ async function populateList() {
   slideList = slideList.replace(/\s+/g, '');
   slideList = slideList.split(',');
   for (let id of slideList) {
-    let slide = await store.getSlide(id);
+    //next line is for testing only
+    let slide = [{ _id: { "$oid": id }, name: "Mock Slide", type: "slide" }];
     slide = slide[0];
     if (slide && slide['_id']) {
       let s = {'id': slide['_id']['$oid'], 'name': slide['name'], 'type': 'slide', 'raw': slide};
@@ -34,7 +35,19 @@ async function populateList() {
           'name': a['provenance']['analysis']['execution_id'], 'type': 'heatmap'});
       }
       results[slide['_id']['$oid']] = r;
-    }
+
+      document.querySelectorAll('.slide-checkbox').forEach(parentCheckbox => {
+        parentCheckbox.addEventListener('change', function() {
+            let slideId = this.getAttribute('data-id');
+            let childCheckboxes = document.querySelectorAll(`.result[data-target="${slideId}"]`);
+            
+            childCheckboxes.forEach(childCheckbox => {
+                childCheckbox.checked = parentCheckbox.checked;
+            });
+        });
+    });
+    
+  }
   }
 
   let headers = ['name', 'id', 'type'];
@@ -68,11 +81,18 @@ async function populateList() {
       }
       parent.appendChild(d);
     }
-    // add special checkbox
-    parentCheck = document.createElement('input');
-    parentCheck.classList.add('form-check-input');
+
+    // Add special checkbox for parent row
+    let parentCheck = document.createElement('input');
+    parentCheck.classList.add('form-check-input', 'slide-checkbox');
     parentCheck.type = 'checkbox';
-    parentCheck.indeterminate = true; // cool!
+    parentCheck.setAttribute('data-id', x.id);
+
+    // Append checkbox to the parent row
+    let parentTd = document.createElement('td');
+    parentTd.appendChild(parentCheck);
+    parent.appendChild(parentTd);
+
     // TODO -- finish this. you'd want to add logic that sets this checkbox to true, false or indeterminate
     //         depending on children selection. also select/deselect all children on change of this.
     // parent.appendChild(parentCheck);
@@ -91,18 +111,21 @@ async function populateList() {
         }
         child.appendChild(d);
       }
-      // special checkbox
-      childCheck = document.createElement('input');
+      // Add checkbox for child row
+      let childCheck = document.createElement('input');
       childCheck.type = 'checkbox';
-      childCheck.classList.add('form-check-input');
-      childCheck.classList.add('result');
+      childCheck.classList.add('form-check-input', 'result');
       childCheck.setAttribute('data-target', x.id);
       childCheck.setAttribute('data-self', y.id);
       childCheck.setAttribute('data-slideInfo', JSON.stringify(x.raw));
       childCheck.setAttribute('data-type', y.type);
       childCheck.checked = true;
-      child.appendChild(childCheck);
-      table.appendChild(child);
+
+      // Append checkbox to the child row
+      let childTd = document.createElement('td');
+      childTd.appendChild(childCheck);
+      child.appendChild(childTd);
+
     }
   }
   t.appendChild(table);
